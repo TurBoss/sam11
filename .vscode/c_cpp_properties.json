@@ -1,0 +1,35 @@
+{
+    "configurations": [
+        {
+            "name": "Arduino",
+            "browse": {
+                "limitSymbolsToIncludedHeaders": false
+            },
+            "includePath": [
+                "${default}",
+                ".\\",
+                "./",
+                "./**",
+                "C:\\Program Files (x86)\\Arduino\\**",
+                "C:\\Users\\C Lunn\\Documents\\Arduino\\**",
+                "C:\\Program Files (x86)\\Arduino\\tools\\**",
+                "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\**",
+                "C:\\Users\\C Lunn\\AppData\\Local\\Arduino15\\packages\\adafruit\\hardware\\samd\\1.7.3\\**",
+                "C:\\Users\\C Lunn\\AppData\\Local\\Arduino15\\packages\\adafruit\\tools\\**",
+                "/Users/chloe/Library/Arduino15/packages/adafruit/tools/**",
+                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.3/**",
+                "/Users/chloe/Documents/Arduino/libraries/**",
+                "/Applications/Arduino.app/Contents/Java/**",
+                "/Users/chloe/Library/Arduino15/packages/**",
+                "${workspaceFolder}/**"
+            ],
+            "forcedInclude": [
+                "C:\\Users\\C Lunn\\AppData\\Local\\Arduino15\\packages\\adafruit\\hardware\\samd\\1.7.3\\cores\\arduino\\Arduino.h",
+                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.3/cores/arduino/Arduino.h"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+        }
+    ],
+    "version": 4
+}
