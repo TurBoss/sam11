@@ -1,11 +1,13 @@
-#include <SdFat.h>
-#include "sam11.h"
-#include "mmu.h"
-#include "cons.h"
-#include "unibus.h"
 #include "cpu.h"
-#include "rk05.h"
+
 #include "bootrom.h"
+#include "cons.h"
+#include "mmu.h"
+#include "rk05.h"
+#include "sam11.h"
+#include "unibus.h"
+
+#include <SdFat.h>
 
 pdp11::intr itab[ITABN];
 
@@ -26,7 +28,7 @@ void reset(void)
     uint16_t i;
     for (i = 0; i < 29; i++)
     {
-        unibus::write16(02000 + (i * 2), bootrom[i]);
+        dd11::write16(02000 + (i * 2), bootrom[i]);
     }
     R[7] = 02002;
     cons::clearterminal();
@@ -35,22 +37,22 @@ void reset(void)
 
 static uint16_t read8(const uint16_t a)
 {
-    return unibus::read8(mmu::decode(a, false, curuser));
+    return dd11::read8(mmu::decode(a, false, curuser));
 }
 
 static uint16_t read16(const uint16_t a)
 {
-    return unibus::read16(mmu::decode(a, false, curuser));
+    return dd11::read16(mmu::decode(a, false, curuser));
 }
 
 static void write8(const uint16_t a, const uint16_t v)
 {
-    unibus::write8(mmu::decode(a, true, curuser), v);
+    dd11::write8(mmu::decode(a, true, curuser), v);
 }
 
 static void write16(const uint16_t a, const uint16_t v)
 {
-    unibus::write16(mmu::decode(a, true, curuser), v);
+    dd11::write16(mmu::decode(a, true, curuser), v);
 }
 
 static bool isReg(const uint16_t a)
@@ -149,7 +151,7 @@ static uint16_t pop()
 // aget resolves the operand to a vaddress.
 // if the operand is a register, an address in
 // the range [0170000,0170007). This address range is
-// technically a valid IO page, but unibus doesn't map
+// technically a valid IO page, but dd11 doesn't map
 // any addresses here, so we can safely do this.
 static uint16_t aget(uint8_t v, uint8_t l)
 {
@@ -981,7 +983,7 @@ static void MFPI(uint16_t instr)
     }
     else
     {
-        uval = unibus::read16(mmu::decode((uint16_t)da, false, prevuser));
+        uval = dd11::read16(mmu::decode((uint16_t)da, false, prevuser));
     }
     push(uval);
     PS &= 0xFFF0;
@@ -1023,7 +1025,7 @@ static void MTPI(uint16_t instr)
     }
     else
     {
-        unibus::write16(mmu::decode((uint16_t)da, true, prevuser), uval);
+        dd11::write16(mmu::decode((uint16_t)da, true, prevuser), uval);
     }
     PS &= 0xFFF0;
     PS |= FLAGC;
@@ -1064,8 +1066,8 @@ static void EMTX(uint16_t instr)
     switchmode(false);
     push(prev);
     push(R[7]);
-    R[7] = unibus::read16(uval);
-    PS = unibus::read16(uval + 2);
+    R[7] = dd11::read16(uval);
+    PS = dd11::read16(uval + 2);
     if (prevuser)
     {
         PS |= (1 << 13) | (1 << 12);
@@ -1081,7 +1083,7 @@ static void RTT(uint16_t instr)
         uval &= 047;
         uval |= PS & 0177730;
     }
-    unibus::write16(0777776, uval);
+    dd11::write16(0777776, uval);
 }
 
 static void RESET(uint16_t instr)
@@ -1097,7 +1099,7 @@ static void RESET(uint16_t instr)
 void step()
 {
     PC = R[7];
-    uint16_t instr = unibus::read16(mmu::decode(PC, false, curuser));
+    uint16_t instr = dd11::read16(mmu::decode(PC, false, curuser));
     // return;
     R[7] += 2;
 
@@ -1392,8 +1394,8 @@ void trapat(uint16_t vec)
     push(prev);
     push(R[7]);
 
-    R[7] = unibus::read16(vec);
-    PS = unibus::read16(vec + 2);
+    R[7] = dd11::read16(vec);
+    PS = dd11::read16(vec + 2);
     if (prevuser)
     {
         PS |= (1 << 13) | (1 << 12);
@@ -1476,8 +1478,8 @@ void handleinterrupt()
         trapat(vv);
     }
 
-    R[7] = unibus::read16(vec);
-    PS = unibus::read16(vec + 2);
+    R[7] = dd11::read16(vec);
+    PS = dd11::read16(vec + 2);
     if (prevuser)
     {
         PS |= (1 << 13) | (1 << 12);

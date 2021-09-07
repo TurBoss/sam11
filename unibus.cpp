@@ -1,13 +1,16 @@
-#include <SdFat.h>
-#include "sam11.h"
-#include "cpu.h"
-#include "cons.h"
-#include "mmu.h"
 #include "unibus.h"
+
+#include "cons.h"
+#include "cpu.h"
+#include "mmu.h"
+#include "ms11.h"
 #include "rk05.h"
+#include "sam11.h"
 #include "xmem.h"
 
-namespace unibus {
+#include <SdFat.h>
+
+namespace dd11 {
 
 // memory as words
 int* intptr = reinterpret_cast<int*>(0x2200);
@@ -34,7 +37,7 @@ static uint8_t bank(const uint32_t a)
 
 void write8(const uint32_t a, const uint16_t v)
 {
-    if (a < 0760000)
+    if (a < MAX_UNIBUS_MEM)
     {
         // change this to a memory device rather than swap banks
         xmem::setMemoryBank(bank(a), false);
@@ -55,11 +58,11 @@ void write16(uint32_t a, uint16_t v)
 {
     if (a % 1)
     {
-        Serial.print(F("unibus: write16 to odd address "));
+        Serial.print(F("dd11: write16 to odd address "));
         Serial.println(a, OCT);
         longjmp(trapbuf, INTBUS);
     }
-    if (a < 0760000)
+    if (a < MAX_UNIBUS_MEM)
     {
         // change this to a memory device rather than swap banks
         xmem::setMemoryBank(bank(a), false);
@@ -117,7 +120,7 @@ void write16(uint32_t a, uint16_t v)
         mmu::write16(a, v);
         return;
     }
-    Serial.print(F("unibus: write to invalid address "));
+    Serial.print(F("dd11: write to invalid address "));
     Serial.println(a, OCT);
     longjmp(trapbuf, INTBUS);
 }
@@ -126,11 +129,11 @@ uint16_t read16(uint32_t a)
 {
     if (a & 1)
     {
-        Serial.print(F("unibus: read16 from odd address "));
+        Serial.print(F("dd11: read16 from odd address "));
         Serial.println(a, OCT);
         longjmp(trapbuf, INTBUS);
     }
-    if (a < 0760000)
+    if (a < MAX_UNIBUS_MEM)
     {
         // change this to a memory device rather than swap banks
         xmem::setMemoryBank(bank(a), false);
@@ -176,9 +179,9 @@ uint16_t read16(uint32_t a)
         return mmu::read16(a);
     }
 
-    Serial.print(F("unibus: read from invalid address "));
+    Serial.print(F("dd11: read from invalid address "));
     Serial.println(a, OCT);
     longjmp(trapbuf, INTBUS);
 }
 
-};  // namespace unibus
+};  // namespace dd11

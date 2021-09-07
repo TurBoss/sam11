@@ -1,10 +1,12 @@
-#include <stdint.h>
-#include <Arduino.h>
-#include <SdFat.h>
+#include "rk05.h"
+
+#include "cpu.h"
 #include "sam11.h"
 #include "unibus.h"
-#include "rk05.h"
-#include "cpu.h"
+
+#include <Arduino.h>
+#include <SdFat.h>
+#include <stdint.h>
 
 namespace rk11 {
 
@@ -112,13 +114,13 @@ again:
     {
         if (w)
         {
-            val = unibus::read16(RKBA);
+            val = dd11::read16(RKBA);
             rkdata.write(val & 0xFF);
             rkdata.write((val >> 8) & 0xFF);
         }
         else
         {
-            unibus::write16(RKBA, rkdata.read() | (rkdata.read() << 8));
+            dd11::write16(RKBA, rkdata.read() | (rkdata.read() << 8));
         }
         RKBA += 2;
         RKWC = (RKWC + 1) & 0xFFFF;
