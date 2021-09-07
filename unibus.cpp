@@ -36,6 +36,7 @@ void write8(const uint32_t a, const uint16_t v)
 {
     if (a < 0760000)
     {
+        // change this to a memory device rather than swap banks
         xmem::setMemoryBank(bank(a), false);
         charptr[(a & 0x7fff)] = v & 0xff;
         return;
@@ -60,6 +61,7 @@ void write16(uint32_t a, uint16_t v)
     }
     if (a < 0760000)
     {
+        // change this to a memory device rather than swap banks
         xmem::setMemoryBank(bank(a), false);
         intptr[(a & 0x7fff) >> 1] = v;
         return;
@@ -130,6 +132,7 @@ uint16_t read16(uint32_t a)
     }
     if (a < 0760000)
     {
+        // change this to a memory device rather than swap banks
         xmem::setMemoryBank(bank(a), false);
         return intptr[(a & 0x7fff) >> 1];
     }

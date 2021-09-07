@@ -35,7 +35,13 @@
         "xlocale": "cpp",
         "xlocinfo": "cpp",
         "string_view": "cpp",
-        "xhash": "cpp"
+        "xhash": "cpp",
+        "array": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "queue": "cpp",
+        "xlocnum": "cpp",
+        "xmemory": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "C_Cpp.intelliSenseEngine": "Tag Parser"

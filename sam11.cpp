@@ -30,8 +30,8 @@ void setup(void)
     digitalWrite(18, LOW);  // timing interrupt, high while CPU is stepping
 
     // Start the UART
-    Serial.begin(19200);
-    fdevopen(serialWrite, NULL);
+    Serial.begin(115200);
+    //fdevopen(serialWrite, NULL);
 
     Serial.println(F("Reset"));
 
