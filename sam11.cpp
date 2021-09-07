@@ -49,11 +49,11 @@ void setup(void)
     // Initialize SdFat or print a detailed error message and halt
     // Use half speed like the native library.
     // change to SPI_FULL_SPEED for more performance.
-    if (!sd.begin(4, SPI_FULL_SPEED))
+    if (!sd.begin(4, SD_SCK_MHZ(7)))
         sd.initErrorHalt();
-    if (!rk11::rkdata.open("boot1.RK0", O_RDWR))
+    if (!rk11::rkdata.open("unixv6.rk0", O_RDWR))
     {
-        sd.errorHalt("opening boot1.RK0 for write failed");
+        sd.errorHalt("opening unixv6.rk0 for write failed");
     }
 
     cpu::reset();
