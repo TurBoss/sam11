@@ -28,7 +28,7 @@
  * 
  * Core Processor:
  * 
- * KB11-B   Y   Main CPU 11/45 \_ Main processor is a hybrid of the pair, but closer to the 11/40 KD11-A
+ * KB11-B   Y   Main CPU 11/45 \_ Main processor is a hybrid of the pair
  * KD11-A   Y   Main CPU 11/40 /
  * KE11-E   *   Extended instructions (EIS)
  * KG11     *   XOR/CRC "cagey" calculations controller
