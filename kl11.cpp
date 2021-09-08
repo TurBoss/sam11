@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "sam11.h"
-#include "cons.h"
-#include "cpu.h"
+#include "kl11.h"
+#include "kd11.h"
 
 namespace cons {
 

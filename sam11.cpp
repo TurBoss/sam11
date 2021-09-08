@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include <SdFat.h>
 #include "sam11.h"
-#include "rk05.h"
-#include "cons.h"
-#include "unibus.h"
-#include "cpu.h"
+#include "rk11.h"
+#include "kl11.h"
+#include "dd11.h"
+#include "kd11.h"
 #include "xmem.h"
 
 int serialWrite(char c, FILE* f)

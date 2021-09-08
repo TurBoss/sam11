@@ -1,7 +1,7 @@
-#include "cpu.h"
-#include "mmu.h"
+#include "kd11.h"
+#include "kt11.h"
 #include "sam11.h"
-#include "unibus.h"
+#include "dd11.h"
 
 #include <Arduino.h>
 
