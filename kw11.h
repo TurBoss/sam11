@@ -5,4 +5,4 @@ namespace kw11 {
 extern uint16_t LKS;
 void reset();
 void tick();
-};
+};  // namespace kw11

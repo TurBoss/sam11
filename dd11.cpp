@@ -140,17 +140,19 @@ uint16_t read16(uint32_t a)
         longjmp(trapbuf, INTBUS);
     }
 
-    if (a < DEV_MEMORY)
+    if (a < DEV_MEMORY)  // if lower than the device memory, then this is just RAM
     {
         // change this to a memory device rather than swap banks
         xmem::setMemoryBank(bank(a), false);
         return intptr[(a & 0x7fff) >> 1];
     }
 
-    switch (a)
+    switch (a)  // Switch by address, and read from virtual device as appropriate
     {
     case DEV_CPU_STAT:
         return kd11::PS;
+    case DEV_STACK_LIM:
+        return 0400 << 8;
     case DEV_LKS:
         return kw11::LKS;
     case DEV_MMU_SR0:
