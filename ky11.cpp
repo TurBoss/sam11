@@ -19,4 +19,4 @@ void write16(uint32_t a, uint16_t v)
 {
     // write to a front panel here
 }
-}  // namespace ky11
+};  // namespace ky11
