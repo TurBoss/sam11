@@ -1,7 +1,9 @@
 # PDP-11/40 Simulator: sam11
 
 The sam11 software is a cross-platform MCU implementation for software \
-emulation of a PDP-11/40 and some of the supporting hardware.
+emulation of a PDP-11/40\* and some of the supporting hardware.
+
+\* = With some PDP-11/45 and other model stuff thrown in...
 
 At the moment it is _heavily_ based on the avr11 simulator, with changes to \
 move the device and file structure to match those of an actual PDP 11 computer.
@@ -16,3 +18,6 @@ It derives from 's avr11 software, and is inspired by
 
 The software is designed to be programmed to a device using the arduino IDE \
 .ino file, or other compatible editors/IDEs.
+
+See pdp1140.h for more information about file names/splits and pdp-11/40 \
+device structure.
