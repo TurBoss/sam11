@@ -18,12 +18,11 @@ int32_t R[8];
 uint16_t PS;        // processor status
 uint16_t PC;        // address of current instruction
 uint16_t KSP, USP;  // kernel and user stack pointer
-uint16_t LKS;
 bool curuser, prevuser;
 
 void reset(void)
 {
-    LKS = 1 << 7;
+    kw11::reset();  // Reset KW11, Line Clock
     uint16_t i;
     for (i = 0; i < 29; i++)
     {

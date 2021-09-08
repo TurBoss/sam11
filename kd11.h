@@ -5,21 +5,21 @@ extern jmp_buf trapbuf;
 
 namespace pdp11 {
 struct intr {
-  uint8_t vec;
-  uint8_t pri;
+    uint8_t vec;
+    uint8_t pri;
 };
-};
+};  // namespace pdp11
 
 #define ITABN 8
 
 extern pdp11::intr itab[ITABN];
 
-
-enum {
-  FLAGN = 8,
-  FLAGZ = 4,
-  FLAGV = 2,
-  FLAGC = 1
+enum
+{
+    FLAGN = 8,
+    FLAGZ = 4,
+    FLAGV = 2,
+    FLAGC = 1
 };
 
 namespace cpu {
@@ -30,7 +30,6 @@ extern uint16_t PC;
 extern uint16_t PS;
 extern uint16_t USP;
 extern uint16_t KSP;
-extern uint16_t LKS;
 extern bool curuser;
 extern bool prevuser;
 
@@ -42,22 +41,24 @@ void trapat(uint16_t vec);
 void interrupt(uint8_t vec, uint8_t pri);
 void handleinterrupt();
 
-static bool N() {
-  return (uint8_t)PS & FLAGN;
+static bool N()
+{
+    return (uint8_t)PS & FLAGN;
 }
 
-static bool Z() {
-  return (uint8_t)PS & FLAGZ;
+static bool Z()
+{
+    return (uint8_t)PS & FLAGZ;
 }
 
-static bool V() {
-  return (uint8_t)PS & FLAGV;
+static bool V()
+{
+    return (uint8_t)PS & FLAGV;
 }
 
-static bool C() {
-  return (uint8_t)PS & FLAGC;
+static bool C()
+{
+    return (uint8_t)PS & FLAGC;
 }
 
-};
-
-
+};  // namespace cpu

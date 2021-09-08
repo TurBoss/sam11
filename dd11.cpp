@@ -98,7 +98,7 @@ void write16(uint32_t a, uint16_t v)
         cpu::PS = v;
         return;
     case 0777546:
-        cpu::LKS = v;
+        kw11::write16(a, v);
         return;
     case 0777572:
         mmu::SR0 = v;
@@ -140,7 +140,7 @@ uint16_t read16(uint32_t a)
     }
     if (a == 0777546)
     {
-        return cpu::LKS;
+        return kw11::read16(a);
     }
 
     if (a == 0777570)

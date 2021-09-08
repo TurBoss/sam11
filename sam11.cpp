@@ -5,6 +5,7 @@
 #include "kl11.h"
 #include "dd11.h"
 #include "kd11.h"
+#include "kw11.h"
 #include "xmem.h"
 
 int serialWrite(char c, FILE* f)
@@ -51,23 +52,16 @@ void setup(void)
     // change to SPI_FULL_SPEED for more performance.
     if (!sd.begin(4, SD_SCK_MHZ(7)))
         sd.initErrorHalt();
+
     if (!rk11::rkdata.open("unixv6.rk0", O_RDWR))
     {
         sd.errorHalt("opening unixv6.rk0 for write failed");
     }
 
     cpu::reset();
+
     Serial.println(F("Ready"));
 }
-
-union {
-    struct {
-        uint8_t low;
-        uint8_t high;
-    } bytes;
-    uint16_t value;
-} clkcounter;
-uint16_t instcounter;
 
 // On a 16Mhz atmega 2560 this loop costs 21usec per emulated instruction
 // This cost is just the cost of the loop and fetching the instruction at the PC.
@@ -87,20 +81,8 @@ static void loop0()
         cpu::step();
         digitalWrite(18, LOW);
 
-        if (ENABLE_LKS)
-        {
-            ++clkcounter.value;
-            if (clkcounter.bytes.high == 1 << 6)
-            {
-                clkcounter.value = 0;
-                cpu::LKS |= (1 << 7);
-                if (cpu::LKS & (1 << 6))
-                {
-                    cpu::interrupt(INTCLOCK, 6);
-                }
-            }
-        }
-        // costs 3 usec
+        kw11::tick();
+
         cons::poll();
     }
 }
