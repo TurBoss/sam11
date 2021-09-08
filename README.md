@@ -14,7 +14,11 @@ However the extended hardware modules should allow implementing the missing \
 hardware modules easier to allow use of newer operating systems that rely on \
 currently unimplemented hardware features.
 
-It derives from 's avr11 software, and is inspired by
+It derives from 's avr11 software, and is inspired by various emulators.
+
+The structure, however, was re-written based on actual PDP physical structure,
+device names, and data paths from the PDP-11/40 manual in order to be more 
+useful for learning the system.
 
 The software is designed to be programmed to a device using the arduino IDE \
 .ino file, or other compatible editors/IDEs.

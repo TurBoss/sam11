@@ -1,7 +1,9 @@
+// sam11 software emulation of DEC PDP-11/40 RK11 RK Disk Controller
 #include "rk11.h"
+
+#include "dd11.h"
 #include "kd11.h"
 #include "sam11.h"
-#include "dd11.h"
 
 #include <Arduino.h>
 #include <SdFat.h>
@@ -144,7 +146,7 @@ again:
         rkready();
         if (RKCS & (1 << 6))
         {
-            cpu::interrupt(INTRK, 5);
+            kd11::interrupt(INTRK, 5);
         }
     }
     else

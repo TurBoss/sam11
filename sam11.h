@@ -1,3 +1,5 @@
+#include "pdp1140.h"  // every other file gets this by including this file
+
 enum
 {
     PRINTSTATE = false,

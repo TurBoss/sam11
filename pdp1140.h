@@ -13,26 +13,34 @@
  * CPU -> Backplane -> Device -> Backplane -> CPU
  *  
  * 
- * Table of devices:
+ * Table of devices/controllers:
  * =================
  * 
  * Items marked 'Y' are fully implemented
  * Items marked 'P' are partially implemented
+ * Items marked '*' are implemented as part of another module
+ * Items marked '+' are work in progress
+ * 
+ * This list is not exhaustitive, and there will be controllers not listed.
  * 
  * Num:     I:  Description:
  * ---------------------------------------------------------------------------- 
  * 
  * Core Processor:
- *  
- * KD11     Y   Main CPU
- * KE11         Extended instructions (KE11-E for ext, KE11-F for floats)
- * KG11         XOR/CRC "cagey" calculations controller
- * KJ11     P   Stack Limit Register
+ * 
+ * KB11-B   Y   Main CPU 11/45 \_ Main processor is a hybrid of the pair, but closer to the 11/40 KD11-A
+ * KD11-A   Y   Main CPU 11/40 /
+ * KE11-E   *   Extended instructions (EIS)
+ * KG11     *   XOR/CRC "cagey" calculations controller
+ * KJ11     +   Stack Limit Register
  * KL11     Y   Main TTY Interface
  * KM11         Maintanance Device
  * KT11     P   Memory Management Unit (MMU)
- * KW11     Y   Line Time Clock (P revision is also RTC)
- * KY11         Developer/Diagnostics Console (front panel)
+ * KW11     *   Line Time Clock (P revision is also RTC)
+ * KY11     +   Developer/Diagnostics Console (front panel)
+ * 
+ * 
+ * KE11-F       Floating Point Instructions Extension
  * FP11         Floating Point Coprocessor
  *  
  * Coms/Bus:
@@ -55,11 +63,11 @@
  * Memory (248Ki Words Max):
  *  
  * MM11         Ferrite Core Memory
- * MS11     Y   Silicon Memory
+ * MS11     P   Silicon Memory
  * 
  * Storage:
  *  
- * RK11     Y   RK Hard Disk Controller
+ * RK11     Y   RK Hard Disk Controller (RK05)
  * RF11         RS Disk Controller
  * RL11         RL Disk Controller
  * RP11         RP Disk Pack Controller
@@ -68,7 +76,7 @@
  * TC11         TU DECtape Controller (TU56)
  * TM11         TU/TE Magnetic Tape Controller (TU10)
  * CR11         CR/CM Card Controller
- * RX211        RF Floppy Disk Controller 
+ * RX211        RX Floppy Disk Controller 
  * 
  * Printers:
  * 
@@ -122,15 +130,17 @@ enum
 };
 
 // Device Addresses:
-namespace devaddr {
 enum
 {
-    CPU_STAT = 0777776,   // CPU Status
-    STACK_LIM = 0777774,  // Stack Limit Register
-    PIRQ_1145 = 0777772,  // 11/45 PIRQ Register
+    DEV_CPU_STAT = 0777776,   // CPU Status
+    DEV_STACK_LIM = 0777774,  // Stack Limit Register
+    DEV_PIRQ_1145 = 0777772,  // 11/45 PIRQ Register
     // 0777716 to 0777700,// CPU Registers
     // 0777676 to 0777600 // 11/45 Segmentation Registers
     // 0777656 to 0777600 // MX11 Memory Extention
-    MEMORY = 0760000,  // Main Memory (0->0760000)
-}
-};  // namespace devaddr
+    DEV_MMU_SR2 = 0777576,
+    DEV_MMU_SR0 = 0777572,
+    DEV_CONSOLE_SW = 0777570,  // Console switch/display register
+    DEV_LKS = 0777546,
+    DEV_MEMORY = 0760000,  // Main Memory (0->0760000)
+};

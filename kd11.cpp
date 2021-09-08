@@ -1,16 +1,22 @@
+// sam11 software emulation of DEC KD11-A processor
+// Mostly 11/40 KD11-A with KE11/KG11 extensions from 11/45 KB11-B
+
 #include "kd11.h"
+
 #include "bootrom.h"
+#include "dd11.h"
 #include "kl11.h"
 #include "kt11.h"
+#include "kw11.h"
+#include "ky11.h"
 #include "rk11.h"
 #include "sam11.h"
-#include "dd11.h"
 
 #include <SdFat.h>
 
 pdp11::intr itab[ITABN];
 
-namespace cpu {
+namespace kd11 {
 
 // signed integer registers
 int32_t R[8];
@@ -18,40 +24,40 @@ int32_t R[8];
 uint16_t PS;        // processor status
 uint16_t PC;        // address of current instruction
 uint16_t KSP, USP;  // kernel and user stack pointer
-uint16_t LKS;
 bool curuser, prevuser;
 
 void reset(void)
 {
-    LKS = 1 << 7;
+    ky11::reset();
+    kw11::reset();
     uint16_t i;
     for (i = 0; i < 29; i++)
     {
         dd11::write16(02000 + (i * 2), bootrom[i]);
     }
     R[7] = 02002;
-    cons::clearterminal();
+    kl11::clearterminal();
     rk11::reset();
 }
 
 static uint16_t read8(const uint16_t a)
 {
-    return dd11::read8(mmu::decode(a, false, curuser));
+    return dd11::read8(kt11::decode(a, false, curuser));
 }
 
 static uint16_t read16(const uint16_t a)
 {
-    return dd11::read16(mmu::decode(a, false, curuser));
+    return dd11::read16(kt11::decode(a, false, curuser));
 }
 
 static void write8(const uint16_t a, const uint16_t v)
 {
-    dd11::write8(mmu::decode(a, true, curuser), v);
+    dd11::write8(kt11::decode(a, true, curuser), v);
 }
 
 static void write16(const uint16_t a, const uint16_t v)
 {
-    dd11::write16(mmu::decode(a, true, curuser), v);
+    dd11::write16(kt11::decode(a, true, curuser), v);
 }
 
 static bool isReg(const uint16_t a)
@@ -982,7 +988,7 @@ static void MFPI(uint16_t instr)
     }
     else
     {
-        uval = dd11::read16(mmu::decode((uint16_t)da, false, prevuser));
+        uval = dd11::read16(kt11::decode((uint16_t)da, false, prevuser));
     }
     push(uval);
     PS &= 0xFFF0;
@@ -1024,7 +1030,7 @@ static void MTPI(uint16_t instr)
     }
     else
     {
-        dd11::write16(mmu::decode((uint16_t)da, true, prevuser), uval);
+        dd11::write16(kt11::decode((uint16_t)da, true, prevuser), uval);
     }
     PS &= 0xFFF0;
     PS |= FLAGC;
@@ -1091,14 +1097,14 @@ static void RESET(uint16_t instr)
     {
         return;
     }
-    cons::clearterminal();
+    kl11::clearterminal();
     rk11::reset();
 }
 
 void step()
 {
     PC = R[7];
-    uint16_t instr = dd11::read16(mmu::decode(PC, false, curuser));
+    uint16_t instr = dd11::read16(kt11::decode(PC, false, curuser));
     // return;
     R[7] += 2;
 
@@ -1486,4 +1492,4 @@ void handleinterrupt()
     popirq();
 }
 
-};  // namespace cpu
+};  // namespace kd11

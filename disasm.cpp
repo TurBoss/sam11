@@ -1,7 +1,9 @@
+// sam11 debug dissassembler
+
+#include "dd11.h"
 #include "kd11.h"
 #include "kt11.h"
 #include "sam11.h"
-#include "dd11.h"
 
 #include <Arduino.h>
 
@@ -205,17 +207,17 @@ void disasm(uint32_t a)
 void printstate()
 {
     printf("R0 %06o R1 %06o R2 %06o R3 %06o R4 %06o R5 %06o R6 %06o R7 %06o\r\n",
-      uint16_t(cpu::R[0]), uint16_t(cpu::R[1]), uint16_t(cpu::R[2]), uint16_t(cpu::R[3]), uint16_t(cpu::R[4]), uint16_t(cpu::R[5]), uint16_t(cpu::R[6]), uint16_t(cpu::R[7]));
+      uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]), uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), uint16_t(kd11::R[7]));
     printf("[%s%s%s%s%s%s",
-      cpu::prevuser ? "u" : "k",
-      cpu::curuser ? "U" : "K",
-      cpu::N() ? "N" : " ",
-      cpu::Z() ? "Z" : " ",
-      cpu::V() ? "V" : " ",
-      cpu::C() ? "C" : " ");
-    printf("]  instr %06o: %06o\t ", cpu::PC, dd11::read16(mmu::decode(cpu::PC, false, cpu::curuser)));
+      kd11::prevuser ? "u" : "k",
+      kd11::curuser ? "U" : "K",
+      kd11::N() ? "N" : " ",
+      kd11::Z() ? "Z" : " ",
+      kd11::V() ? "V" : " ",
+      kd11::C() ? "C" : " ");
+    printf("]  instr %06o: %06o\t ", kd11::PC, dd11::read16(kt11::decode(kd11::PC, false, kd11::curuser)));
 #ifdef __AVR_ATmega2560__
-    disasm(mmu::decode(cpu::PC, false, cpu::curuser));
+    disasm(kt11::decode(kd11::PC, false, kd11::curuser));
 #endif
     Serial.println("");
 }

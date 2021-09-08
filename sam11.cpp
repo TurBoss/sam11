@@ -1,11 +1,15 @@
-#include <Arduino.h>
-#include <SdFat.h>
 #include "sam11.h"
-#include "rk11.h"
-#include "kl11.h"
+
 #include "dd11.h"
 #include "kd11.h"
+#include "kl11.h"
+#include "kw11.h"
+#include "ky11.h"
+#include "rk11.h"
 #include "xmem.h"
+
+#include <Arduino.h>
+#include <SdFat.h>
 
 int serialWrite(char c, FILE* f)
 {
@@ -56,18 +60,10 @@ void setup(void)
         sd.errorHalt("opening unixv6.rk0 for write failed");
     }
 
-    cpu::reset();
+    ky11::reset();
+    kd11::reset();
     Serial.println(F("Ready"));
 }
-
-union {
-    struct {
-        uint8_t low;
-        uint8_t high;
-    } bytes;
-    uint16_t value;
-} clkcounter;
-uint16_t instcounter;
 
 // On a 16Mhz atmega 2560 this loop costs 21usec per emulated instruction
 // This cost is just the cost of the loop and fetching the instruction at the PC.
@@ -77,31 +73,20 @@ static void loop0()
     for (;;)
     {
         //the itab check is very cheap
-        if ((itab[0].vec) && (itab[0].pri >= ((cpu::PS >> 5) & 7)))
+        if ((itab[0].vec) && (itab[0].pri >= ((kd11::PS >> 5) & 7)))
         {
-            cpu::handleinterrupt();
+            kd11::handleinterrupt();
             return;  // exit from loop to reset trapbuf
         }
 
         digitalWrite(18, HIGH);
-        cpu::step();
+        kd11::step();
         digitalWrite(18, LOW);
 
-        if (ENABLE_LKS)
-        {
-            ++clkcounter.value;
-            if (clkcounter.bytes.high == 1 << 6)
-            {
-                clkcounter.value = 0;
-                cpu::LKS |= (1 << 7);
-                if (cpu::LKS & (1 << 6))
-                {
-                    cpu::interrupt(INTCLOCK, 6);
-                }
-            }
-        }
+        kw11::tick();
+
         // costs 3 usec
-        cons::poll();
+        kl11::poll();
     }
 }
 
@@ -112,7 +97,7 @@ void loop()
     uint16_t vec = setjmp(trapbuf);
     if (vec)
     {
-        cpu::trapat(vec);
+        kd11::trapat(vec);
     }
     loop0();
 }

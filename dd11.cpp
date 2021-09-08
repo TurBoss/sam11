@@ -1,7 +1,11 @@
+// sam11 software emulation of DEC DD11 UNIBUS Backplane
+
 #include "dd11.h"
-#include "kl11.h"
+
 #include "kd11.h"
+#include "kl11.h"
 #include "kt11.h"
+#include "kw11.h"
 #include "ms11.h"
 #include "rk11.h"
 #include "sam11.h"
@@ -36,7 +40,7 @@ static uint8_t bank(const uint32_t a)
 
 void write8(const uint32_t a, const uint16_t v)
 {
-    if (a < MAX_UNIBUS_MEM)
+    if (a < DEV_MEMORY)
     {
         // change this to a memory device rather than swap banks
         xmem::setMemoryBank(bank(a), false);
@@ -61,7 +65,7 @@ void write16(uint32_t a, uint16_t v)
         Serial.println(a, OCT);
         longjmp(trapbuf, INTBUS);
     }
-    if (a < MAX_UNIBUS_MEM)
+    if (a < DEV_MEMORY)
     {
         // change this to a memory device rather than swap banks
         xmem::setMemoryBank(bank(a), false);
@@ -70,14 +74,14 @@ void write16(uint32_t a, uint16_t v)
     }
     switch (a)
     {
-    case 0777776:
+    case DEV_CPU_STAT:
         switch (v >> 14)
         {
         case 0:
-            cpu::switchmode(false);
+            kd11::switchmode(false);
             break;
         case 3:
-            cpu::switchmode(true);
+            kd11::switchmode(true);
             break;
         default:
             Serial.println(F("invalid mode"));
@@ -86,27 +90,30 @@ void write16(uint32_t a, uint16_t v)
         switch ((v >> 12) & 3)
         {
         case 0:
-            cpu::prevuser = false;
+            kd11::prevuser = false;
             break;
         case 3:
-            cpu::prevuser = true;
+            kd11::prevuser = true;
             break;
         default:
             Serial.println(F("invalid mode"));
             panic();
         }
-        cpu::PS = v;
+        kd11::PS = v;
         return;
-    case 0777546:
-        cpu::LKS = v;
+    case DEV_LKS:
+        kw11::LKS = v;
         return;
-    case 0777572:
-        mmu::SR0 = v;
+    case DEV_MMU_SR0:
+        kt11::SR0 = v;
+        return;
+    case DEV_CONSOLE_SW:
+        ky11::write16(a, v);
         return;
     }
     if ((a & 0777770) == 0777560)
     {
-        cons::write16(a, v);
+        kl11::write16(a, v);
         return;
     }
     if ((a & 0777700) == 0777400)
@@ -116,7 +123,7 @@ void write16(uint32_t a, uint16_t v)
     }
     if (((a & 0777600) == 0772200) || ((a & 0777600) == 0777600))
     {
-        mmu::write16(a, v);
+        kt11::write16(a, v);
         return;
     }
     Serial.print(F("dd11: write to invalid address "));
@@ -132,40 +139,33 @@ uint16_t read16(uint32_t a)
         Serial.println(a, OCT);
         longjmp(trapbuf, INTBUS);
     }
-    if (a < MAX_UNIBUS_MEM)
+
+    if (a < DEV_MEMORY)
     {
         // change this to a memory device rather than swap banks
         xmem::setMemoryBank(bank(a), false);
         return intptr[(a & 0x7fff) >> 1];
     }
-    if (a == 0777546)
-    {
-        return cpu::LKS;
-    }
 
-    if (a == 0777570)
+    switch (a)
     {
-        return 0173030;
-    }
-
-    if (a == 0777572)
-    {
-        return mmu::SR0;
-    }
-
-    if (a == 0777576)
-    {
-        return mmu::SR2;
-    }
-
-    if (a == 0777776)
-    {
-        return cpu::PS;
+    case DEV_CPU_STAT:
+        return kd11::PS;
+    case DEV_LKS:
+        return kw11::LKS;
+    case DEV_MMU_SR0:
+        return kt11::SR0;
+    case DEV_MMU_SR2:
+        return kt11::SR2;
+    case DEV_CONSOLE_SW:
+        return ky11.read16(a);
+    default:
+        break;
     }
 
     if ((a & 0777770) == 0777560)
     {
-        return cons::read16(a);
+        return kl11::read16(a);
     }
 
     if ((a & 0777760) == 0777400)
@@ -175,7 +175,7 @@ uint16_t read16(uint32_t a)
 
     if (((a & 0777600) == 0772200) || ((a & 0777600) == 0777600))
     {
-        return mmu::read16(a);
+        return kt11::read16(a);
     }
 
     Serial.print(F("dd11: read from invalid address "));
