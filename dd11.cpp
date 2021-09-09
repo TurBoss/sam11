@@ -62,7 +62,7 @@ void write16(uint32_t a, uint16_t v)
 {
     if (a % 1)
     {
-        Serial.print(F("dd11: write16 to odd address "));
+        Serial.print(F("%% dd11: write16 to odd address "));
         Serial.println(a, OCT);
         longjmp(trapbuf, INTBUS);
     }
@@ -85,7 +85,7 @@ void write16(uint32_t a, uint16_t v)
             kd11::switchmode(true);
             break;
         default:
-            Serial.println(F("invalid mode"));
+            Serial.println(F("%% invalid mode"));
             panic();
         }
         switch ((v >> 12) & 3)
@@ -97,7 +97,7 @@ void write16(uint32_t a, uint16_t v)
             kd11::prevuser = true;
             break;
         default:
-            Serial.println(F("invalid mode"));
+            Serial.println(F("%% invalid mode"));
             panic();
         }
         kd11::PS = v;
@@ -127,7 +127,7 @@ void write16(uint32_t a, uint16_t v)
         kt11::write16(a, v);
         return;
     }
-    Serial.print(F("dd11: write to invalid address "));
+    Serial.print(F("%% dd11: write to invalid address "));
     Serial.println(a, OCT);
     longjmp(trapbuf, INTBUS);
 }
@@ -136,7 +136,7 @@ uint16_t read16(uint32_t a)
 {
     if (a & 1)
     {
-        Serial.print(F("dd11: read16 from odd address "));
+        Serial.print(F("%% dd11: read16 from odd address "));
         Serial.println(a, OCT);
         longjmp(trapbuf, INTBUS);
     }
@@ -181,7 +181,7 @@ uint16_t read16(uint32_t a)
         return kt11::read16(a);
     }
 
-    Serial.print(F("dd11: read from invalid address "));
+    Serial.print(F("%% dd11: read from invalid address "));
     Serial.println(a, OCT);
     longjmp(trapbuf, INTBUS);
 }

@@ -6,8 +6,8 @@
 #include "kw11.h"
 #include "ky11.h"
 #include "ms11.h"
-#include "rk11.h"
 #include "pdp1140.h"
+#include "rk11.h"
 #include "xmem.h"
 
 #include <Arduino.h>
@@ -39,7 +39,7 @@ void setup(void)
     Serial.begin(115200);
     //fdevopen(serialWrite, NULL);
 
-    Serial.println(F("Reset"));
+    Serial.println(F("%% Reset"));
 
     // Initialise and clear the RAM
     ms11::begin();
@@ -66,12 +66,12 @@ void setup(void)
     // Load RK05 Disk 0 as Read/Write
     if (!rk11::rkdata.open("unixv6.rk0", O_RDWR))
     {
-        sd.errorHalt("opening unixv6.rk0 for write failed");
+        sd.errorHalt("%% opening unixv6.rk0 for write failed");
     }
 
     ky11::reset();  // reset the front panel
     kd11::reset();  // reset the processor
-    Serial.println(F("Ready"));
+    Serial.println(F("%% Ready"));
 }
 
 // On a 16Mhz atmega 2560 this loop costs 21usec per emulated instruction

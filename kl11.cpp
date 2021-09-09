@@ -89,7 +89,7 @@ uint16_t read16(uint32_t a)
     case 0777566:
         return 0;
     default:
-        Serial.println(F("consread16: read from invalid address"));  // " + ostr(a, 6))
+        Serial.println(F("%% consread16: read from invalid address"));  // " + ostr(a, 6))
         panic();
         return 0;
     }
@@ -125,7 +125,7 @@ void write16(uint32_t a, uint16_t v)
         count = 0;
         break;
     default:
-        Serial.println(F("conswrite16: write to invalid address"));  // " + ostr(a, 6))
+        Serial.println(F("%% conswrite16: write to invalid address"));  // " + ostr(a, 6))
         panic();
     }
 }

@@ -36,7 +36,7 @@
  * KD11-A   Y   Main CPU 11/40 /
  * KE11-E   *   Extended instructions (EIS)
  * KG11     *   XOR/CRC "cagey" calculations controller
- * KJ11     +   Stack Limit Register
+ * KJ11     +*  Stack Limit Register
  * KL11     Y   Main TTY Interface
  * KM11         Maintenance Device
  * KT11     P   Memory Management Unit (MMU)

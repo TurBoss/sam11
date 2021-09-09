@@ -1025,7 +1025,7 @@ static void MTPI(uint16_t instr)
     }
     else if (isReg(da))
     {
-        Serial.println(F("invalid MTPI instrution"));
+        Serial.println(F("%% invalid MTPI instruction"));
         panic();
     }
     else
@@ -1376,7 +1376,7 @@ void step()
         }
     }
 
-    Serial.println("invalid instruction");
+    Serial.println("%% invalid instruction");
     longjmp(trapbuf, INTINVAL);
 }
 
@@ -1384,7 +1384,7 @@ void trapat(uint16_t vec)
 {  // , msg string) {
     if (vec & 1)
     {
-        Serial.println(F("Thou darst calling trapat() with an odd vector number?"));
+        Serial.println(F("%% Thou darst calling trapat() with an odd vector number?"));
         panic();
     }
     Serial.print(F("trap: "));
@@ -1424,7 +1424,7 @@ void interrupt(uint8_t vec, uint8_t pri)
 {
     if (vec & 1)
     {
-        Serial.println(F("Thou darst calling interrupt() with an odd vector number?"));
+        Serial.println(F("%% Thou darst calling interrupt() with an odd vector number?"));
         panic();
     }
     // fast path
@@ -1451,7 +1451,7 @@ void interrupt(uint8_t vec, uint8_t pri)
     }
     if (i >= ITABN)
     {
-        Serial.println(F("interrupt table full"));
+        Serial.println(F("%% interrupt table full"));
         panic();
     }
     uint8_t j;
@@ -1480,7 +1480,7 @@ void handleinterrupt()
     uint8_t vec = itab[0].vec;
     if (DEBUG_INTER)
     {
-        Serial.print("IRQ: ");
+        Serial.print("%% IRQ: ");
         Serial.println(vec, OCT);
     }
     uint16_t vv = setjmp(trapbuf);
