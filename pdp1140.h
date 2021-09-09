@@ -14,11 +14,13 @@
  * 
  * CPU -> Backplane -> Device -> Backplane -> CPU
  *  
+ * The real PDP-11 had no clock speed as it was all async, the main limit
+ * For processor speed is memory and bus speed. That is also true here.
  * 
  * Table of devices/controllers:
  * =============================
  * 
- * Items marked 'Y' are fully implemented
+ * Items marked 'Y' are for most purposes fully implemented
  * Items marked 'P' are partially implemented
  * Items marked '*' are implemented as part of another module
  * Items marked '+' are work in progress
