@@ -6,6 +6,7 @@
 #include "kw11.h"
 #include "ky11.h"
 #include "rk11.h"
+#include "pdp1140.h"
 #include "xmem.h"
 
 #include <Arduino.h>

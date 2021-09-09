@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 /*
  * The PDP-11 series of processors use hardware and software drivers with part
  * numbers with the pattern Letter.Letter.11 E.g. DD11 or RX11
@@ -84,6 +86,22 @@
  * 
 */
 
+#ifndef _H_PDP1140_
+#define _H_PDP1140_
+
+enum
+{
+    ENABLE_LKS = true,
+};
+
+namespace pdp11 {
+
+struct intr {
+    uint8_t vec;
+    uint8_t pri;
+};
+};  // namespace pdp11
+
 // Vectors & Addresses from DEC PDP-11/40 Processor Handbook Appendix B (1972)
 
 // Interrupt Vectors:
@@ -144,3 +162,4 @@ enum
     DEV_LKS = 0777546,
     DEV_MEMORY = 0760000,  // Main Memory (0->0760000)
 };
+#endif

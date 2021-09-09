@@ -35,6 +35,7 @@ uint16_t read16(uint32_t a)
     default:
         Serial.println(F("rk11::read16 invalid read"));
         panic();
+        return 0;
     }
 }
 

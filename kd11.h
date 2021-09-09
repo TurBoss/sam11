@@ -3,15 +3,9 @@
 
 // this is all kinds of wrong
 #include <setjmp.h>
+#include "pdp1140.h"
 
 extern jmp_buf trapbuf;
-
-namespace pdp11 {
-struct intr {
-    uint8_t vec;
-    uint8_t pri;
-};
-};  // namespace pdp11
 
 #define ITABN 8
 

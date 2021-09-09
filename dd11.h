@@ -1,4 +1,5 @@
 // sam11 software emulation of DEC DD11 UNIBUS Backplane
+#include "pdp1140.h"
 
 namespace dd11 {
 

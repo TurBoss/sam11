@@ -1,4 +1,5 @@
 // sam11 software emulation of DEC PDP-11/40 KY11 Front Panel
+#include "pdp1140.h"
 
 namespace ky11 {
 extern uint16_t SR;

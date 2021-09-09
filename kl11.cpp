@@ -91,6 +91,7 @@ uint16_t read16(uint32_t a)
     default:
         Serial.println(F("consread16: read from invalid address"));  // " + ostr(a, 6))
         panic();
+        return 0;
     }
 }
 

@@ -6,6 +6,7 @@
 #include "kl11.h"
 #include "kt11.h"
 #include "kw11.h"
+#include "ky11.h"
 #include "ms11.h"
 #include "rk11.h"
 #include "sam11.h"
@@ -152,7 +153,7 @@ uint16_t read16(uint32_t a)
     case DEV_CPU_STAT:
         return kd11::PS;
     case DEV_STACK_LIM:
-        return 0400 << 8;
+        return (uint16_t)(0400 << 8);  // may be wrong...
     case DEV_LKS:
         return kw11::LKS;
     case DEV_MMU_SR0:
@@ -160,7 +161,7 @@ uint16_t read16(uint32_t a)
     case DEV_MMU_SR2:
         return kt11::SR2;
     case DEV_CONSOLE_SW:
-        return ky11.read16(a);
+        return ky11::read16(a);
     default:
         break;
     }

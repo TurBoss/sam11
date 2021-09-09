@@ -6,8 +6,8 @@
 
 namespace ky11 {
 
-extern uint16_t SR;
-extern uint16_t DR;
+uint16_t SR;
+uint16_t DR;
 
 void reset()
 {

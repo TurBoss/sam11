@@ -1,4 +1,5 @@
 // sam11 software emulation of DEC PDP-11/40 KT11 Memory Management Unit (MMU)
+#include "pdp1140.h"
 
 namespace kt11 {
 

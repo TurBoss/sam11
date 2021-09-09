@@ -1,4 +1,5 @@
 // sam11 software emulation of DEC PDP-11/40 KL11 Main TTY
+#include "pdp1140.h"
 
 namespace kl11 {
 
