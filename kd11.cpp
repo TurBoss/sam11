@@ -1359,12 +1359,26 @@ void step()
         RESET(instr);
         return;
     }
-    if (instr == 0170011)
-    {  // SETD ; not needed by UNIX, but used; therefore ignored
-        return;
+
+    // FP11 / FIS
+    if ((intsr & 0177000) == 0170000)
+    {
+        switch (instr)
+        {
+        case 0170001:  // SETF; Set floating mode
+            return;
+        case 0170002:  // SETI; Set integer mode
+            return;
+        case 0170011:  // SETD; Set double mode; not needed by UNIX, but used; therefore ignored
+            return;
+        case 0170012:  // SETL; Set long mode
+            return;
+        }
     }
+
     Serial.println("invalid instruction");
     longjmp(trapbuf, INTINVAL);
+}
 }
 
 void trapat(uint16_t vec)
@@ -1491,5 +1505,5 @@ void handleinterrupt()
     }
     popirq();
 }
-
-};  // namespace kd11
+}
+;  // namespace kd11
