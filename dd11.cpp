@@ -108,7 +108,7 @@ void write16(uint32_t a, uint16_t v)
     case DEV_MMU_SR0:
         kt11::SR0 = v;
         return;
-    case DEV_CONSOLE_SW:
+    case DEV_CONSOLE_DR:
         ky11::write16(a, v);
         return;
     }
@@ -160,7 +160,7 @@ uint16_t read16(uint32_t a)
         return kt11::SR0;
     case DEV_MMU_SR2:
         return kt11::SR2;
-    case DEV_CONSOLE_SW:
+    case DEV_CONSOLE_SR:
         return ky11::read16(a);
     default:
         break;

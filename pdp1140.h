@@ -157,7 +157,8 @@ enum
     // 0777656 to 0777600 // MX11 Memory Extention
     DEV_MMU_SR2 = 0777576,
     DEV_MMU_SR0 = 0777572,
-    DEV_CONSOLE_SW = 0777570,  // Console switch/display register
+    DEV_CONSOLE_SR = 0777570,  // Console switch/display register
+    DEV_CONSOLE_DR = 0777570,  // Console display register
     DEV_LKS = 0777546,
     DEV_MEMORY = 0760000,  // Main Memory (0->0760000 (excl))
 };

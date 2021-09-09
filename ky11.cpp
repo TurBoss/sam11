@@ -6,8 +6,8 @@
 
 namespace ky11 {
 
-uint16_t SR;
-uint16_t DR;
+uint16_t SR;  // data switches (not address or option switches!)
+uint16_t DR;  // display register (separate to address/data displays)
 
 void reset()
 {
@@ -17,15 +17,17 @@ void reset()
 
 uint16_t read16(uint32_t addr)
 {
-    if (addr == DEV_CONSOLE_SW)
+    // read front panel switches here
+
+    if (addr == DEV_CONSOLE_SR)
         return 0173030;  //SR;
-    // read front panel switches
     return 0;
 }
 void write16(uint32_t a, uint16_t v)
 {
-    if (a == DEV_CONSOLE_SW)
+    if (a == DEV_CONSOLE_DR)
         DR = v;
-    // write to a front panel here
+
+    // write to a front panel LEDs here
 }
 };  // namespace ky11
