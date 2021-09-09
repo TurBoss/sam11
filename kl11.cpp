@@ -1,9 +1,13 @@
-#include <Arduino.h>
-#include "sam11.h"
-#include "kl11.h"
-#include "kd11.h"
+// sam11 software emulation of DEC PDP-11/40 KL11 Main TTY
 
-namespace cons {
+#include "kl11.h"
+
+#include "kd11.h"
+#include "sam11.h"
+
+#include <Arduino.h>
+
+namespace kl11 {
 
 uint16_t TKS;
 uint16_t TKB;
@@ -37,7 +41,7 @@ static void addchar(char c)
     TKS |= 0x80;
     if (TKS & (1 << 6))
     {
-        cpu::interrupt(INTTTYIN, 4);
+        kd11::interrupt(INTTTYIN, 4);
     }
 }
 
@@ -58,7 +62,7 @@ void poll()
             TPS |= 0x80;
             if (TPS & (1 << 6))
             {
-                cpu::interrupt(INTTTYOUT, 4);
+                kd11::interrupt(INTTTYOUT, 4);
             }
         }
     }
@@ -125,4 +129,4 @@ void write16(uint32_t a, uint16_t v)
     }
 }
 
-};  // namespace cons
+};  // namespace kl11

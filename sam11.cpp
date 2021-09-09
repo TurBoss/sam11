@@ -1,12 +1,19 @@
-#include <Arduino.h>
-#include <SdFat.h>
 #include "sam11.h"
-#include "rk11.h"
-#include "kl11.h"
+
 #include "dd11.h"
 #include "kd11.h"
+<<<<<<< HEAD
 #include "kw11.h"
+=======
+#include "kl11.h"
+#include "kw11.h"
+#include "ky11.h"
+#include "rk11.h"
+>>>>>>> c7d3598a5769d693dc7a598f78245d8118bd6ceb
 #include "xmem.h"
+
+#include <Arduino.h>
+#include <SdFat.h>
 
 int serialWrite(char c, FILE* f)
 {
@@ -58,8 +65,13 @@ void setup(void)
         sd.errorHalt("opening unixv6.rk0 for write failed");
     }
 
+<<<<<<< HEAD
     cpu::reset();
 
+=======
+    ky11::reset();
+    kd11::reset();
+>>>>>>> c7d3598a5769d693dc7a598f78245d8118bd6ceb
     Serial.println(F("Ready"));
 }
 
@@ -71,19 +83,24 @@ static void loop0()
     for (;;)
     {
         //the itab check is very cheap
-        if ((itab[0].vec) && (itab[0].pri >= ((cpu::PS >> 5) & 7)))
+        if ((itab[0].vec) && (itab[0].pri >= ((kd11::PS >> 5) & 7)))
         {
-            cpu::handleinterrupt();
+            kd11::handleinterrupt();
             return;  // exit from loop to reset trapbuf
         }
 
         digitalWrite(18, HIGH);
-        cpu::step();
+        kd11::step();
         digitalWrite(18, LOW);
 
         kw11::tick();
 
+<<<<<<< HEAD
         cons::poll();
+=======
+        // costs 3 usec
+        kl11::poll();
+>>>>>>> c7d3598a5769d693dc7a598f78245d8118bd6ceb
     }
 }
 
@@ -94,7 +111,7 @@ void loop()
     uint16_t vec = setjmp(trapbuf);
     if (vec)
     {
-        cpu::trapat(vec);
+        kd11::trapat(vec);
     }
     loop0();
 }

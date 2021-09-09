@@ -1,3 +1,5 @@
+// sam11 software emulation of DEC DD11 UNIBUS Backplane
+
 namespace dd11 {
 
 // operations on uint32_t types are insanely expensive

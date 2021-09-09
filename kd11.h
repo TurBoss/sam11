@@ -1,3 +1,6 @@
+// sam11 software emulation of DEC PDP-11/40 KD11-A processor
+// Mostly 11/40 KD11-A with KE11/KG11 extensions from 11/45 KB11-B
+
 // this is all kinds of wrong
 #include <setjmp.h>
 
@@ -22,7 +25,7 @@ enum
     FLAGC = 1
 };
 
-namespace cpu {
+namespace kd11 {
 
 extern int32_t R[8];
 
@@ -61,4 +64,8 @@ static bool C()
     return (uint8_t)PS & FLAGC;
 }
 
+<<<<<<< HEAD
 };  // namespace cpu
+=======
+};  // namespace kd11
+>>>>>>> c7d3598a5769d693dc7a598f78245d8118bd6ceb
