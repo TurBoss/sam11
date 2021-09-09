@@ -28,12 +28,8 @@ bool curuser, prevuser;
 
 void reset(void)
 {
-<<<<<<< HEAD
-    kw11::reset();  // Reset KW11, Line Clock
-=======
     ky11::reset();
     kw11::reset();
->>>>>>> c7d3598a5769d693dc7a598f78245d8118bd6ceb
     uint16_t i;
     for (i = 0; i < 29; i++)
     {

@@ -104,13 +104,8 @@ void write16(uint32_t a, uint16_t v)
     case DEV_LKS:
         kw11::LKS = v;
         return;
-<<<<<<< HEAD
-    case 0777546:
-        kw11::write16(a, v);
-=======
     case DEV_MMU_SR0:
         kt11::SR0 = v;
->>>>>>> c7d3598a5769d693dc7a598f78245d8118bd6ceb
         return;
     case DEV_CONSOLE_SW:
         ky11::write16(a, v);
@@ -151,28 +146,6 @@ uint16_t read16(uint32_t a)
         xmem::setMemoryBank(bank(a), false);
         return intptr[(a & 0x7fff) >> 1];
     }
-<<<<<<< HEAD
-    if (a == 0777546)
-    {
-        return kw11::read16(a);
-    }
-
-    if (a == 0777570)
-    {
-        return 0173030;
-    }
-
-    if (a == 0777572)
-    {
-        return mmu::SR0;
-    }
-
-    if (a == 0777576)
-    {
-        return mmu::SR2;
-    }
-=======
->>>>>>> c7d3598a5769d693dc7a598f78245d8118bd6ceb
 
     switch (a)  // Switch by address, and read from virtual device as appropriate
     {

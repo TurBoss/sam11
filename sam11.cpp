@@ -2,14 +2,10 @@
 
 #include "dd11.h"
 #include "kd11.h"
-<<<<<<< HEAD
-#include "kw11.h"
-=======
 #include "kl11.h"
 #include "kw11.h"
 #include "ky11.h"
 #include "rk11.h"
->>>>>>> c7d3598a5769d693dc7a598f78245d8118bd6ceb
 #include "xmem.h"
 
 #include <Arduino.h>
@@ -65,13 +61,8 @@ void setup(void)
         sd.errorHalt("opening unixv6.rk0 for write failed");
     }
 
-<<<<<<< HEAD
-    cpu::reset();
-
-=======
     ky11::reset();
     kd11::reset();
->>>>>>> c7d3598a5769d693dc7a598f78245d8118bd6ceb
     Serial.println(F("Ready"));
 }
 
@@ -95,12 +86,8 @@ static void loop0()
 
         kw11::tick();
 
-<<<<<<< HEAD
-        cons::poll();
-=======
         // costs 3 usec
         kl11::poll();
->>>>>>> c7d3598a5769d693dc7a598f78245d8118bd6ceb
     }
 }
 

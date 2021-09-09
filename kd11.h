@@ -64,8 +64,4 @@ static bool C()
     return (uint8_t)PS & FLAGC;
 }
 
-<<<<<<< HEAD
-};  // namespace cpu
-=======
 };  // namespace kd11
->>>>>>> c7d3598a5769d693dc7a598f78245d8118bd6ceb
