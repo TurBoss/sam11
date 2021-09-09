@@ -16,34 +16,33 @@
  *  
  * 
  * Table of devices/controllers:
- * =================
+ * =============================
  * 
  * Items marked 'Y' are fully implemented
  * Items marked 'P' are partially implemented
  * Items marked '*' are implemented as part of another module
  * Items marked '+' are work in progress
  * 
- * This list is not exhaustitive, and there will be controllers not listed.
+ * This list is not exhaustive, and there will be controllers not listed.
  * 
  * Num:     I:  Description:
  * ---------------------------------------------------------------------------- 
  * 
- * Core Processor:
+ * Processor and Extensions:
  * 
- * KB11-B   Y   Main CPU 11/45 \_ Main processor is a hybrid of the pair
+ * KB11-A   Y   Main CPU 11/45 \_ Main processor is a hybrid of the pair
  * KD11-A   Y   Main CPU 11/40 /
  * KE11-E   *   Extended instructions (EIS)
  * KG11     *   XOR/CRC "cagey" calculations controller
  * KJ11     +   Stack Limit Register
  * KL11     Y   Main TTY Interface
- * KM11         Maintanance Device
+ * KM11         Maintenance Device
  * KT11     P   Memory Management Unit (MMU)
  * KW11     *   Line Time Clock (P revision is also RTC)
  * KY11     +   Developer/Diagnostics Console (front panel)
  * 
- * 
- * KE11-F       Floating Point Instructions Extension
- * FP11         Floating Point Coprocessor
+ * KE11-F   P*  Floating Point Instructions Extension
+ * FP11     P*  Floating Point Coprocessor
  *  
  * Coms/Bus:
  *
@@ -62,7 +61,7 @@
  * DU11         Serial (sync) Line Controller 
  * DZ11         Serial (async) Line Controller 
  *  
- * Memory (248Ki Words Max):
+ * Memory (18-bit address = 248KiB Max):
  *  
  * MM11         Ferrite Core Memory
  * MS11     P   Silicon Memory
@@ -160,6 +159,6 @@ enum
     DEV_MMU_SR0 = 0777572,
     DEV_CONSOLE_SW = 0777570,  // Console switch/display register
     DEV_LKS = 0777546,
-    DEV_MEMORY = 0760000,  // Main Memory (0->0760000)
+    DEV_MEMORY = 0760000,  // Main Memory (0->0760000 (excl))
 };
 #endif

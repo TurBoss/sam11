@@ -152,8 +152,8 @@ uint16_t read16(uint32_t a)
     {
     case DEV_CPU_STAT:
         return kd11::PS;
-    case DEV_STACK_LIM:
-        return (uint16_t)(0400 << 8);  // may be wrong...
+    //case DEV_STACK_LIM:
+    //    return (uint16_t)(0400); // probs wrong
     case DEV_LKS:
         return kw11::LKS;
     case DEV_MMU_SR0:

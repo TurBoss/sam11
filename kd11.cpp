@@ -1361,7 +1361,7 @@ void step()
     }
 
     // FP11 / FIS
-    if ((intsr & 0177000) == 0170000)
+    if ((instr & 0177000) == 0170000)
     {
         switch (instr)
         {
@@ -1378,7 +1378,6 @@ void step()
 
     Serial.println("invalid instruction");
     longjmp(trapbuf, INTINVAL);
-}
 }
 
 void trapat(uint16_t vec)
@@ -1505,5 +1504,4 @@ void handleinterrupt()
     }
     popirq();
 }
-}
-;  // namespace kd11
+};  // namespace kd11

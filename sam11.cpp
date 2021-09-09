@@ -5,6 +5,7 @@
 #include "kl11.h"
 #include "kw11.h"
 #include "ky11.h"
+#include "ms11.h"
 #include "rk11.h"
 #include "pdp1140.h"
 #include "xmem.h"
@@ -40,9 +41,13 @@ void setup(void)
 
     Serial.println(F("Reset"));
 
+    // Initialise and clear the RAM
+    ms11::begin();
+    ms11::clear();
+
+    /*
     // Xmem test
     xmem::SelfTestResults results;
-
     xmem::begin(false);
     results = xmem::selfTest();
     if (!results.succeeded)
@@ -50,6 +55,7 @@ void setup(void)
         Serial.println(F("xram test failure"));
         panic();
     }
+    */
 
     // Initialize SdFat or print a detailed error message and halt
     // Use half speed like the native library.
@@ -57,13 +63,14 @@ void setup(void)
     if (!sd.begin(4, SD_SCK_MHZ(7)))
         sd.initErrorHalt();
 
+    // Load RK05 Disk 0 as Read/Write
     if (!rk11::rkdata.open("unixv6.rk0", O_RDWR))
     {
         sd.errorHalt("opening unixv6.rk0 for write failed");
     }
 
-    ky11::reset();
-    kd11::reset();
+    ky11::reset();  // reset the front panel
+    kd11::reset();  // reset the processor
     Serial.println(F("Ready"));
 }
 
