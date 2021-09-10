@@ -68,9 +68,6 @@ void poll()
     }
 }
 
-// TODO(dfc) this could be rewritten to translate to the native AVR UART registers
-// http://www.appelsiini.net/2011/simple-usart-with-avr-libc
-
 uint16_t read16(uint32_t a)
 {
     switch (a)

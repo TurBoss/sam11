@@ -36,7 +36,7 @@ void setup(void)
     digitalWrite(18, LOW);  // timing interrupt, high while CPU is stepping
 
     // Start the UART
-    Serial.begin(115200);
+    Serial.begin(kl11::BAUD_DEFAULT);
     //fdevopen(serialWrite, NULL);
 
     Serial.println(F("%% Reset"));
@@ -69,7 +69,7 @@ void setup(void)
         sd.errorHalt("%% opening unixv6.rk0 for write failed");
     }
 
-    ky11::reset();  // reset the front panel
+    ky11::reset();  // reset the front panel - sets the switches to INST_BOOTSTRAP (0173030)
     kd11::reset();  // reset the processor
     Serial.println(F("%% Ready"));
 }

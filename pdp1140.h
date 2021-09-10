@@ -32,15 +32,15 @@
  * 
  * Processor and Extensions:
  * 
- * KB11-A   Y   Main CPU 11/45 \_ Main processor is a hybrid of the pair
- * KD11-A   Y   Main CPU 11/40 /
+ * KB11-A   Y   Main CPU 11/45 \_ Main processor is mostly 11/40 
+ * KD11-A   Y   Main CPU 11/40 /  but has a few 11/45 things
  * KE11-E   *   Extended instructions (EIS)
  * KG11     *   XOR/CRC "cagey" calculations controller
- * KJ11     +*  Stack Limit Register
- * KL11     Y   Main TTY Interface
+ * KJ11     +   Stack Limit Register
+ * KL11     Y   Main Console TTY Interface
  * KM11         Maintenance Device
- * KT11     P   Memory Management Unit (MMU)
- * KW11     *   Line Time Clock (P revision is also RTC)
+ * KT11     Y   Memory Management Unit (11/40 compliant ONLY)
+ * KW11     *   Line Time Clock (P revision is also RTC - not implemented)
  * KY11     +   Developer/Diagnostics Console (front panel)
  * 
  * KE11-F   P*  Floating Point Instructions Extension
@@ -54,7 +54,7 @@
  * DD11     Y   UNIBUS Backplane
  * DH11         Serial (async) Line Controller 
  * DJ11         Serial (async) Line Controller
- * DL11         Serial (async) Line Controller
+ * DL11         Serial (async) Line Controller <- this is the one you add to expand the no. TTYs
  * DM11         Serial (async) Line Controller
  * DQ11         Serial (NPR sync) Line Controller  
  * DR11         Parallel Controller
@@ -64,13 +64,14 @@
  * DZ11         Serial (async) Line Controller 
  *  
  * Memory (18-bit address = 248KiB Max):
- *  
+ * 
+ * KF11-A       Processor Core Memory (ignored if external memory exists)
  * MM11         Ferrite Core Memory
- * MS11     P   Silicon Memory
+ * MS11     P+  Silicon Memory
  * 
  * Storage:
  *  
- * RK11     Y   RK Hard Disk Controller (RK05)
+ * RK11     Y+  RK Hard Disk Controller (RK05) (only supports 1 disk)
  * RF11         RS Disk Controller
  * RL11         RL Disk Controller
  * RP11         RP Disk Pack Controller
@@ -146,6 +147,12 @@ enum
     INTFPUERR = 0244,    // FPU Error
     INTFAULT = 0250,     // General Fault (not in DEC's manual....?)
     INTRP = 0254,        // RP Disk Control
+};
+
+// Instruction Addresses:
+enum
+{
+    INST_BOOTSTRAP = 0173030,
 };
 
 // Device Addresses:
