@@ -125,8 +125,7 @@ uint16_t read16(uint32_t a)
 
     if (a < DEV_MEMORY)  // if lower than the device memory, then this is just RAM
     {
-        ms11::read16(a);
-        return;
+        return ms11::read16(a);
     }
 
     switch (a)  // Switch by address, and read from virtual device as appropriate
