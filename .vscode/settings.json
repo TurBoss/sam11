@@ -41,7 +41,8 @@
         "iterator": "cpp",
         "queue": "cpp",
         "xlocnum": "cpp",
-        "xmemory": "cpp"
+        "xmemory": "cpp",
+        "__bit_reference": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "C_Cpp.intelliSenseEngine": "Tag Parser"

@@ -39,7 +39,9 @@ void reset(void)
     R[7] = 02002;
     kl11::clearterminal();
     rk11::reset();
+#ifdef PIN_OUT_PROC_RUN
     digitalWrite(PIN_OUT_PROC_RUN, LED_ON);
+#endif
 }
 
 static uint16_t read8(const uint16_t a)
@@ -413,7 +415,7 @@ static void JSR(uint16_t instr)
     uint16_t uval = aget(d, l);
     if (isReg(uval))
     {
-        Serial.println(F("JSR called on register"));
+        Serial.println(F("%% JSR called on register"));
         panic();
     }
     push(R[s & 7]);
@@ -930,7 +932,7 @@ static void JMP(uint16_t instr)
     uint16_t uval = aget(d, 2);
     if (isReg(uval))
     {
-        Serial.println(F("JMP called with register dest"));
+        Serial.println(F("%% JMP called with register dest"));
         panic();
     }
     R[7] = uval;
@@ -985,7 +987,7 @@ static void MFPI(uint16_t instr)
     }
     else if (isReg(da))
     {
-        Serial.println(F("invalid MFPI instruction"));
+        Serial.println(F("%% invalid MFPI instruction"));
         panic();
     }
     else
@@ -1344,7 +1346,7 @@ void step()
         {
             break;
         }
-        Serial.println(F("HALT"));
+        Serial.println(F("%% HALT"));
         panic();
     case 01:  // WAIT
         if (curuser)

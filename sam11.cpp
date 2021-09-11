@@ -20,7 +20,11 @@
 //     return 0;
 // }
 
+#if USE_SDIO
+SdFatSdio sd;
+#else
 SdFat sd;
+#endif
 
 void setup(void)
 {
@@ -36,9 +40,7 @@ void setup(void)
     // Initialise the RAM
     ms11::begin();
 
-    // Initialize SdFat or print a detailed error message and halt
-    // Use half speed like the native library.
-    // change to SPI_FULL_SPEED for more performance.
+    // init the sd card
     if (!sd.begin(PIN_OUT_SD_CS, SD_SCK_MHZ(7)))
         sd.initErrorHalt();
 
@@ -53,28 +55,30 @@ void setup(void)
     Serial.println(F("%% Ready"));
 }
 
-// On a 16Mhz atmega 2560 this loop costs 21usec per emulated instruction
-// This cost is just the cost of the loop and fetching the instruction at the PC.
-// Actual emulation of the instruction is another ~40 usec per instruction.
 static void loop0()
 {
     while (1)
     {
-        //the itab check is very cheap
+        // Check for interruptd
         if ((itab[0].vec) && (itab[0].pri >= ((kd11::PS >> 5) & 7)))
         {
             kd11::handleinterrupt();
-            return;  // exit from loop to reset trapbuf
+            return;  // reset the loop to reset interrupt
         }
 
+#ifdef PIN_OUT_PROC_STEP
         digitalWrite(PIN_OUT_PROC_STEP, LED_ON);
-        kd11::step();
+#endif
+
+        kd11::step();  // step the instructions
+
+#ifdef PIN_OUT_PROC_STEP
         digitalWrite(PIN_OUT_PROC_STEP, LED_OFF);
+#endif
 
-        kw11::tick();
+        kw11::tick();  // tick the clock
 
-        // costs 3 usec
-        kl11::poll();
+        kl11::poll();  // check the terminal
     }
 }
 
@@ -82,17 +86,21 @@ jmp_buf trapbuf;
 
 void loop()
 {
+    // reset interrupts/trap vectors
     uint16_t vec = setjmp(trapbuf);
     if (vec)
     {
         kd11::trapat(vec);
     }
-    loop0();
+    loop0();  // restart step loop
 }
 
-void panic()
+void panic()  // aka what it does when halted
 {
+#ifdef PIN_OUT_PROC_RUN
     digitalWrite(PIN_OUT_PROC_RUN, LED_OFF);
+#endif
+
     printstate();
     while (1)
         delay(1);

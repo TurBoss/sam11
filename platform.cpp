@@ -9,20 +9,38 @@ namespace platform {
 // init the platform hardware
 void begin()
 {
+#ifndef PIN_OUT_SD_CS
+#if !USE_SDIOS
+#error NO WAY TO USE SD CARD -> CANNOT COMPILE
+#endif
+#endif
     pinMode(PIN_OUT_SD_CS, OUTPUT);  // SD card chip select
     digitalWrite(PIN_OUT_SD_CS, HIGH);
 
+#ifdef PIN_OUT_DISK_ACT
     pinMode(PIN_OUT_DISK_ACT, OUTPUT);  // rk11 disk led
     digitalWrite(PIN_OUT_DISK_ACT, LED_OFF);
+#endif
 
+#ifdef PIN_OUT_PROC_STEP
     pinMode(PIN_OUT_PROC_STEP, OUTPUT);  // timing interrupt, high while CPU is stepping
     digitalWrite(PIN_OUT_PROC_STEP, LED_OFF);
+#endif
 
+#ifdef PIN_OUT_BUS_ACT
     pinMode(PIN_OUT_BUS_ACT, OUTPUT);  // Bus in use
     digitalWrite(PIN_OUT_BUS_ACT, LED_OFF);
+#endif
 
+#ifdef PIN_OUT_PROC_RUN
     pinMode(PIN_OUT_PROC_RUN, OUTPUT);  // Processor running
     digitalWrite(PIN_OUT_PROC_RUN, LED_OFF);
+#endif
+
+#if defined(__SAMD51P20A__)  // enable the internal switch mode regulator to almost halve idle current on SAMD51s.
+    SUPC->VREG.bit.SEL = 1;
+#endif
+
     return;
 }
 

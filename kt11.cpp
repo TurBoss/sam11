@@ -39,7 +39,7 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
             }
             SR2 = kd11::PC;
 
-            Serial.print(F("kt11::decode write to read-only page "));
+            Serial.print(F("%% kt11::decode write to read-only page "));
             Serial.println(a, OCT);
             longjmp(trapbuf, INTFAULT);
         }
@@ -52,7 +52,7 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
                 SR0 |= (1 << 5) | (1 << 6);
             }
             SR2 = kd11::PC;
-            Serial.print(F("kt11::decode read from no-access page "));
+            Serial.print(F("%% kt11::decode read from no-access page "));
             Serial.println(a, OCT);
             longjmp(trapbuf, INTFAULT);
         }
@@ -68,7 +68,7 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
                 SR0 |= (1 << 5) | (1 << 6);
             }
             SR2 = kd11::PC;
-            printf("page length exceeded, address %06o (block %03o) is beyond length %03o\r\n", a, block, (pages[i].pdr.bytes.high & 0x7f));
+            printf("%%%% page length exceeded, address %06o (block %03o) is beyond length %03o\r\n", a, block, (pages[i].pdr.bytes.high & 0x7f));
             longjmp(trapbuf, INTFAULT);
         }
         if (w)
@@ -82,7 +82,7 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
         aa += disp;
         if (DEBUG_MMU)
         {
-            Serial.print("decode: slow ");
+            Serial.print("%% decode: slow ");
             Serial.print(a, OCT);
             Serial.print(" -> ");
             Serial.println(aa, OCT);
@@ -111,7 +111,7 @@ uint16_t read16(const uint32_t a)
     {
         return pages[((a & 017) >> 1) + 8].par;
     }
-    Serial.print(F("kt11::read16 invalid read from "));
+    Serial.print(F("%% kt11::read16 invalid read from "));
     Serial.println(a, OCT);
     longjmp(trapbuf, INTBUS);
 }
@@ -139,7 +139,7 @@ void write16(const uint32_t a, const uint16_t v)
         pages[i + 8].par = v;
         return;
     }
-    Serial.print(F("kt11::write16 write to invalid address "));
+    Serial.print(F("%% kt11::write16 write to invalid address "));
     Serial.println(a, OCT);
     longjmp(trapbuf, INTBUS);
 }
