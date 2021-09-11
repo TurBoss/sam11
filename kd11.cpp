@@ -9,6 +9,7 @@
 #include "kt11.h"
 #include "kw11.h"
 #include "ky11.h"
+#include "platform.h"
 #include "rk11.h"
 #include "sam11.h"
 
@@ -38,6 +39,7 @@ void reset(void)
     R[7] = 02002;
     kl11::clearterminal();
     rk11::reset();
+    digitalWrite(PIN_OUT_PROC_RUN, LED_ON);
 }
 
 static uint16_t read8(const uint16_t a)
@@ -1387,7 +1389,7 @@ void trapat(uint16_t vec)
         Serial.println(F("%% Thou darst calling trapat() with an odd vector number?"));
         panic();
     }
-    Serial.print(F("trap: "));
+    Serial.print(F("%% trap: "));
     Serial.println(vec, OCT);
     //printstate();
 

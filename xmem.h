@@ -1,3 +1,5 @@
+#include "platform.h"
+#if RAM_MODE == RAM_EXTENDED
 /*
  * xmem.cpp
  *
@@ -11,8 +13,8 @@
 #ifndef __89089DA1_BAAC_497C_8E1FFEF0911A6844
 #define __89089DA1_BAAC_497C_8E1FFEF0911A6844
 
-#include <stdlib.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 namespace xmem {
 
@@ -64,4 +66,5 @@ extern "C" {
     extern void* __brkval;
 }
 
+#endif
 #endif

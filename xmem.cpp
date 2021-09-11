@@ -1,3 +1,5 @@
+#include "platform.h"
+#if RAM_MODE == RAM_EXTENDED
 /*
  * xmem.cpp
  *
@@ -29,8 +31,9 @@
 #define QUADRAM_SHIELD
 //#define ANDYBROWN_SHIELD
 
-#include <avr/io.h>
 #include "xmem.h"
+
+#include <avr/io.h>
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include <Arduino.h>
@@ -58,44 +61,46 @@ uint8_t currentBank;
 
 void begin(bool heapInXmem_)
 {
-    // 		uint8_t bank;
+    uint8_t bank;
 
-    // 		// set up the xmem registers
+    // set up the xmem registers
 
-    // 		XMCRB=0; // need all 64K. no pins released
-    // 		XMCRA=1<<SRE; // enable xmem, no wait states
+    XMCRB = 0;         // need all 64K. no pins released
+    XMCRA = 1 << SRE;  // enable xmem, no wait states
 
-    // #if defined(QUADRAM_SHIELD)
-    // 		// set up the bank selector pins (address lines A16..A18)
-    // 		// these are on pins 42,43,44 (PL7,PL6,PL5). Also, enable
-    //         // the RAM by driving PD7 (pin 38) low.
+#if defined(QUADRAM_SHIELD)
+    // set up the bank selector pins (address lines A16..A18)
+    // these are on pins 42,43,44 (PL7,PL6,PL5). Also, enable
+    // the RAM by driving PD7 (pin 38) low.
 
-    //         pinMode(38, OUTPUT); digitalWrite(38, LOW);
-    //         pinMode(42, OUTPUT);
-    //         pinMode(43, OUTPUT);
-    //         pinMode(44, OUTPUT);
-    // #elif defined(ANDYBROWN_SHIELD)
-    // 		// set up the bank selector pins (address lines A16..A18)
-    // 		// these are on pins 38,42,43 (PD7,PL7,PL6)
+    pinMode(38, OUTPUT);
+    digitalWrite(38, LOW);
+    pinMode(42, OUTPUT);
+    pinMode(43, OUTPUT);
+    pinMode(44, OUTPUT);
+#elif defined(ANDYBROWN_SHIELD)
+    // set up the bank selector pins (address lines A16..A18)
+    // these are on pins 38,42,43 (PD7,PL7,PL6)
 
-    // 		DDRD|=_BV(PD7);
-    // 		DDRL|=(_BV(PL6)|_BV(PL7));
-    // #endif
+    DDRD |= _BV(PD7);
+    DDRL |= (_BV(PL6) | _BV(PL7));
+#endif
 
-    // 		// initialise the heap states
+    // initialise the heap states
 
-    // 		if(heapInXmem_) {
-    // 			__malloc_heap_end=static_cast<char *>(XMEM_END);
-    // 			__malloc_heap_start=static_cast<char *>(XMEM_START);
-    // 			__brkval=static_cast<char *>(XMEM_START);
-    // 		}
+    if (heapInXmem_)
+    {
+        __malloc_heap_end = static_cast<char*>(XMEM_END);
+        __malloc_heap_start = static_cast<char*>(XMEM_START);
+        __brkval = static_cast<char*>(XMEM_START);
+    }
 
-    // 		for(bank=0;bank<8;bank++)
-    // 			saveHeap(bank);
+    for (bank = 0; bank < 8; bank++)
+        saveHeap(bank);
 
-    // 		// set the current bank to zero
+    // set the current bank to zero
 
-    // 		setMemoryBank(0,false);
+    setMemoryBank(0, false);
 }
 
 /*
@@ -104,45 +109,45 @@ void begin(bool heapInXmem_)
 
 void setMemoryBank(uint8_t bank_, bool switchHeap_)
 {
-    //   		// check
+    // check
 
-    // 		if(bank_==currentBank)
-    // 			return;
+    if (bank_ == currentBank)
+        return;
 
-    // 		// save heap state if requested
+    // save heap state if requested
 
-    // 		if(switchHeap_)
-    // 			saveHeap(currentBank);
+    if (switchHeap_)
+        saveHeap(currentBank);
 
-    // 		// switch in the new bank
+        // switch in the new bank
 
-    // #if defined(QUADRAM_SHIELD)
-    //         // Write lower 3 bits of 'bank' to upper 3 bits of Port L
-    // 		PORTL = (PORTL & 0x1F) | ((bank_ & 0x7) << 5);
+#if defined(QUADRAM_SHIELD)
+    // Write lower 3 bits of 'bank' to upper 3 bits of Port L
+    PORTL = (PORTL & 0x1F) | ((bank_ & 0x7) << 5);
 
-    // #elif defined(ANDYBROWN_SHIELD)
-    // 		if((bank_&1)!=0)
-    // 			PORTD|=_BV(PD7);
-    // 		else
-    // 			PORTD&=~_BV(PD7);
+#elif defined(ANDYBROWN_SHIELD)
+    if ((bank_ & 1) != 0)
+        PORTD |= _BV(PD7);
+    else
+        PORTD &= ~_BV(PD7);
 
-    // 		if((bank_&2)!=0)
-    // 			PORTL|=_BV(PL7);
-    // 		else
-    // 			PORTL&=~_BV(PL7);
+    if ((bank_ & 2) != 0)
+        PORTL |= _BV(PL7);
+    else
+        PORTL &= ~_BV(PL7);
 
-    // 		if((bank_&4)!=0)
-    // 			PORTL|=_BV(PL6);
-    // 		else
-    // 			PORTL&=~_BV(PL6);
-    // #endif
+    if ((bank_ & 4) != 0)
+        PORTL |= _BV(PL6);
+    else
+        PORTL &= ~_BV(PL6);
+#endif
 
-    // 		// save state and restore the malloc settings for this bank
+    // save state and restore the malloc settings for this bank
 
-    // 		currentBank=bank_;
+    currentBank = bank_;
 
-    // 		if(switchHeap_)
-    // 			restoreHeap(currentBank);
+    if (switchHeap_)
+        restoreHeap(currentBank);
 }
 
 /*
@@ -151,10 +156,10 @@ void setMemoryBank(uint8_t bank_, bool switchHeap_)
 
 void saveHeap(uint8_t bank_)
 {
-    // bankHeapStates[bank_].__malloc_heap_start=__malloc_heap_start;
-    // bankHeapStates[bank_].__malloc_heap_end=__malloc_heap_end;
-    // bankHeapStates[bank_].__brkval=__brkval;
-    // bankHeapStates[bank_].__flp=__flp;
+    bankHeapStates[bank_].__malloc_heap_start = __malloc_heap_start;
+    bankHeapStates[bank_].__malloc_heap_end = __malloc_heap_end;
+    bankHeapStates[bank_].__brkval = __brkval;
+    bankHeapStates[bank_].__flp = __flp;
 }
 
 /*
@@ -163,10 +168,10 @@ void saveHeap(uint8_t bank_)
 
 void restoreHeap(uint8_t bank_)
 {
-    // __malloc_heap_start=bankHeapStates[bank_].__malloc_heap_start;
-    // __malloc_heap_end=bankHeapStates[bank_].__malloc_heap_end;
-    // __brkval=bankHeapStates[bank_].__brkval;
-    // __flp=bankHeapStates[bank_].__flp;
+    __malloc_heap_start = bankHeapStates[bank_].__malloc_heap_start;
+    __malloc_heap_end = bankHeapStates[bank_].__malloc_heap_end;
+    __brkval = bankHeapStates[bank_].__brkval;
+    __flp = bankHeapStates[bank_].__flp;
 }
 
 /*
@@ -176,50 +181,53 @@ void restoreHeap(uint8_t bank_)
 
 SelfTestResults selfTest()
 {
-    // volatile uint8_t *ptr;
-    // uint8_t bank,writeValue,readValue;
+    volatile uint8_t* ptr;
+    uint8_t bank, writeValue, readValue;
     SelfTestResults results;
 
-    // // write an ascending sequence of 1..237 running through
-    // // all memory banks
+    // write an ascending sequence of 1..237 running through
+    // all memory banks
 
-    // writeValue=1;
-    // for(bank=0;bank<8;bank++) {
+    writeValue = 1;
+    for (bank = 0; bank < 8; bank++)
+    {
+        setMemoryBank(bank);
 
-    // 	setMemoryBank(bank);
+        for (ptr = reinterpret_cast<uint8_t*>(0xFFFF); ptr >= reinterpret_cast<uint8_t*>(0x2200); ptr--)
+        {
+            *ptr = writeValue;
 
-    // 	for(ptr=reinterpret_cast<uint8_t *> (0xFFFF);ptr>=reinterpret_cast<uint8_t *> (0x2200);ptr--) {
-    // 		*ptr=writeValue;
+            if (writeValue++ == 237)
+                writeValue = 1;
+        }
+    }
 
-    // 		if(writeValue++==237)
-    // 			writeValue=1;
-    // 	}
-    // }
+    // verify the writes
 
-    // // verify the writes
+    writeValue = 1;
+    for (bank = 0; bank < 8; bank++)
+    {
+        setMemoryBank(bank);
 
-    // writeValue=1;
-    // for(bank=0;bank<8;bank++) {
+        for (ptr = reinterpret_cast<uint8_t*>(0xFFFF); ptr >= reinterpret_cast<uint8_t*>(0x2200); ptr--)
+        {
+            readValue = *ptr;
 
-    // 	setMemoryBank(bank);
+            if (readValue != writeValue)
+            {
+                results.succeeded = false;
+                results.failedAddress = ptr;
+                results.failedBank = bank;
+                return results;
+            }
 
-    // 	for(ptr=reinterpret_cast<uint8_t *> (0xFFFF);ptr>=reinterpret_cast<uint8_t *> (0x2200);ptr--) {
-
-    // 		readValue=*ptr;
-
-    // 		if(readValue!=writeValue) {
-    // 			results.succeeded=false;
-    // 			results.failedAddress=ptr;
-    // 			results.failedBank=bank;
-    // 			return results;
-    // 		}
-
-    // 		if(writeValue++==237)
-    // 			writeValue=1;
-    // 	}
-    // }
+            if (writeValue++ == 237)
+                writeValue = 1;
+        }
+    }
 
     results.succeeded = true;
     return results;
 }
 }  // namespace xmem
+#endif

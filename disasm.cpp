@@ -3,6 +3,7 @@
 #include "dd11.h"
 #include "kd11.h"
 #include "kt11.h"
+#include "platform.h"
 #include "sam11.h"
 
 #include <Arduino.h>
@@ -216,7 +217,7 @@ void printstate()
       kd11::V() ? "V" : " ",
       kd11::C() ? "C" : " ");
     printf("]  instr %06o: %06o\t ", kd11::PC, dd11::read16(kt11::decode(kd11::PC, false, kd11::curuser)));
-#ifdef __AVR_ATmega2560__
+#if ALLOW_DISASM
     disasm(kt11::decode(kd11::PC, false, kd11::curuser));
 #endif
     Serial.println("");

@@ -7,33 +7,25 @@
 #include "ky11.h"
 #include "ms11.h"
 #include "pdp1140.h"
+#include "platform.h"
 #include "rk11.h"
 #include "xmem.h"
 
 #include <Arduino.h>
 #include <SdFat.h>
 
-int serialWrite(char c, FILE* f)
-{
-    Serial.write(c);
-    return 0;
-}
+// int serialWrite(char c, FILE* f)
+// {
+//     Serial.write(c);
+//     return 0;
+// }
 
 SdFat sd;
 
 void setup(void)
 {
-    // setup all the SPI pins, ensure all the devices are deselected
-    pinMode(4, OUTPUT);
-    digitalWrite(4, HIGH);
-    pinMode(10, OUTPUT);
-    digitalWrite(10, HIGH);
-    pinMode(13, OUTPUT);
-    digitalWrite(13, LOW);  // rk11
-    pinMode(53, OUTPUT);
-    digitalWrite(53, HIGH);
-    pinMode(18, OUTPUT);
-    digitalWrite(18, LOW);  // timing interrupt, high while CPU is stepping
+    // init the board/platform
+    platform::begin();
 
     // Start the UART
     Serial.begin(kl11::BAUD_DEFAULT);
@@ -41,26 +33,13 @@ void setup(void)
 
     Serial.println(F("%% Reset"));
 
-    // Initialise and clear the RAM
+    // Initialise the RAM
     ms11::begin();
-    ms11::clear();
-
-    /*
-    // Xmem test
-    xmem::SelfTestResults results;
-    xmem::begin(false);
-    results = xmem::selfTest();
-    if (!results.succeeded)
-    {
-        Serial.println(F("xram test failure"));
-        panic();
-    }
-    */
 
     // Initialize SdFat or print a detailed error message and halt
     // Use half speed like the native library.
     // change to SPI_FULL_SPEED for more performance.
-    if (!sd.begin(4, SD_SCK_MHZ(7)))
+    if (!sd.begin(PIN_OUT_SD_CS, SD_SCK_MHZ(7)))
         sd.initErrorHalt();
 
     // Load RK05 Disk 0 as Read/Write
@@ -79,7 +58,7 @@ void setup(void)
 // Actual emulation of the instruction is another ~40 usec per instruction.
 static void loop0()
 {
-    for (;;)
+    while (1)
     {
         //the itab check is very cheap
         if ((itab[0].vec) && (itab[0].pri >= ((kd11::PS >> 5) & 7)))
@@ -88,9 +67,9 @@ static void loop0()
             return;  // exit from loop to reset trapbuf
         }
 
-        digitalWrite(18, HIGH);
+        digitalWrite(PIN_OUT_PROC_STEP, LED_ON);
         kd11::step();
-        digitalWrite(18, LOW);
+        digitalWrite(PIN_OUT_PROC_STEP, LED_OFF);
 
         kw11::tick();
 
@@ -113,7 +92,8 @@ void loop()
 
 void panic()
 {
+    digitalWrite(PIN_OUT_PROC_RUN, LED_OFF);
     printstate();
-    for (;;)
+    while (1)
         delay(1);
 }

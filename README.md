@@ -18,6 +18,10 @@ It is also inspired/informed by various other emulators such as simh, and nanker
 
 The software is designed to be programmed to a device using the arduino IDE .ino file, or other compatible editors/IDEs.
 
+Because different boards all have different options for where the PDP ram lives, how much, and what pins for LEDs/CSs there is a file platform.h which is used to define these variables, along with a corrosponding platform.cpp file which actuates some of these physical parts.
+
+The RAM type is defined in platform.h, and depending the options different cpp files are inserted into ms11.cpp from the ram_opt folder cpp.h files.
+
 Recommended reading:
 
 - PDP-11/40 manual: <https://pdos.csail.mit.edu/6.828/2005/readings/pdp11-40.pdf>

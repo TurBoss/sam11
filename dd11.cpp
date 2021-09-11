@@ -16,11 +16,6 @@
 
 namespace dd11 {
 
-// memory as words
-int* intptr = reinterpret_cast<int*>(0x2200);
-// memory as bytes
-char* charptr = reinterpret_cast<char*>(0x2200);
-
 uint16_t read8(const uint32_t a)
 {
     if (a & 1)
@@ -30,22 +25,11 @@ uint16_t read8(const uint32_t a)
     return read16(a & ~1) & 0xFF;
 }
 
-static uint8_t bank(const uint32_t a)
-{
-    // This shift costs 1 Khz of simulated performance,
-    // at least 4 usec / instruction.
-    // return a >> 15;
-    char* aa = (char*)&a;
-    return ((aa[2] & 3) << 1) | (((aa)[1] & (1 << 7)) >> 7);
-}
-
 void write8(const uint32_t a, const uint16_t v)
 {
     if (a < DEV_MEMORY)
     {
-        // change this to a memory device rather than swap banks
-        xmem::setMemoryBank(bank(a), false);
-        charptr[(a & 0x7fff)] = v & 0xff;
+        ms11::write8(a, v);
         return;
     }
     if (a & 1)
@@ -68,9 +52,7 @@ void write16(uint32_t a, uint16_t v)
     }
     if (a < DEV_MEMORY)
     {
-        // change this to a memory device rather than swap banks
-        xmem::setMemoryBank(bank(a), false);
-        intptr[(a & 0x7fff) >> 1] = v;
+        ms11::write16(a, v);
         return;
     }
     switch (a)
@@ -143,9 +125,8 @@ uint16_t read16(uint32_t a)
 
     if (a < DEV_MEMORY)  // if lower than the device memory, then this is just RAM
     {
-        // change this to a memory device rather than swap banks
-        xmem::setMemoryBank(bank(a), false);
-        return intptr[(a & 0x7fff) >> 1];
+        ms11::read16(a);
+        return;
     }
 
     switch (a)  // Switch by address, and read from virtual device as appropriate

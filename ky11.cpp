@@ -2,6 +2,7 @@
 
 #include "ky11.h"
 
+#include "platform.h"
 #include "sam11.h"
 
 namespace ky11 {
@@ -14,14 +15,17 @@ void reset()
 {
     SR = INST_BOOTSTRAP;
     DR = 0000000;
+
+    SR = platform::readSwitches();
 }
 
 uint16_t read16(uint32_t addr)
 {
     // read front panel switches here
+    SR = platform::readSwitches();
 
     if (addr == DEV_CONSOLE_SR)
-        return INST_BOOTSTRAP;  //SR;
+        return SR;  //SR;
     return 0;
 }
 void write16(uint32_t a, uint16_t v)
@@ -30,5 +34,8 @@ void write16(uint32_t a, uint16_t v)
         DR = v;
 
     // write to a front panel LEDs here
+    platform::writeAddr(a);
+    platform::writeData(v);
+    platform::writeDispReg(DR);
 }
 };  // namespace ky11
