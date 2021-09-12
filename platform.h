@@ -26,7 +26,7 @@ uint16_t readSwitches();
 
 // See ATmega 2560 datasheet section 9.1
 #define RAM_MODE     RAM_EXTENDED
-#define RAM_PTR_ADDR (0x2200)  // where in memory is the RAM -> this is external to the main RAM addresses in AVRs
+#define RAM_PTR_ADDR (0x2200)  // where in memory is the RAM -> this is external to the main RAM addresses in AVRs (8K + 512B)
 
 #define LED_ON  (LOW)
 #define LED_OFF (HIGH)

@@ -18,5 +18,8 @@ namespace ms11 {
 #include "ram_opts/ram_ext.cpp.h"
 #elif RAM_MODE == RAM_INTERNAL
 #include "ram_opts/ram_int.cpp.h"
+#else
+#include "ram_opts/ram_no_select.cpp.h"  // if there is no ram option, add some dummy functions
+#error NO RAM OPTION SELECTED
 #endif
 };  // namespace ms11
