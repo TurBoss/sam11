@@ -45,9 +45,9 @@ void setup(void)
         sd.initErrorHalt();
 
     // Load RK05 Disk 0 as Read/Write
-    if (!rk11::rkdata.open("unixv6.rk0", O_RDWR))
+    if (!rk11::rkdata.open("unixv6.dsk", O_RDWR))
     {
-        sd.errorHalt("%% opening unixv6.rk0 for write failed");
+        sd.errorHalt("%% opening unixv6.dsk for write failed");
     }
 
     ky11::reset();  // reset the front panel - sets the switches to INST_BOOTSTRAP (0173030)
