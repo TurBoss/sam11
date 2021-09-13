@@ -4,7 +4,7 @@
 #define RAM_OPT
 
 // memory as words
-int* intptr = reinterpret_cast<int*>(RAM_PTR_ADDR);
+int16_t* intptr = reinterpret_cast<int16_t*>(RAM_PTR_ADDR);
 // memory as bytes
 char* charptr = reinterpret_cast<char*>(RAM_PTR_ADDR);
 
@@ -30,6 +30,20 @@ static uint8_t bank(const uint32_t a)
     // return a >> 15;
     char* aa = (char*)&a;
     return ((aa[2] & 3) << 1) | (((aa)[1] & (1 << 7)) >> 7);
+}
+
+uint16_t read8(const uint32_t a)
+{
+    if (a < MAX_RAM_ADDRESS)
+    {
+        // change this to a memory device rather than swap banks
+        xmem::setMemoryBank(bank(a), false);
+        return charptr[(a & 0x7fff)];
+    }
+    Serial.print(F("%% ms11: read from invalid address "));
+    Serial.println(a, OCT);
+    longjmp(trapbuf, INTBUS);
+    return 0;
 }
 
 void write8(const uint32_t a, const uint16_t v)

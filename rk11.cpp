@@ -3,6 +3,7 @@
 
 #include "dd11.h"
 #include "kd11.h"
+#include "platform.h"
 #include "sam11.h"
 
 #include <Arduino.h>
@@ -41,7 +42,9 @@ uint16_t read16(uint32_t a)
 
 static void rknotready()
 {
-    digitalWrite(13, 1);
+#ifdef PIN_OUT_DISK_ACT
+    digitalWrite(PIN_OUT_DISK_ACT, LED_ON);
+#endif
     RKDS &= ~(1 << 6);
     RKCS &= ~(1 << 7);
 }
@@ -50,7 +53,9 @@ static void rkready()
 {
     RKDS |= 1 << 6;
     RKCS |= 1 << 7;
-    digitalWrite(13, 0);
+#ifdef PIN_OUT_DISK_ACT
+    digitalWrite(PIN_OUT_DISK_ACT, LED_OFF);
+#endif
 }
 
 void rkerror(uint16_t e)

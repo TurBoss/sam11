@@ -18,6 +18,10 @@ namespace dd11 {
 
 uint16_t read8(const uint32_t a)
 {
+    if (a < MAX_RAM_ADDRESS)
+    {
+        return ms11::read8(a);
+    }
     if (a & 1)
     {
         return read16(a & ~1) >> 8;
@@ -27,7 +31,7 @@ uint16_t read8(const uint32_t a)
 
 void write8(const uint32_t a, const uint16_t v)
 {
-    if (a < DEV_MEMORY)
+    if (a < MAX_RAM_ADDRESS)
     {
         ms11::write8(a, v);
         return;
@@ -44,13 +48,14 @@ void write8(const uint32_t a, const uint16_t v)
 
 void write16(uint32_t a, uint16_t v)
 {
-    if (a % 1)
+    if (a & 1)
     {
         Serial.print(F("%% dd11: write16 to odd address "));
         Serial.println(a, OCT);
         longjmp(trapbuf, INTBUS);
     }
-    if (a < DEV_MEMORY)
+
+    if (a < MAX_RAM_ADDRESS)
     {
         ms11::write16(a, v);
         return;
@@ -58,32 +63,38 @@ void write16(uint32_t a, uint16_t v)
     switch (a)
     {
     case DEV_CPU_STAT:
-        switch (v >> 14)
         {
-        case 0:
-            kd11::switchmode(false);
-            break;
-        case 3:
-            kd11::switchmode(true);
-            break;
-        default:
-            Serial.println(F("%% invalid mode"));
-            panic();
+            int c14 = v >> 14;
+            switch (c14)
+            {
+            case 0:
+                kd11::switchmode(false);
+                break;
+            case 3:
+                kd11::switchmode(true);
+                break;
+            default:
+                Serial.print(F("%% invalid PS (>>14) mode: "));
+                Serial.println(c14, OCT);
+                panic();
+            }
+            int c12 = (v >> 12) & 3;
+            switch (c12)
+            {
+            case 0:
+                kd11::prevuser = false;
+                break;
+            case 3:
+                kd11::prevuser = true;
+                break;
+            default:
+                Serial.print(F("%% invalid PS (>>12 & 3) mode: "));
+                Serial.println(c12, OCT);
+                panic();
+            }
+            kd11::PS = v;
+            return;
         }
-        switch ((v >> 12) & 3)
-        {
-        case 0:
-            kd11::prevuser = false;
-            break;
-        case 3:
-            kd11::prevuser = true;
-            break;
-        default:
-            Serial.println(F("%% invalid mode"));
-            panic();
-        }
-        kd11::PS = v;
-        return;
     case DEV_LKS:
         kw11::LKS = v;
         return;
@@ -93,6 +104,8 @@ void write16(uint32_t a, uint16_t v)
     case DEV_CONSOLE_DR:
         ky11::write16(a, v);
         return;
+    default:
+        break;
     }
     if ((a & 0777770) == 0777560)
     {
@@ -123,7 +136,7 @@ uint16_t read16(uint32_t a)
         longjmp(trapbuf, INTBUS);
     }
 
-    if (a < DEV_MEMORY)  // if lower than the device memory, then this is just RAM
+    if (a < MAX_RAM_ADDRESS)  // if lower than the device memory, then this is just RAM
     {
         return ms11::read16(a);
     }

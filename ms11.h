@@ -19,6 +19,7 @@
 
 namespace ms11 {
 void begin();
+uint16_t read8(uint32_t a);
 void write8(uint32_t a, uint16_t v);
 void write16(uint32_t a, uint16_t v);
 uint16_t read16(uint32_t a);

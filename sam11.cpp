@@ -35,7 +35,10 @@ void setup(void)
     Serial.begin(kl11::BAUD_DEFAULT);
     //fdevopen(serialWrite, NULL);
 
-    Serial.println(F("%% Reset"));
+    while (!Serial)
+        ;
+
+    Serial.println(F("%% Init"));
 
     // Initialise the RAM
     ms11::begin();
@@ -97,8 +100,14 @@ void loop()
 
 void panic()  // aka what it does when halted
 {
+    Serial.println("%% HALT");
+
 #ifdef PIN_OUT_PROC_RUN
     digitalWrite(PIN_OUT_PROC_RUN, LED_OFF);
+#endif
+
+#ifdef PIN_OUT_PROC_STEP
+    digitalWrite(PIN_OUT_PROC_STEP, LED_OFF);
 #endif
 
     printstate();

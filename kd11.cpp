@@ -1346,7 +1346,7 @@ void step()
         {
             break;
         }
-        Serial.println(F("%% HALT"));
+        //Serial.println(F("%% HALT"));
         panic();
     case 01:  // WAIT
         if (curuser)

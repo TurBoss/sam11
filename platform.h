@@ -52,10 +52,11 @@ uint16_t readSwitches();
 #define LED_OFF (LOW)
 
 #define PIN_OUT_DISK_ACT (13)
+//#define PIN_OUT_MEM_ACT (13)
 #define PIN_OUT_SD_CS    SDCARD_SS_PIN  // already defined for us!
-//#define PIN_OUT_PROC_STEP (18)
-//#define PIN_OUT_PROC_RUN  (0)
-//#define PIN_OUT_BUS_ACT   (0)
+//#define PIN_OUT_PROC_STEP (13)
+//#define PIN_OUT_PROC_RUN  (13)
+//#define PIN_OUT_BUS_ACT   (13)
 
 #endif
 
