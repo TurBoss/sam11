@@ -1,6 +1,6 @@
 {
     "board": "adafruit:samd:adafruit_grandcentral_m4",
-    "configuration": "cache=on,speed=120,opt=fastest,maxqspi=50,usbstack=arduino,debug=off",
+    "configuration": "cache=off,speed=120,opt=fastest,maxqspi=50,usbstack=arduino,debug=off",
     "sketch": "sam11.ino",
     "programmer": "AVR ISP",
     "port": "COM3"
