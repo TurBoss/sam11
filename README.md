@@ -10,7 +10,7 @@ The structure was re-written from avr11 based on actual PDP physical structure, 
 
 The extended hardware modules and new structure should allow implementing the missing hardware modules easier to allow use of newer operating systems that rely on currently unimplemented hardware features.
 
-The original avr11 software supported UNIXv5 and UNIXv6, and this should to.
+The original avr11 software supported UNIXv6, and this should to.
 (As of 2021-09-14 the PDP 11/40 runs, but it won't boot Unix... :frown:)
 
 See pdp1140.h for more information about file names/splits and pdp-11/40 device structure.
@@ -25,7 +25,7 @@ The RAM type is defined in platform.h, and depending the options different cpp f
 
 Recommended reading:
 
-- PDP-11/40 manual: <https://pdos.csail.mit.edu/6.828/2005/readings/pdp11-40.pdf>
+- PDP-11/40 processor handbook: <https://pdos.csail.mit.edu/6.828/2005/readings/pdp11-40.pdf>
 
 - A great PDP/DEC wiki: <http://gunkies.org/wiki/>
 
