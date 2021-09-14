@@ -37,10 +37,6 @@ void begin()
     digitalWrite(PIN_OUT_PROC_RUN, LED_OFF);
 #endif
 
-#if defined(__SAMD51P20A__)  // enable the internal switch mode regulator to almost halve idle current on SAMD51s.
-    SUPC->VREG.bit.SEL = 1;
-#endif
-
     return;
 }
 

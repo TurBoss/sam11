@@ -18,10 +18,10 @@ namespace dd11 {
 
 uint16_t read8(const uint32_t a)
 {
-    //if (a < MAX_RAM_ADDRESS)
-    //{
-    //    return ms11::read8(a);
-    //}
+    if (a < MAX_RAM_ADDRESS)
+    {
+        return ms11::read8(a);
+    }
     if (a % 2 != 0)
     {
         return read16(a & ~1) >> 8;

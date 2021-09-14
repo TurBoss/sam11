@@ -9,6 +9,7 @@
 #include "kt11.h"
 #include "kw11.h"
 #include "ky11.h"
+#include "ms11.h"
 #include "platform.h"
 #include "rk11.h"
 #include "sam11.h"
@@ -32,6 +33,7 @@ void reset(void)
     ky11::reset();
     kw11::reset();
     uint16_t i;
+    ms11::clear();
     for (i = 0; i < 29; i++)
     {
         dd11::write16(02000 + (i * 2), bootrom[i]);

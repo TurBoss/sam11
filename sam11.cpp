@@ -50,7 +50,7 @@ void setup(void)
 
     // Serial.println("%% Boot List:");
     // Serial.println("%% ===================");
-    // Serial.println("%%  0: UnixV6  (11/40)*");
+    // Serial.println("%% *0: UnixV6  (11/40)*");
     // Serial.println("%%  1: UnixV5  (11/45)");
     // Serial.println("%%  2: RSTS    (11/45)");
     // Serial.println("%%  3: XXDP    (11/45)");
