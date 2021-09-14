@@ -168,7 +168,11 @@ enum
     DEV_MMU_SR0 = 0777572,
     DEV_CONSOLE_SR = 0777570,  // Console switch/display register
     DEV_CONSOLE_DR = 0777570,  // Console display register
-    DEV_LKS = 0777546,
-    DEV_MEMORY = 0760000,  // Main Memory (0->0760000 (excl))
+    DEV_LKS = 0777546,         // Line Clock
+    DEV_KWP = 0772546,         // KW11-P (XX)
+    DEV_KWP_CNTR = 0772544,    // KW11-P Counter
+    DEV_KWP_CSB = 0772542,     // KW11-P Count Set Register
+    DEV_KWP_CSR = 0772540,     // KW11-P CSR
+    DEV_MEMORY = 0760000,      // Main Memory (0->0760000 (excl))
 };
 #endif

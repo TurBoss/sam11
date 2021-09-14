@@ -34,7 +34,8 @@ const char* disks[] =
     "xxdp.dsk",
     "rt11v3.dsk",
     "rt11v4.dsk",
-    "rt11v5.dsk"};
+    "rt11v5.dsk",
+    "dennisv6.dsk"};
 
 void setup(void)
 {
@@ -57,6 +58,7 @@ void setup(void)
     // Serial.println("%%  4: RT11 v3 (11/45)");
     // Serial.println("%%  5: RT11 v4 (11/45)");
     // Serial.println("%%  6: RT11 v5 (11/45)");
+    // Serial.println("%%  7: _UnixV6 (11/40)");
 
     // reprompt:
     //     Serial.print("%% ?:");
@@ -92,6 +94,8 @@ static void loop0()
 {
     while (1)
     {
+        delayMicroseconds(1);  // a touch of throttle... the processor is plenty fast enough, so we add this to mimic the slower pdp
+
         // Check for interruptd
         if ((itab[0].vec) && (itab[0].pri >= ((kd11::PS >> 5) & 7)))
         {
@@ -119,6 +123,7 @@ jmp_buf trapbuf;
 
 void loop()
 {
+    delayMicroseconds(1);
     // reset interrupts/trap vectors
     uint16_t vec = setjmp(trapbuf);
     if (vec)

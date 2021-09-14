@@ -1,8 +1,9 @@
 // sam11 software emulation of DEC PDP-11/40 KW11 Line Clock
 
-#include "pdp1140.h"
 #include "kw11.h"
+
 #include "kd11.h"
+#include "pdp1140.h"
 
 namespace kw11 {
 
@@ -15,7 +16,6 @@ union {
     } bytes;
     uint16_t value;
 } clkcounter;
-uint16_t instcounter;
 
 void reset()
 {

@@ -3,5 +3,5 @@
     "configuration": "cache=off,speed=120,opt=fastest,maxqspi=50,usbstack=tinyusb,debug=off",
     "sketch": "sam11.ino",
     "programmer": "AVR ISP",
-    "port": "COM81"
+    "port": "/dev/cu.usbmodem101"
 }

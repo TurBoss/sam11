@@ -28,6 +28,8 @@ uint16_t PC;        // address of current instruction
 uint16_t KSP, USP;  // kernel and user stack pointer
 bool curuser, prevuser;
 
+bool trapped;
+
 void reset(void)
 {
     ky11::reset();
@@ -38,7 +40,7 @@ void reset(void)
     {
         dd11::write16(BOOT_START + (i * 2), bootrom[i]);
     }
-    R[7] = 02002;
+    R[7] = BOOT_START;
     kl11::clearterminal();
     rk11::reset();
 
@@ -1115,7 +1117,13 @@ void step()
     // return;
     R[7] += 2;
 
-    if (PRINTSTATE)
+    if (PRINTINSTR && trapped)
+    {
+        Serial.print("%% Step: I=");
+        Serial.println(instr, OCT);
+    }
+
+    if (PRINTSTATE && trapped)
         printstate();
 
     switch ((instr >> 12) & 007)
@@ -1395,6 +1403,7 @@ void trapat(uint16_t vec)
         Serial.println(F("%% Thou darst calling trapat() with an odd vector number?"));
         panic();
     }
+    trapped = true;
     Serial.print(F("%% trap: "));
     Serial.println(vec, OCT);
     //printstate();

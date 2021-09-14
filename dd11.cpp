@@ -124,7 +124,7 @@ void write16(uint32_t a, uint16_t v)
         kt11::write16(a, v);
         return;
     }
-    Serial.print(F("%% dd11: write to invalid address "));
+    Serial.print(F("%% dd11: write to invalid address 0"));
     Serial.println(a, OCT);
     longjmp(trapbuf, INTBUS);
 }
@@ -176,7 +176,7 @@ uint16_t read16(uint32_t a)
         return kt11::read16(a);
     }
 
-    Serial.print(F("%% dd11: read from invalid address "));
+    Serial.print(F("%% dd11: read from invalid address 0"));
     Serial.println(a, OCT);
     longjmp(trapbuf, INTBUS);
 }
