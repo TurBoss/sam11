@@ -5,6 +5,28 @@ The line starting '@' is the bootstrap prompt (you type 'unix').
 All other lines are the Unix Kernel printing info.
 
 -------------------------------------------------------------------------------
+
+From the unixv6 kernel, /src/trap.c
+
+2704:         /*
+2705:          * Trap not expected.
+2706:          * Usually a kernel mode bus error.
+2707:          * The numbers printed are used to
+2708:          * find the hardware PS/PC as follows.
+2709:          * (all numbers in octal 18 bits)
+2710:          *      address_of_saved_ps =
+2711:          *              (ka6*0100) + aps - 0140000;
+2712:          *      address_of_saved_pc =
+2713:          *              address_of_saved_ps - 2;
+2714:          */
+2715:         default:
+2716:                 printf("ka6 = %o\n", *ka6);
+2717:                 printf("aps = %o\n", &ps);
+2718:                 printf("trap type %o\n", dev);
+2719:                 panic("trap");
+
+
+-------------------------------------------------------------------------------
 %% Init unixv6.dsk
 %% Ready
 @unix
@@ -739,4 +761,4 @@ panic: trap
 
 -------------------------------------------------------------------------------
 
-End. Processor halted line 740.
+End. Processor NOT halted, but locks up on line 761.
