@@ -37,15 +37,15 @@ uint16_t readSwitches();
 //#define PIN_OUT_PROC_RUN  (0)
 //#define PIN_OUT_BUS_ACT   (0)
 
-// Adafruit Grand Central M4 and similar
+// Adafruit Grand Central M4 and similar  <----- USING THIS ONE FOR DEV
 #elif defined(__SAMD51P20A__)
 
 #define USE_SDIO false  // use an SDIO interface for cards
 
-#define ALLOW_DISASM    (false)  // allow dissassembly (PDP-11) on crash/panic/state prints
+#define ALLOW_DISASM    (false)  // allow disassembly (PDP-11) on crash/panic/state prints
 #define MAX_RAM_ADDRESS (0760000)  // 248KB
 
-#define RAM_MODE     RAM_INTERNAL
+#define RAM_MODE     RAM_INTERNAL  // use the chip's onboard SRAM
 #define RAM_PTR_ADDR (0x20000000 + 0x2000)  // SRAM base + 8K buffer for simulator to run in
 
 #define LED_ON  (HIGH)

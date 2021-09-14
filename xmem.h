@@ -22,8 +22,8 @@ namespace xmem {
 	 * Pointers to the start and end of memory
 	 */
 
-#define XMEM_START ((void*)0x2200)  // 0x20000000 on SAMD21
-#define XMEM_END   ((void*)0xFFFF)  // 0x3FFFFFFF on SAMD21
+#define XMEM_START ((void*)0x2200)
+#define XMEM_END   ((void*)0xFFFF)
 
 /*
 	 * State variables used by the heap

@@ -42,7 +42,8 @@
         "queue": "cpp",
         "xlocnum": "cpp",
         "xmemory": "cpp",
-        "__bit_reference": "cpp"
+        "__bit_reference": "cpp",
+        "tuple": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "C_Cpp.intelliSenseEngine": "Tag Parser"

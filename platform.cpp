@@ -14,8 +14,11 @@ void begin()
 #error NO WAY TO USE SD CARD -> CANNOT COMPILE
 #endif
 #endif
+
+#ifdef PIN_OUT_SD_CS
     pinMode(PIN_OUT_SD_CS, OUTPUT);  // SD card chip select
     digitalWrite(PIN_OUT_SD_CS, HIGH);
+#endif
 
 #ifdef PIN_OUT_DISK_ACT
     pinMode(PIN_OUT_DISK_ACT, OUTPUT);  // rk11 disk led
@@ -23,13 +26,18 @@ void begin()
 #endif
 
 #ifdef PIN_OUT_PROC_STEP
-    pinMode(PIN_OUT_PROC_STEP, OUTPUT);  // timing interrupt, high while CPU is stepping
+    pinMode(PIN_OUT_PROC_STEP, OUTPUT);  // timing, high while CPU is stepping
     digitalWrite(PIN_OUT_PROC_STEP, LED_OFF);
 #endif
 
 #ifdef PIN_OUT_BUS_ACT
-    pinMode(PIN_OUT_BUS_ACT, OUTPUT);  // Bus in use
+    pinMode(PIN_OUT_BUS_ACT, OUTPUT);  // Bus in use - not implemented
     digitalWrite(PIN_OUT_BUS_ACT, LED_OFF);
+#endif
+
+#ifdef PIN_OUT_MEM_ACT
+    pinMode(PIN_OUT_MEM_ACT, OUTPUT);  // Memory in use - not implemented
+    digitalWrite(PIN_OUT_MEM_ACT, LED_OFF);
 #endif
 
 #ifdef PIN_OUT_PROC_RUN
