@@ -26,6 +26,16 @@ SdFatSdio sd;
 SdFat sd;
 #endif
 
+const char* disks[] =
+  {
+    "unixv6.dsk",
+    "unixv5.dsk",
+    "rsts.dsk",
+    "xxdp.dsk",
+    "rt11v3.dsk",
+    "rt11v4.dsk",
+    "rt11v5.dsk"};
+
 void setup(void)
 {
     // init the board/platform
@@ -38,7 +48,25 @@ void setup(void)
     while (!Serial)
         ;
 
-    Serial.println(F("%% Init"));
+    // Serial.println("%% Boot List:");
+    // Serial.println("%% ===================");
+    // Serial.println("%%  0: UnixV6  (11/40)*");
+    // Serial.println("%%  1: UnixV5  (11/45)");
+    // Serial.println("%%  2: RSTS    (11/45)");
+    // Serial.println("%%  3: XXDP    (11/45)");
+    // Serial.println("%%  4: RT11 v3 (11/45)");
+    // Serial.println("%%  5: RT11 v4 (11/45)");
+    // Serial.println("%%  6: RT11 v5 (11/45)");
+
+    // reprompt:
+    //     Serial.print("%% ?:");
+
+    // noprompt:
+
+    char disk = 0;
+
+    Serial.print(F("%% Init "));
+    Serial.println(disks[disk]);
 
     // Initialise the RAM
     ms11::begin();
@@ -48,14 +76,16 @@ void setup(void)
         sd.initErrorHalt();
 
     // Load RK05 Disk 0 as Read/Write
-    if (!rk11::rkdata.open("unixv6.dsk", O_RDWR))
+    if (!rk11::rkdata.open(disks[disk], O_RDWR))
     {
-        sd.errorHalt("%% opening unixv6.dsk for write failed");
+        sd.errorHalt("%% opening disk for write failed");
     }
 
     ky11::reset();  // reset the front panel - sets the switches to INST_BOOTSTRAP (0173030)
-    kd11::reset();  // reset the processor
+
     Serial.println(F("%% Ready"));
+
+    kd11::reset();  // reset the processor
 }
 
 static void loop0()

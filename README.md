@@ -4,13 +4,14 @@ The sam11 software is a cross-platform MCU implementation for software emulation
 
 \* = With some PDP-11/45 and other model stuff thrown in...
 
-The processor instruction functions and mmu is based on the avr11 simulator, however with many changes overall.
+The processor instruction functions and mmu is based on a fork of Dave Cheney's avr11 simulator, however with many changes overall.
 
 The structure was re-written from avr11 based on actual PDP physical structure, device names, and data paths from the PDP-11/40 manual in order to be more useful for learning the system.
 
 The extended hardware modules and new structure should allow implementing the missing hardware modules easier to allow use of newer operating systems that rely on currently unimplemented hardware features.
 
 The original avr11 software supported UNIXv5 and UNIXv6, and this should to.
+(As of 2021-09-14 the PDP 11/40 runs, but it won't boot Unix... :frown:)
 
 See pdp1140.h for more information about file names/splits and pdp-11/40 device structure.
 
