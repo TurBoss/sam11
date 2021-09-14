@@ -35,7 +35,8 @@ const char* disks[] =
     "rt11v3.dsk",
     "rt11v4.dsk",
     "rt11v5.dsk",
-    "dennisv6.dsk"};
+    "dennisv6.dsk",
+    "dos-11.dsk"};
 
 void setup(void)
 {
@@ -51,14 +52,15 @@ void setup(void)
 
     // Serial.println("%% Boot List:");
     // Serial.println("%% ===================");
-    // Serial.println("%% *0: UnixV6  (11/40)*");
-    // Serial.println("%%  1: UnixV5  (11/45)");
-    // Serial.println("%%  2: RSTS    (11/45)");
-    // Serial.println("%%  3: XXDP    (11/45)");
-    // Serial.println("%%  4: RT11 v3 (11/45)");
-    // Serial.println("%%  5: RT11 v4 (11/45)");
-    // Serial.println("%%  6: RT11 v5 (11/45)");
-    // Serial.println("%%  7: _UnixV6 (11/40)");
+    // Serial.println("%% *0: UnixV6   (11/40)*");
+    // Serial.println("%%  1: UnixV5   (11/45)");
+    // Serial.println("%%  2: RSTS     (11/45)");
+    // Serial.println("%%  3: XXDP     (11/45)");
+    // Serial.println("%%  4: RT11 v3  (11/45)");
+    // Serial.println("%%  5: RT11 v4  (11/45)");
+    // Serial.println("%%  6: RT11 v5  (11/45)");
+    // Serial.println("%%  7: RichieV6 (11/40)");
+    // Serial.println("%%  8: DOS-11v9 (11/40)");
 
     // reprompt:
     //     Serial.print("%% ?:");
