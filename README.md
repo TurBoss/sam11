@@ -6,6 +6,8 @@ The sam11 software is a cross-platform MCU implementation for software emulation
 
 The processor instruction functions and mmu is based on a fork of Dave Cheney's avr11 simulator, however with many changes overall.
 
+The JS Emulator folder contains the source for the JS PDP-11/40 emulator by Aiju that avr11 was based on.
+
 The structure was re-written from avr11 based on actual PDP physical structure, device names, and data paths from the PDP-11/40 manual in order to be more useful for learning the system.
 
 The extended hardware modules and new structure should allow implementing the missing hardware modules easier to allow use of newer operating systems that rely on currently unimplemented hardware features.
