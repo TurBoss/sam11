@@ -1,3 +1,6 @@
+#define BOOT_START 002000
+#define BOOT_LEN   29
+
 uint16_t bootrom[] = {
   0042113,          /* "KD" */
   0012706, 02000,   /* MOV #boot_start, SP */
@@ -23,3 +26,18 @@ uint16_t bootrom[] = {
   0105011,          /* CLRB (R1) */
   0005007,          /* CLR PC */
 };
+
+// #define BOOT_START 001000
+// #define BOOT_LEN   9
+
+// uint16_t bootrom[] = {
+//   0012700,
+//   0177406,
+//   0012710,
+//   0177400,
+//   0012740,
+//   0000005,
+//   0105710,
+//   0100376,
+//   0005007,
+// };

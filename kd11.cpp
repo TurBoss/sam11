@@ -34,9 +34,9 @@ void reset(void)
     kw11::reset();
     uint16_t i;
     ms11::clear();
-    for (i = 0; i < 29; i++)
+    for (i = 0; i < BOOT_LEN; i++)
     {
-        dd11::write16(02000 + (i * 2), bootrom[i]);
+        dd11::write16(BOOT_START + (i * 2), bootrom[i]);
     }
     R[7] = 02002;
     kl11::clearterminal();
