@@ -39,6 +39,7 @@ void reset(void)
     R[7] = 02002;
     kl11::clearterminal();
     rk11::reset();
+
 #ifdef PIN_OUT_PROC_RUN
     digitalWrite(PIN_OUT_PROC_RUN, LED_ON);
 #endif
@@ -1380,7 +1381,8 @@ void step()
         }
     }
 
-    Serial.println("%% invalid instruction");
+    Serial.print("%% invalid instruction 0");
+    Serial.println(instr, OCT);
     longjmp(trapbuf, INTINVAL);
 }
 

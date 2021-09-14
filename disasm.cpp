@@ -207,7 +207,7 @@ void disasm(uint32_t a)
 
 void printstate()
 {
-    Serial.printf("R0 %06o R1 %06o R2 %06o R3 %06o R4 %06o R5 %06o R6 %06o R7 %06o\r\n",
+    Serial.printf("\r\nR0 %06o R1 %06o R2 %06o R3 %06o R4 %06o R5 %06o R6 %06o R7 %06o\r\n",
       uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]), uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), uint16_t(kd11::R[7]));
     Serial.printf("\r\n[%s%s%s%s%s%s",
       kd11::prevuser ? "u" : "k",
@@ -216,9 +216,9 @@ void printstate()
       kd11::Z() ? "Z" : " ",
       kd11::V() ? "V" : " ",
       kd11::C() ? "C" : " ");
-    Serial.printf("]  instr %06o: %06o\t \r\n", kd11::PC, dd11::read16(kt11::decode(kd11::PC, false, kd11::curuser)));
+    Serial.printf("]  instr %06o: %06o\t", kd11::PC, dd11::read16(kt11::decode(kd11::PC, false, kd11::curuser)));
 #if ALLOW_DISASM
     disasm(kt11::decode(kd11::PC, false, kd11::curuser));
 #endif
-    Serial.println("");
+    Serial.println("\r\n");
 }

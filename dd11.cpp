@@ -22,7 +22,7 @@ uint16_t read8(const uint32_t a)
     {
         return ms11::read8(a);
     }
-    if (a & 1)
+    if (a % 2 != 0)
     {
         return read16(a & ~1) >> 8;
     }
@@ -36,7 +36,7 @@ void write8(const uint32_t a, const uint16_t v)
         ms11::write8(a, v);
         return;
     }
-    if (a & 1)
+    if (a % 2 != 0)
     {
         write16(a & ~1, (read16(a) & 0xFF) | (v & 0xFF) << 8);
     }
@@ -48,9 +48,11 @@ void write8(const uint32_t a, const uint16_t v)
 
 void write16(uint32_t a, uint16_t v)
 {
-    if (a & 1)
+    if (a % 2 != 0)
     {
-        Serial.print(F("%% dd11: write16 to odd address "));
+        Serial.print(F("%% dd11: write16 0"));
+        Serial.print(v, OCT);
+        Serial.print(F(" to odd address 0"));
         Serial.println(a, OCT);
         longjmp(trapbuf, INTBUS);
     }
@@ -129,9 +131,9 @@ void write16(uint32_t a, uint16_t v)
 
 uint16_t read16(uint32_t a)
 {
-    if (a & 1)
+    if (a % 2 != 0)
     {
-        Serial.print(F("%% dd11: read16 from odd address "));
+        Serial.print(F("%% dd11: read16 from odd address 0"));
         Serial.println(a, OCT);
         longjmp(trapbuf, INTBUS);
     }

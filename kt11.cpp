@@ -139,7 +139,9 @@ void write16(const uint32_t a, const uint16_t v)
         pages[i + 8].par = v;
         return;
     }
-    Serial.print(F("%% kt11::write16 write to invalid address "));
+    Serial.print(F("%% kt11::write16 0"));
+    Serial.print(v, OCT);
+    Serial.print(F(" from invalid address 0"));
     Serial.println(a, OCT);
     longjmp(trapbuf, INTBUS);
 }

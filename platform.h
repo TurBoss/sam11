@@ -42,7 +42,7 @@ uint16_t readSwitches();
 
 #define USE_SDIO false  // use an SDIO interface for cards
 
-#define ALLOW_DISASM    (false)    // allow dissassembly (PDP-11) on crash/panic/state prints
+#define ALLOW_DISASM    (false)  // allow dissassembly (PDP-11) on crash/panic/state prints
 #define MAX_RAM_ADDRESS (0760000)  // 248KB
 
 #define RAM_MODE     RAM_INTERNAL
