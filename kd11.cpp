@@ -33,8 +33,19 @@ bool trapped;
 void reset(void)
 {
     ky11::reset();
-    kw11::reset();
     uint16_t i;
+    for (i = 0; i < 7; i++)
+    {
+        R[i] = 0;
+    }
+    PS = 0;
+    KSP = 0;
+    USP = 0;
+    curuser = false;
+    prevuser = false;
+    kt11::SR0 = 0;
+    PC = 0;
+    kw11::reset();
     ms11::clear();
     for (i = 0; i < BOOT_LEN; i++)
     {
@@ -43,6 +54,7 @@ void reset(void)
     R[7] = BOOT_START;
     kl11::clearterminal();
     rk11::reset();
+    waiting = false;
 
 #ifdef PIN_OUT_PROC_RUN
     digitalWrite(PIN_OUT_PROC_RUN, LED_ON);
@@ -1117,10 +1129,13 @@ static void RESET(uint16_t instr)
     rk11::reset();
 }
 
-volatile bool cont_with;
+volatile bool cont_with = false;
+volatile bool waiting = false;
 
 void step()
 {
+    if (waiting)
+        return;
     if (BREAK_ON_TRAP && trapped)
     {
         //Serial.print("!");
@@ -1408,6 +1423,7 @@ void step()
         {
             break;
         }
+        waiting = false;
         return;
     case 02:  // RTI
 
@@ -1479,6 +1495,7 @@ void trapat(uint16_t vec)
     {
         PS |= (1 << 13) | (1 << 12);
     }
+    waiting = false;
 }
 
 void interrupt(uint8_t vec, uint8_t pri)
@@ -1563,6 +1580,7 @@ void handleinterrupt()
     {
         PS |= (1 << 13) | (1 << 12);
     }
+    waiting = false;
     popirq();
 }
 };  // namespace kd11
