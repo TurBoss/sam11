@@ -1,7 +1,7 @@
 {
-    "board": "adafruit:samd:adafruit_grandcentral_m4",
-    "configuration": "cache=off,speed=120,opt=fastest,maxqspi=50,usbstack=tinyusb,debug=off",
+    "board": "adafruit:samd:adafruit_grandcentral_m4_8k",
     "sketch": "sam11.ino",
     "programmer": "AVR ISP",
-    "port": "/dev/cu.usbmodem101"
+    "port": "COM81",
+    "configuration": "cache=on,speed=120,opt=small,maxqspi=50,usbstack=arduino,debug=off"
 }

@@ -1110,8 +1110,45 @@ static void RESET(uint16_t instr)
     rk11::reset();
 }
 
+volatile bool cont_with;
+
 void step()
 {
+    if (BREAK_ON_TRAP && trapped)
+    {
+        //Serial.print("!");
+        //printstate();
+
+        Serial.print("!");
+        while (!Serial.available())
+            ;
+        char c;
+        while (1)
+        {
+            c = Serial.read();
+            if (c == '`')  // step individually
+                break;
+            if (c == '>')  // continue to the next trap
+            {
+                trapped = false;
+                break;
+            }
+            if (c == '~')  // continue to the next trap, but keep printing
+            {
+                trapped = false;
+                cont_with = true;
+                break;
+            }
+        }
+        Serial.print(c);
+        Serial.println();
+    }
+
+    if ((BREAK_ON_TRAP || PRINTINSTR || PRINTSTATE) && (cont_with || trapped))
+    {
+        delayMicroseconds(50);
+    }
+
     PC = R[7];
     uint16_t instr = dd11::read16(kt11::decode(PC, false, curuser));
     // return;
@@ -1123,7 +1160,7 @@ void step()
         Serial.println(instr, OCT);
     }
 
-    if (PRINTSTATE && trapped)
+    if ((BREAK_ON_TRAP || PRINTSTATE) && (trapped || cont_with))
         printstate();
 
     switch ((instr >> 12) & 007)
@@ -1404,9 +1441,9 @@ void trapat(uint16_t vec)
         panic();
     }
     trapped = true;
+    cont_with = false;
     Serial.print(F("%% trap: "));
     Serial.println(vec, OCT);
-    //printstate();
 
     /*var prev uint16
    	defer func() {
@@ -1468,7 +1505,7 @@ void interrupt(uint8_t vec, uint8_t pri)
     }
     if (i >= ITABN)
     {
-        Serial.println(F("%% interrupt table full"));
+        Serial.printf("%%%% interrupt table full (%i of %i)", i, ITABN);
         panic();
     }
     uint8_t j;

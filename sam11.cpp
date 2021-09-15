@@ -36,7 +36,11 @@ const char* disks[] =
     "rt11v4.dsk",
     "rt11v5.dsk",
     "dennisv6.dsk",
-    "dos-11.dsk"};
+    "dos-11.dsk",
+    "calderav5.dsk",
+    "rt11v1.dsk",
+    "rt11v2.dsk",
+    "calderav6_0.dsk"};
 
 void setup(void)
 {
@@ -50,17 +54,21 @@ void setup(void)
     while (!Serial)
         ;
 
-    // Serial.println("%% Boot List:");
-    // Serial.println("%% ===================");
-    // Serial.println("%% *0: UnixV6   (11/40)*");
-    // Serial.println("%%  1: UnixV5   (11/45)");
-    // Serial.println("%%  2: RSTS     (11/45)");
-    // Serial.println("%%  3: XXDP     (11/45)");
-    // Serial.println("%%  4: RT11 v3  (11/45)");
-    // Serial.println("%%  5: RT11 v4  (11/45)");
-    // Serial.println("%%  6: RT11 v5  (11/45)");
-    // Serial.println("%%  7: RichieV6 (11/40)");
-    // Serial.println("%%  8: DOS-11v9 (11/40)");
+    // Serial.println("%% RK05 Boot List:");
+    // Serial.println("%% ===================================================");
+    // Serial.println("%%  0: UnixV6    - UnixV6 image from Ken");
+    // Serial.println("%%  1: UnixV5    - UnixV5 image from Ken");
+    // Serial.println("%%  2: RSTS      - RSTS DEC OS");
+    // Serial.println("%%  3: XXDP      - DEC XXDP Diagnostics tool");
+    // Serial.println("%%  4: RT11 v3   - RT11 v3 DOS");
+    // Serial.println("%%  5: RT11 v4   - RT11 v4 DOS");
+    // Serial.println("%%  6: RT11 v5   - RT11 v5 DOS");
+    // Serial.println("%%  7: RichieV6  - UnixV6 from Dennis Richie (no boot)");
+    // Serial.println("%%  8: DOS-11v9  - DOS-11 v9");
+    // Serial.println("%%  9: CalderaV5 - UnixV5 from Caldera Ancient Unix");
+    // Serial.println("%% 10: RT11 v1   - RT11 v1 DOS (no boot)");
+    // Serial.println("%% 11: RT11 v2   - RT11 v2 DOS ()");
+    // Serial.println("%% 12: CalderaV6 - UnixV6 from Caldera Ancient Unix"); // This one is multi-part, we only load disk 0
 
     // reprompt:
     //     Serial.print("%% ?:");
@@ -96,7 +104,7 @@ static void loop0()
 {
     while (1)
     {
-        delayMicroseconds(1);  // a touch of throttle... the processor is plenty fast enough, so we add this to mimic the slower pdp
+        //delayMicroseconds(1);  // a touch of throttle... the processor is plenty fast enough, so we add this to mimic the slower pdp
 
         // Check for interruptd
         if ((itab[0].vec) && (itab[0].pri >= ((kd11::PS >> 5) & 7)))
@@ -125,7 +133,6 @@ jmp_buf trapbuf;
 
 void loop()
 {
-    delayMicroseconds(1);
     // reset interrupts/trap vectors
     uint16_t vec = setjmp(trapbuf);
     if (vec)

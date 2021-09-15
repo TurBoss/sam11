@@ -7,7 +7,7 @@
 
 extern jmp_buf trapbuf;
 
-#define ITABN 8
+#define ITABN 16
 
 extern pdp11::intr itab[ITABN];
 

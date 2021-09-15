@@ -4,7 +4,7 @@
 #define H_PLATFORM
 
 #define RAM_SPI      (0)  // Use SPI SRAM chips (not implemented)
-#define RAM_INTERNAL (1)  // Use internal RAM addresses (must leave at least 8K for simulator)
+#define RAM_INTERNAL (1)  // Use internal RAM addresses (must leave at least 8K for simulator) -> YOU MUST HAVE A LINKER SCRIPT THAT FORCES THE SOFTWARE TO BE LOW!
 #define RAM_EXTENDED (2)  // Use extended, internal RAM (xmem library for AVRs)
 #define RAM_PARALLEL (3)  // Use Parallel addr/data RAM chips (not implmented)
 

@@ -127,7 +127,23 @@ again:
         }
         else
         {
-            dd11::write16(RKBA, rkdata.read() | (rkdata.read() << 8));
+            int t = rkdata.read();
+            if (t == -1)
+            {
+                Serial.println(F("%% rkstep: failed to read (low)"));
+                panic();
+            }
+            val = t & 0xFF;
+
+            t = rkdata.read();
+            if (t == -1)
+            {
+                Serial.println(F("%% rkstep: failed to read (high)"));
+                panic();
+            }
+            val += ((t & 0xFF) << 8);
+
+            dd11::write16(RKBA, val);
         }
         RKBA += 2;
         RKWC = (RKWC + 1) & 0xFFFF;

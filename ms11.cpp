@@ -17,11 +17,13 @@ namespace ms11 {
 void clear()
 {
     return;
-    uint16_t i = 0;
-    for (i = 0; i < MAX_RAM_ADDRESS; i++)
-    {
-        ms11::write8(i, 0);
-    }
+
+    // This crashes the processor!
+    // uint16_t i = 0;
+    // for (i = 0; i < MAX_RAM_ADDRESS; i++)
+    // {
+    //     ms11::write8(i, 0);
+    // }
 }
 #if RAM_MODE == RAM_EXTENDED
 #include "ram_opts/ram_ext.cpp.h"

@@ -207,9 +207,9 @@ void disasm(uint32_t a)
 
 void printstate()
 {
-    Serial.printf("\r\nR0 %06o R1 %06o R2 %06o R3 %06o R4 %06o R5 %06o R6 %06o R7 %06o\r\n",
+    Serial.printf("\r\n%%%% R0 %06o R1 %06o R2 %06o R3 %06o R4 %06o R5 %06o R6 %06o R7 %06o\r\n",
       uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]), uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), uint16_t(kd11::R[7]));
-    Serial.printf("\r\n[%s%s%s%s%s%s",
+    Serial.printf("\r\n%%%% [%s%s%s%s%s%s",
       kd11::prevuser ? "u" : "k",
       kd11::curuser ? "U" : "K",
       kd11::N() ? "N" : " ",
