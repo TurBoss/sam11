@@ -169,15 +169,15 @@ static uint16_t pop()
 // any addresses here, so we can safely do this.
 static uint16_t aget(uint8_t v, uint8_t l)
 {
-    if ((v & 070) == 000)
-    {
-        return 0170000 | (v & 7);
-    }
+    uint16_t addr = 0;
     if (((v & 7) >= 6) || (v & 010))
     {
         l = 2;
     }
-    uint16_t addr = 0;
+    if ((v & 070) == 000)
+    {
+        return 0170000 | (v & 7);
+    }
     switch (v & 060)
     {
     case 000:
@@ -197,6 +197,7 @@ static uint16_t aget(uint8_t v, uint8_t l)
         addr += R[v & 7];
         break;
     }
+    addr &= 0xFFFF;  // ?
     if (v & 010)
     {
         addr = read16(addr);
@@ -257,14 +258,20 @@ static void MOV(const uint16_t instr)
     const uint8_t s = (instr & 07700) >> 6;
     uint8_t l = 2 - (instr >> 15);
     const uint16_t msb = l == 2 ? 0x8000 : 0x80;
-    uint16_t uval = memread(aget(s, l), l);
+    const uint16_t sa = aget(s, l);
+    uint16_t uval = memread(sa, l);
     const uint16_t da = aget(d, l);
+
     PS &= 0xFFF1;
     if (uval & msb)
     {
         PS |= FLAGN;
     }
-    setZ(uval == 0);
+    if (uval == 0)
+    {
+        PS |= FLAGZ;
+    }
+
     if ((isReg(da)) && (l == 1))
     {
         l = 2;
@@ -1505,7 +1512,7 @@ void interrupt(uint8_t vec, uint8_t pri)
     }
     if (i >= ITABN)
     {
-        Serial.printf("%%%% interrupt table full (%i of %i)", i, ITABN);
+        _printf("%%%% interrupt table full (%i of %i)", i, ITABN);
         panic();
     }
     uint8_t j;

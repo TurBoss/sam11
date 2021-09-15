@@ -14,11 +14,13 @@
 #include <Arduino.h>
 #include <SdFat.h>
 
-// int serialWrite(char c, FILE* f)
-// {
-//     Serial.write(c);
-//     return 0;
-// }
+#if defined(__AVR_ATmega2560__)
+int serialWrite(char c, FILE* f)
+{
+    Serial.write(c);
+    return 0;
+}
+#endif
 
 #if USE_SDIO
 SdFatSdio sd;
@@ -49,7 +51,9 @@ void setup(void)
 
     // Start the UART
     Serial.begin(kl11::BAUD_DEFAULT);
-    //fdevopen(serialWrite, NULL);
+#if defined(__AVR_ATmega2560__)
+    fdevopen(serialWrite, NULL);
+#endif
 
     while (!Serial)
         ;
