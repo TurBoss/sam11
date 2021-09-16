@@ -29,6 +29,7 @@ extern uint16_t USP;
 extern uint16_t KSP;
 extern bool curuser;
 extern bool prevuser;
+extern volatile bool trapped;
 
 void step();
 void reset(void);

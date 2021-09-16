@@ -50,7 +50,8 @@ void setup(void)
     platform::begin();
 
     // Start the UART
-    Serial.begin(kl11::BAUD_DEFAULT);
+    Serial.begin(kl11::BAUD_DEFAULT);  // may open bootloader on some boards...
+
 #if defined(__AVR_ATmega2560__)
     fdevopen(serialWrite, NULL);
 #endif
@@ -108,7 +109,7 @@ static void loop0()
 {
     while (1)
     {
-        //delayMicroseconds(1);  // a touch of throttle... the processor is plenty fast enough, so we add this to mimic the slower pdp
+        delayMicroseconds(10);  // a touch of throttle... the processor is plenty fast enough, so we add this to mimic the slower pdp
 
         // Check for interruptd
         if ((itab[0].vec) && (itab[0].pri >= ((kd11::PS >> 5) & 7)))

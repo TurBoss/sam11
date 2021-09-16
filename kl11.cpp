@@ -51,7 +51,10 @@ void poll()
 {
     if (Serial.available())
     {
-        addchar(Serial.read());
+        char c = Serial.read();
+        if (FIRST_LF_BREAKS && (c == '\n' || c == '\r'))
+            kd11::trapped = true;
+        addchar(c);
     }
 
     if ((TPS & 0x80) == 0)

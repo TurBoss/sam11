@@ -28,7 +28,9 @@ uint16_t PC;        // address of current instruction
 uint16_t KSP, USP;  // kernel and user stack pointer
 bool curuser, prevuser;
 
-bool trapped;
+volatile bool trapped = false;
+volatile bool cont_with = false;
+volatile bool waiting = false;
 
 void reset(void)
 {
@@ -472,7 +474,7 @@ static void MUL(const uint16_t instr)
         PS |= FLAGN;
     }
     setZ((sval & 0xFFFFFFFF) == 0);
-    if ((sval < (1 << 15)) || (sval >= ((1 << 15) - 1)))
+    if ((sval < 0x8000) || (sval >= 0x7FFF))  // if ((sval < (1 << 15)) || (sval >= ((1 << 15) - 1)))
     {
         PS |= FLAGC;
     }
@@ -1129,9 +1131,6 @@ static void RESET(uint16_t instr)
     rk11::reset();
 }
 
-volatile bool cont_with = false;
-volatile bool waiting = false;
-
 void step()
 {
     if (waiting)
@@ -1141,18 +1140,23 @@ void step()
         //Serial.print("!");
         //printstate();
 
-        Serial.print("!");
+        Serial.print("\r\n!");
         while (!Serial.available())
-            ;
+            delay(1);
         char c;
         while (1)
         {
             c = Serial.read();
             if (c == '`')  // step individually
+            {
+                trapped = true;
+                cont_with = false;
                 break;
+            }
             if (c == '>')  // continue to the next trap
             {
                 trapped = false;
+                cont_with = false;
                 break;
             }
             if (c == '~')  // continue to the next trap, but keep printing
@@ -1168,7 +1172,7 @@ void step()
 
     if ((BREAK_ON_TRAP || PRINTINSTR || PRINTSTATE) && (cont_with || trapped))
     {
-        delayMicroseconds(50);
+        delayMicroseconds(100);
     }
 
     PC = R[7];
@@ -1176,7 +1180,7 @@ void step()
     // return;
     R[7] += 2;
 
-    if (PRINTINSTR && trapped)
+    if (PRINTINSTR && (trapped || cont_with))
     {
         Serial.print("%% Step: I=");
         Serial.println(instr, OCT);

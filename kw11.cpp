@@ -20,7 +20,7 @@ union {
 void reset()
 {
     LKS = 1 << 7;
-    clkcounter = 0;
+    clkcounter.value = 0;
 }
 void tick()
 {

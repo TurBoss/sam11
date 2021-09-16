@@ -9,6 +9,7 @@ enum
     DEBUG_RK05 = false,
     DEBUG_MMU = false,
     BREAK_ON_TRAP = true,
+    FIRST_LF_BREAKS = true,
 };
 
 void printstate();

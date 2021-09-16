@@ -221,4 +221,5 @@ void printstate()
     disasm(kt11::decode(kd11::PC, false, kd11::curuser));
 #endif
     Serial.println("\r\n");
+    Serial.flush();
 }
