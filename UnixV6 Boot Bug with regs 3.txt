@@ -1152,6 +1152,8 @@ trap type 0
 %% R0 000060 R1 000010 R2 001151 R3 000000 R4 007576 R5 141774 R6 141752 R7 0
 %% [uK Z  ]  instr 003066: 006620
 
+!!! line 0685 "1:" ... the SOB op in m40.s; _clearseg()
+
 %% dd11: read16 from odd address 0417
 %% trap: 4
 
