@@ -8,8 +8,8 @@ enum
     DEBUG_INTER = false,
     DEBUG_RK05 = false,
     DEBUG_MMU = false,
-    BREAK_ON_TRAP = true,
-    FIRST_LF_BREAKS = true,
+    BREAK_ON_TRAP = false,
+    FIRST_LF_BREAKS = false,
 };
 
 void printstate();

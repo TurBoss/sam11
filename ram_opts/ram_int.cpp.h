@@ -3,10 +3,12 @@
 #ifndef RAM_OPT
 #define RAM_OPT
 
+char int_mem[MAX_RAM_ADDRESS];
+
 // memory as words
-int16_t* intptr = reinterpret_cast<int16_t*>(RAM_PTR_ADDR);
+int16_t* intptr = reinterpret_cast<int16_t*>(&int_mem);
 // memory as bytes
-char* charptr = reinterpret_cast<char*>(RAM_PTR_ADDR);
+char* charptr = reinterpret_cast<char*>(&int_mem);
 
 void begin()
 {

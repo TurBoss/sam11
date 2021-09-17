@@ -42,6 +42,7 @@ void reset(void)
     {
         R[i] = 0;
     }
+    kt11::SLR = 0400;
     PS = 0;
     KSP = 0;
     USP = 0;
@@ -1151,70 +1152,70 @@ void step()
 {
     if (waiting)
         return;
-    if (BREAK_ON_TRAP && trapped)
-    {
-        //Serial.print("!");
-        //printstate();
+    // if (BREAK_ON_TRAP && trapped)
+    // {
+    //     //Serial.print("!");
+    //     //printstate();
 
-        Serial.print("\r\n%%!");
-        while (!Serial.available())
-            delay(1);
-        char c;
-        while (1)
-        {
-            c = Serial.read();
-            if (c == '`')  // step individually
-            {
-                trapped = true;
-                cont_with = false;
-                break;
-            }
-            if (c == '>')  // continue to the next trap
-            {
-                trapped = false;
-                cont_with = false;
-                break;
-            }
-            if (c == '~')  // continue to the next trap, but keep printing
-            {
-                trapped = false;
-                cont_with = true;
-                break;
-            }
-            if (c == 'd')
-            {
-                trapped = false;
-                cont_with = false;
-                disasm(kt11::decode(kd11::curPC, false, kd11::curuser));
-                break;
-            }
-            if (c == 'a')
-            {
-                printstate();
-            }
-        }
-        Serial.print(c);
-        Serial.println();
-    }
+    //     Serial.print("\r\n%%!");
+    //     while (!Serial.available())
+    //         delay(1);
+    //     char c;
+    //     while (1)
+    //     {
+    //         c = Serial.read();
+    //         if (c == '`')  // step individually
+    //         {
+    //             trapped = true;
+    //             cont_with = false;
+    //             break;
+    //         }
+    //         if (c == '>')  // continue to the next trap
+    //         {
+    //             trapped = false;
+    //             cont_with = false;
+    //             break;
+    //         }
+    //         if (c == '~')  // continue to the next trap, but keep printing
+    //         {
+    //             trapped = false;
+    //             cont_with = true;
+    //             break;
+    //         }
+    //         if (c == 'd')
+    //         {
+    //             trapped = false;
+    //             cont_with = false;
+    //             disasm(kt11::decode(kd11::curPC, false, kd11::curuser));
+    //             break;
+    //         }
+    //         if (c == 'a')
+    //         {
+    //             printstate();
+    //         }
+    //     }
+    //     Serial.print(c);
+    //     Serial.println();
+    // }
 
-    if ((BREAK_ON_TRAP || PRINTINSTR || PRINTSTATE) && (cont_with || trapped))
-    {
-        delayMicroseconds(100);
-    }
+    // if ((BREAK_ON_TRAP || PRINTINSTR || PRINTSTATE) && (cont_with || trapped))
+    // {
+    //     delayMicroseconds(100);
+    // }
 
     curPC = R[7];
     uint16_t instr = dd11::read16(kt11::decode(R[7], false, curuser));
     // return;
     R[7] += 2;
 
-    if (PRINTINSTR && (trapped || cont_with))
-    {
-        Serial.print("%% Step: I=");
-        Serial.println(instr, OCT);
-    }
+    // if (PRINTINSTR && (trapped || cont_with))
+    // {
+    //     Serial.print("%% Step: I=");
+    //     Serial.println(instr, OCT);
+    // }
 
-    if ((BREAK_ON_TRAP || PRINTSTATE) && (trapped || cont_with))
-        printstate();
+    // if ((BREAK_ON_TRAP || PRINTSTATE) && (trapped || cont_with))
+    //     printstate();
 
     switch ((instr >> 12) & 007)
     {
@@ -1454,7 +1455,7 @@ void step()
         {
             break;
         }
-        waiting = false;
+        waiting = true;
         return;
     case 02:  // RTI
 
@@ -1496,8 +1497,14 @@ void trapat(uint16_t vec)
     }
     trapped = true;
     cont_with = false;
+
     Serial.print(F("%% trap: "));
     Serial.println(vec, OCT);
+
+    _printf("%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o\r\n",
+      uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]));
+    _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
+      uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), kd11::R[7]);  // uint16_t(kd11::R[7]));
 
     /*var prev uint16
    	defer func() {

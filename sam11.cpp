@@ -59,30 +59,57 @@ void setup(void)
     while (!Serial)
         ;
 
-    // Serial.println("%% RK05 Boot List:");
-    // Serial.println("%% ===================================================");
-    // Serial.println("%%  0: UnixV6    - UnixV6 image from Ken");
-    // Serial.println("%%  1: UnixV5    - UnixV5 image from Ken");
-    // Serial.println("%%  2: RSTS      - RSTS DEC OS");
-    // Serial.println("%%  3: XXDP      - DEC XXDP Diagnostics tool");
-    // Serial.println("%%  4: RT11 v3   - RT11 v3 DOS");
-    // Serial.println("%%  5: RT11 v4   - RT11 v4 DOS");
-    // Serial.println("%%  6: RT11 v5   - RT11 v5 DOS");
-    // Serial.println("%%  7: RichieV6  - UnixV6 from Dennis Richie (no boot)");
-    // Serial.println("%%  8: DOS-11v9  - DOS-11 v9");
-    // Serial.println("%%  9: CalderaV5 - UnixV5 from Caldera Ancient Unix");
-    // Serial.println("%% 10: RT11 v1   - RT11 v1 DOS (no boot)");
-    // Serial.println("%% 11: RT11 v2   - RT11 v2 DOS ()");
-    // Serial.println("%% 12: CalderaV6 - UnixV6 from Caldera Ancient Unix"); // This one is multi-part, we only load disk 0
+    Serial.println("%% RK05 Boot List:");
+    Serial.println("%% ===================================================");
+    Serial.println("%%  0: UnixV6    - UnixV6 image from Ken");
+    Serial.println("%%  1: UnixV5    - UnixV5 image from Ken");
+    Serial.println("%%  2: RSTS      - RSTS DEC OS");
+    Serial.println("%%  3: XXDP      - DEC XXDP Diagnostics tool");
+    Serial.println("%%  4: RT11 v3   - RT11 v3 DOS");
+    Serial.println("%%  5: RT11 v4   - RT11 v4 DOS");
+    Serial.println("%%  6: RT11 v5   - RT11 v5 DOS");
+    Serial.println("%%  7: RichieV6  - UnixV6 from Dennis Richie (no boot)");
+    Serial.println("%%  8: DOS-11v9  - DOS-11 v9");
+    Serial.println("%%  9: CalderaV5 - UnixV5 from Caldera Ancient Unix");
+    Serial.println("%% 10: RT11 v1   - RT11 v1 DOS (no boot)");
+    Serial.println("%% 11: RT11 v2   - RT11 v2 DOS ()");
+    Serial.println("%% 12: CalderaV6 - UnixV6 from Caldera Ancient Unix");  // This one is multi-part, we only load disk 0
 
-    // reprompt:
-    //     Serial.print("%% ?:");
+    char disk;
+    char c;
+    char cnt;
+reprompt:
+    disk = 0;
+    cnt = 0;
 
-    // noprompt:
+    Serial.print("%% disk=");
+    while (!Serial.available())
+        delay(1);
+    c = 0;
+    while (1)
+    {
+        c = Serial.read();
+        if (isprint((c)))
+        {
+            if (c >= '0' && c <= '9')
+            {
+                Serial.print(c);
+                disk += (c - '0') + (disk * 10 * cnt);
+                cnt++;
+            }
+        }
+        if (c == '.')
+            break;
+        c = 0;
+    }
+    Serial.println();
 
-    char disk = 0;
+    if (disk > 12)
+        goto reprompt;
 
-    Serial.print(F("%% Init "));
+    Serial.print(F("%% Init disk "));
+    Serial.print(disk, DEC);
+    Serial.print(", ");
     Serial.println(disks[disk]);
 
     // Initialise the RAM

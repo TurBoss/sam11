@@ -97,6 +97,9 @@ void write16(uint32_t a, uint16_t v)
             kd11::PS = v;
             return;
         }
+    case DEV_STACK_LIM:
+        kt11::SLR = v;  // probs wrong
+        return;
     case DEV_LKS:
         kw11::LKS = v;
         return;
@@ -147,8 +150,8 @@ uint16_t read16(uint32_t a)
     {
     case DEV_CPU_STAT:
         return kd11::PS;
-    //case DEV_STACK_LIM:
-    //    return (uint16_t)(0400); // probs wrong
+    case DEV_STACK_LIM:
+        return kt11::SLR;  // probs wrong
     case DEV_LKS:
         return kw11::LKS;
     case DEV_MMU_SR0:

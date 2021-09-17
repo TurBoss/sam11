@@ -3,6 +3,8 @@
 
 namespace kt11 {
 
+extern uint16_t SLR;
+
 extern volatile uint16_t SR0;
 extern volatile uint16_t SR2;
 

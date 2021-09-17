@@ -3,11 +3,14 @@
 #include "kt11.h"
 
 #include "kd11.h"
+#include "platform.h"
 #include "sam11.h"
 
 #include <Arduino.h>
 
 namespace kt11 {
+
+uint16_t SLR;
 
 struct page {
     uint16_t par;
@@ -56,8 +59,8 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
             Serial.println(a, OCT);
             longjmp(trapbuf, INTFAULT);
         }
-        uint8_t block = (a >> 6) & 0177;
-        uint8_t disp = a & 077;
+        const uint8_t block = (a >> 6) & 0177;
+        const uint8_t disp = a & 077;
         // if ((p.ed() && (block < p.len())) || (!p.ed() && (block > p.len()))) {
         if ((pages[i].pdr.bytes.low & 8) ? (block < (pages[i].pdr.bytes.high & 0x7f)) : (block > (pages[i].pdr.bytes.high & 0x7f)))
         {
@@ -68,7 +71,7 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
                 SR0 |= (1 << 5) | (1 << 6);
             }
             SR2 = kd11::curPC;
-            printf("%%%% page length exceeded, address %06o (block %03o) is beyond length %03o\r\n", a, block, (pages[i].pdr.bytes.high & 0x7f));
+            _printf("%%%% page length exceeded, address %06o (block %03o) is beyond length %03o\r\n", a, block, (pages[i].pdr.bytes.high & 0x7f));
             longjmp(trapbuf, INTFAULT);
         }
         if (w)
