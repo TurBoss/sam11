@@ -21,12 +21,14 @@ pdp11::intr itab[ITABN];
 namespace kd11 {
 
 // signed integer registers
-int32_t R[8];
+volatile int32_t R[8];  // R6 = SP, R7 = PC
 
-uint16_t PS;        // processor status
-uint16_t PC;        // address of current instruction
-uint16_t KSP, USP;  // kernel and user stack pointer
-bool curuser, prevuser;
+volatile uint16_t PS;     // Processor Status
+volatile uint16_t curPC;  // R7, address of current instruction
+volatile uint16_t KSP;    // R6 (kernel), stack pointer
+volatile uint16_t USP;    // R6 (user), stack pointer
+volatile bool curuser;    // (true = user)
+volatile bool prevuser;   // (true = user)
 
 volatile bool trapped = false;
 volatile bool cont_with = false;
@@ -46,7 +48,7 @@ void reset(void)
     curuser = false;
     prevuser = false;
     kt11::SR0 = 0;
-    PC = 0;
+    curPC = 0;
     kw11::reset();
     ms11::clear();
     for (i = 0; i < BOOT_LEN; i++)
@@ -195,23 +197,23 @@ static uint16_t aget(uint8_t v, uint8_t l)
     switch (v & 060)
     {
     case 000:
-        v &= 7;
-        addr = R[v & 7];
+        v &= 07;
+        addr = R[v & 07];
         break;
     case 020:
-        addr = R[v & 7];
-        R[v & 7] += l;
+        addr = R[v & 07];
+        R[v & 07] += l;
         break;
     case 040:
-        R[v & 7] -= l;
-        addr = R[v & 7];
+        R[v & 07] -= l;
+        addr = R[v & 07];
         break;
     case 060:
         addr = fetch16();
-        addr += R[v & 7];
+        addr += R[v & 07];
         break;
     }
-    addr &= 0xFFFF;  // ?
+    //addr &= 0xFFFF;  // ?
     if (v & 010)
     {
         addr = read16(addr);
@@ -624,24 +626,34 @@ static void XOR(uint16_t instr)
 
 static void SOB(const uint16_t instr)
 {
-    const uint8_t s = (instr & 07700) >> 6;
-    uint8_t o = instr & 0xFF;
-    R[s & 7]--;
-    if (R[s & 7])
+    // 0077Roo
+
+    uint8_t s = (instr & 0000700) >> 6;
+    uint8_t o = instr & 0000077;  //0xFF;
+    R[s]--;                       // & 07]--;
+    if (R[s])                     // & 07])  //71
     {
-        o &= 077;
-        o <<= 1;
+        //o &= 077;
+        //o <<= 1;
+        o *= 2;
         R[7] -= o;
     }
 }
 
 static void CLR(uint16_t instr)
 {
+    // 0c050DD where c is 0/1 depending on if register
+
     const uint8_t d = instr & 077;
     const uint8_t l = 2 - (instr >> 15);
-    PS &= 0xFFF0;
+    //PS &= 0xFFF0;
+    PS &= ~FLAGN;
+    PS &= ~FLAGV;
+    PS &= ~FLAGC;
     PS |= FLAGZ;
-    memwrite(aget(d, l), l, 0);
+
+    uint16_t da = aget(d, l);
+    memwrite(da, l, 0);
 }
 
 static void COM(uint16_t instr)
@@ -1032,43 +1044,47 @@ static void MFPI(uint16_t instr)
 
 static void MTPI(uint16_t instr)
 {
+    uint32_t sa = 0;
     uint8_t d = instr & 077;
     uint16_t da = aget(d, 2);
     uint16_t uval = pop();
-    if (da == 0170006)
+    if (da == -7)  // == 0170006)  //
     {
         if (curuser == prevuser)
         {
             R[6] = uval;
         }
+        else if (prevuser)
+        {
+            USP = uval;
+        }
         else
         {
-            if (prevuser)
-            {
-                USP = uval;
-            }
-            else
-            {
-                KSP = uval;
-            }
+            KSP = uval;
         }
     }
+    /*
     else if (isReg(da))
     {
         Serial.println(F("%% invalid MTPI instruction"));
         panic();
     }
+    */
     else
     {
-        dd11::write16(kt11::decode((uint16_t)da, true, prevuser), uval);
+        sa = kt11::decode(da, true, prevuser);
+        dd11::write16(sa, uval);
     }
     PS &= 0xFFF0;
     PS |= FLAGC;
-    setZ(uval == 0);
+    if (uval == 0)
+        PS |= FLAGZ;
+    //setZ(uval == 0);
     if (uval & 0x8000)
     {
         PS |= FLAGN;
     }
+    return;
 }
 
 static void RTS(uint16_t instr)
@@ -1140,7 +1156,7 @@ void step()
         //Serial.print("!");
         //printstate();
 
-        Serial.print("\r\n!");
+        Serial.print("\r\n%%!");
         while (!Serial.available())
             delay(1);
         char c;
@@ -1165,6 +1181,17 @@ void step()
                 cont_with = true;
                 break;
             }
+            if (c == 'd')
+            {
+                trapped = false;
+                cont_with = false;
+                disasm(kt11::decode(kd11::curPC, false, kd11::curuser));
+                break;
+            }
+            if (c == 'a')
+            {
+                printstate();
+            }
         }
         Serial.print(c);
         Serial.println();
@@ -1175,8 +1202,8 @@ void step()
         delayMicroseconds(100);
     }
 
-    PC = R[7];
-    uint16_t instr = dd11::read16(kt11::decode(PC, false, curuser));
+    curPC = R[7];
+    uint16_t instr = dd11::read16(kt11::decode(R[7], false, curuser));
     // return;
     R[7] += 2;
 
