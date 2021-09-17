@@ -187,11 +187,11 @@ void disasm(uint32_t a)
     case O:
         if (o & 0x80)
         {
-            printf(" -%03o", (2 * ((0xFF ^ o) + 1)));
+            _printf(" -%03o", (2 * ((0xFF ^ o) + 1)));
         }
         else
         {
-            printf(" +%03o", (2 * o));
+            _printf(" +%03o", (2 * o));
         };
         break;
     case RR | DD:
@@ -207,18 +207,20 @@ void disasm(uint32_t a)
 
 void printstate()
 {
-    _printf("\r\n%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
-      uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]), uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), kd11::PC);  // uint16_t(kd11::R[7]));
-    _printf("\r\n%%%% [%s%s%s%s%s%s",
+    _printf("\r\n%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o\r\n",
+      uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]));
+    _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
+      uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), kd11::curPC);  // uint16_t(kd11::R[7]));
+    _printf("\r\n%%%% [%s%s%s%s%s%s]\r\n",
       kd11::prevuser ? "u" : "k",
       kd11::curuser ? "U" : "K",
       kd11::N() ? "N" : " ",
       kd11::Z() ? "Z" : " ",
       kd11::V() ? "V" : " ",
       kd11::C() ? "C" : " ");
-    _printf("]  instr 0%06o: 0%06o\t", kd11::PC, dd11::read16(kt11::decode(kd11::PC, false, kd11::curuser)));
+    _printf("%% instr 0%06o: 0%06o\t", kd11::curPC, dd11::read16(kt11::decode(kd11::curPC, false, kd11::curuser)));
 #if ALLOW_DISASM
-    disasm(kt11::decode(kd11::PC, false, kd11::curuser));
+    disasm(kt11::decode(kd11::curPC, false, kd11::curuser));
 #endif
     Serial.println("\r\n");
     Serial.flush();
