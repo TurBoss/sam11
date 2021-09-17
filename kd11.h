@@ -21,14 +21,14 @@ enum
 
 namespace kd11 {
 
-extern int32_t R[8];
+extern int32_t R[8];  // R6 = SP, R7 = PC
 
-extern uint16_t PC;
-extern uint16_t PS;
-extern uint16_t USP;
-extern uint16_t KSP;
-extern bool curuser;
-extern bool prevuser;
+extern uint16_t PC;    // R7
+extern uint16_t PS;    // Processor Status
+extern uint16_t USP;   // R6 (user)
+extern uint16_t KSP;   // R6 (kernel)
+extern bool curuser;   // (true = user)
+extern bool prevuser;  // (true = user)
 extern volatile bool trapped;
 
 void step();
