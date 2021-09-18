@@ -211,14 +211,14 @@ void printstate()
       uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]));
     _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
       uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), kd11::curPC);  // uint16_t(kd11::R[7]));
-    _printf("\r\n%%%% [%s%s%s%s%s%s]\r\n",
+    _printf("%%%% [%s%s%s%s%s%s]\r\n",
       kd11::prevuser ? "u" : "k",
       kd11::curuser ? "U" : "K",
       kd11::N() ? "N" : " ",
       kd11::Z() ? "Z" : " ",
       kd11::V() ? "V" : " ",
       kd11::C() ? "C" : " ");
-    _printf("%% instr 0%06o: 0%06o\t", kd11::curPC, dd11::read16(kt11::decode(kd11::curPC, false, kd11::curuser)));
+    _printf("%%%% instr 0%06o: 0%06o\t", kd11::curPC, dd11::read16(kt11::decode(kd11::curPC, false, kd11::curuser)));
 #if ALLOW_DISASM
     disasm(kt11::decode(kd11::curPC, false, kd11::curuser));
 #endif

@@ -127,7 +127,7 @@ reprompt:
 
     ky11::reset();  // reset the front panel - sets the switches to INST_BOOTSTRAP (0173030)
 
-    Serial.println(F("%% Ready"));
+    Serial.println(F("%% Ready\r\n"));
 
     kd11::reset();  // reset the processor
 }
