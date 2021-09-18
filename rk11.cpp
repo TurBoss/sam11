@@ -35,7 +35,7 @@ uint16_t read16(uint32_t a)
         return (sector) | (surface << 4) | (cylinder << 5) | (drive << 13);
     default:
         Serial.println(F("%% rk11::read16 invalid read"));
-        panic();
+        //panic();
         return 0;
     }
 }
@@ -223,7 +223,7 @@ void write16(uint32_t a, uint16_t v)
         break;
     default:
         Serial.println(F("%% rkwrite16: invalid write"));
-        panic();
+        //panic();
     }
 }
 

@@ -62,6 +62,13 @@ void write16(uint32_t a, uint16_t v)
         ms11::write16(a, v);
         return;
     }
+
+    // if ((a & 0777770) == 0770000)
+    // {
+    //     kd11::R[a & 07] = v;
+    //     return;
+    // }
+
     switch (a)
     {
     case DEV_CPU_STAT:
@@ -145,6 +152,11 @@ uint16_t read16(uint32_t a)
     {
         return ms11::read16(a);
     }
+
+    // if ((a & 0777770) == 0770000)
+    // {
+    //     return kd11::R[a & 07];
+    // }
 
     switch (a)  // Switch by address, and read from virtual device as appropriate
     {

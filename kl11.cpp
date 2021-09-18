@@ -90,7 +90,7 @@ uint16_t read16(uint32_t a)
         return 0;
     default:
         Serial.println(F("%% kl11: read16 from invalid address"));  // " + ostr(a, 6))
-        panic();
+        //panic();
         return 0;
     }
 }
@@ -126,7 +126,7 @@ void write16(uint32_t a, uint16_t v)
         break;
     default:
         Serial.println(F("%% kl11: write16 to invalid address"));  // " + ostr(a, 6))
-        panic();
+        //panic();
     }
 }
 

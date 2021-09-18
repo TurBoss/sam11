@@ -61,6 +61,7 @@ uint16_t readSwitches();
 //#define PIN_OUT_PROC_STEP (13)
 //#define PIN_OUT_PROC_RUN  (13)
 //#define PIN_OUT_BUS_ACT   (13)
+//#define PIN_OUT_USER_MODE (13)
 
 #endif
 

@@ -31,14 +31,15 @@ SdFat sd;
 const char* disks[] =
   {
     "unixv6.dsk",
-    "unixv5.dsk",
-    "rsts.dsk",
-    "xxdp.dsk",
-    "rt11v3.dsk",
-    "rt11v4.dsk",
-    "rt11v5.dsk",
-    "dos-11.dsk",
-    "calderav6_0.dsk"};
+    // "unixv5.dsk",
+    // "rsts.dsk",
+    // "xxdp.dsk",
+    // "rt11v3.dsk",
+    // "rt11v4.dsk",
+    // "rt11v5.dsk",
+    // "dos-11.dsk",
+    // "calderav6_0.dsk"
+};
 
 void setup(void)
 {
@@ -55,19 +56,19 @@ void setup(void)
     while (!Serial)
         ;
 
-    Serial.println("%% RK05 Boot List:");
-    Serial.println("%% ===================================================");
-    Serial.println("%%  0: UnixV6    - UnixV6 image from Ken");
-    Serial.println("%%  1: UnixV5    - UnixV5 image from Ken");
-    Serial.println("%%  2: RSTS      - RSTS DEC OS");
-    Serial.println("%%  3: XXDP      - DEC XXDP Diagnostics tool");
-    Serial.println("%%  4: RT11 v3   - RT11 v3 DOS");
-    Serial.println("%%  5: RT11 v4   - RT11 v4 DOS");
-    Serial.println("%%  6: RT11 v5   - RT11 v5 DOS");
-    Serial.println("%%  7: DOS-11v9  - DOS-11 v9");
-    Serial.println("%%  8: CalderaV6 - UnixV6 from Caldera Ancient Unix");  // This one is multi-part, we only load disk 0
+    // Serial.println("%% RK05 Boot List:");
+    // Serial.println("%% ===================================================");
+    // Serial.println("%%  0: UnixV6    - UnixV6 image from Ken");
+    // Serial.println("%%  1: UnixV5    - UnixV5 image from Ken");
+    // Serial.println("%%  2: RSTS      - RSTS DEC OS");
+    // Serial.println("%%  3: XXDP      - DEC XXDP Diagnostics tool");
+    // Serial.println("%%  4: RT11 v3   - RT11 v3 DOS");
+    // Serial.println("%%  5: RT11 v4   - RT11 v4 DOS");
+    // Serial.println("%%  6: RT11 v5   - RT11 v5 DOS");
+    // Serial.println("%%  7: DOS-11v9  - DOS-11 v9");
+    // Serial.println("%%  8: CalderaV6 - UnixV6 from Caldera Ancient Unix");  // This one is multi-part, we only load disk 0
 
-    Serial.println("\r\n%% Type disk number followed by '.' to select image.");
+    // Serial.println("\r\n%% Type disk number followed by '.' to select image.");
 
     char disk;
     char c;
@@ -77,29 +78,29 @@ reprompt:
     cnt = 0;
 
     Serial.print("%% disk=");
-    while (!Serial.available())
-        delay(1);
-    c = 0;
-    while (1)
-    {
-        c = Serial.read();
-        if (isprint((c)))
-        {
-            if (c >= '0' && c <= '9')
-            {
-                Serial.print(c);
-                disk += (c - '0') + (disk * 10 * cnt);
-                cnt++;
-            }
-        }
-        if (c == '.')
-            break;
-        c = 0;
-    }
-    Serial.println();
+    // while (!Serial.available())
+    //     delay(1);
+    // c = 0;
+    // while (1)
+    // {
+    //     c = Serial.read();
+    //     if (isprint((c)))
+    //     {
+    //         if (c >= '0' && c <= '9')
+    //         {
+    //             Serial.print(c);
+    //             disk += (c - '0') + (disk * 10 * cnt);
+    //             cnt++;
+    //         }
+    //     }
+    //     if (c == '.')
+    //         break;
+    //     c = 0;
+    // }
+    // Serial.println();
 
-    if (disk > 8)
-        goto reprompt;
+    // if (disk > 8)
+    //     goto reprompt;
 
     Serial.print(F("%% Init disk "));
     Serial.print(disk, DEC);
@@ -128,7 +129,7 @@ static void loop0()
 {
     while (1)
     {
-        delayMicroseconds(10);  // a touch of throttle... the processor is plenty fast enough, so we add this to mimic the slower pdp
+        //delayMicroseconds(10);  // a touch of throttle... the processor is plenty fast enough, so we add this to mimic the slower pdp
 
         // Check for interruptd
         if ((itab[0].vec) && (itab[0].pri >= ((kd11::PS >> 5) & 7)))
@@ -150,6 +151,8 @@ static void loop0()
         kw11::tick();  // tick the clock
 
         kl11::poll();  // check the terminal
+
+        Serial.flush();
     }
 }
 

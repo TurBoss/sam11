@@ -86,7 +86,7 @@ static void write16(const uint16_t a, const uint16_t v)
     dd11::write16(kt11::decode(a, true, curuser), v);
 }
 
-static bool isReg(const uint16_t a)
+bool isReg(const uint16_t a)
 {
     return (a & 0177770) == 0170000;
 }
@@ -246,10 +246,16 @@ void switchmode(const bool newm)
     }
     if (curuser)
     {
+#ifdef PIN_OUT_USER_MODE
+        digitalWrite(PIN_OUT_USER_MODE, LED_ON);
+#endif
         R[6] = USP;
     }
     else
     {
+#ifdef PIN_OUT_USER_MODE
+        digitalWrite(PIN_OUT_USER_MODE, LED_OFF;
+#endif
         R[6] = KSP;
     }
     PS &= 0007777;
@@ -1049,7 +1055,7 @@ static void MTPI(uint16_t instr)
     uint8_t d = instr & 077;
     uint16_t da = aget(d, 2);
     uint16_t uval = pop();
-    if (da == -7)  // == 0170006)  //
+    if (da == 0170006)
     {
         if (curuser == prevuser)
         {
@@ -1064,13 +1070,11 @@ static void MTPI(uint16_t instr)
             KSP = uval;
         }
     }
-    /*
     else if (isReg(da))
     {
         Serial.println(F("%% invalid MTPI instruction"));
         panic();
     }
-    */
     else
     {
         sa = kt11::decode(da, true, prevuser);
@@ -1078,9 +1082,7 @@ static void MTPI(uint16_t instr)
     }
     PS &= 0xFFF0;
     PS |= FLAGC;
-    if (uval == 0)
-        PS |= FLAGZ;
-    //setZ(uval == 0);
+    setZ(uval == 0);
     if (uval & 0x8000)
     {
         PS |= FLAGN;
@@ -1152,70 +1154,69 @@ void step()
 {
     if (waiting)
         return;
-    // if (BREAK_ON_TRAP && trapped)
-    // {
-    //     //Serial.print("!");
-    //     //printstate();
+    if (BREAK_ON_TRAP && trapped)
+    {
+        //Serial.print("!");
+        //printstate();
 
-    //     Serial.print("\r\n%%!");
-    //     while (!Serial.available())
-    //         delay(1);
-    //     char c;
-    //     while (1)
-    //     {
-    //         c = Serial.read();
-    //         if (c == '`')  // step individually
-    //         {
-    //             trapped = true;
-    //             cont_with = false;
-    //             break;
-    //         }
-    //         if (c == '>')  // continue to the next trap
-    //         {
-    //             trapped = false;
-    //             cont_with = false;
-    //             break;
-    //         }
-    //         if (c == '~')  // continue to the next trap, but keep printing
-    //         {
-    //             trapped = false;
-    //             cont_with = true;
-    //             break;
-    //         }
-    //         if (c == 'd')
-    //         {
-    //             trapped = false;
-    //             cont_with = false;
-    //             disasm(kt11::decode(kd11::curPC, false, kd11::curuser));
-    //             break;
-    //         }
-    //         if (c == 'a')
-    //         {
-    //             printstate();
-    //         }
-    //     }
-    //     Serial.print(c);
-    //     Serial.println();
-    // }
+        Serial.print("\r\n%%!");
+        while (!Serial.available())
+            delay(1);
+        char c;
+        while (1)
+        {
+            c = Serial.read();
+            if (c == '`')  // step individually
+            {
+                trapped = true;
+                cont_with = false;
+                break;
+            }
+            if (c == '>')  // continue to the next trap
+            {
+                trapped = false;
+                cont_with = false;
+                break;
+            }
+            if (c == '~')  // continue to the next trap, but keep printing
+            {
+                trapped = false;
+                cont_with = true;
+                break;
+            }
+            if (c == 'd' && ALLOW_DISASM)
+            {
+                trapped = false;
+                cont_with = false;
+                disasm(kt11::decode(kd11::curPC, false, kd11::curuser));
+                break;
+            }
+            if (c == 'a')
+            {
+                printstate();
+            }
+        }
+        Serial.print(c);
+        Serial.println();
+    }
 
-    // if ((BREAK_ON_TRAP || PRINTINSTR || PRINTSTATE) && (cont_with || trapped))
-    // {
-    //     delayMicroseconds(100);
-    // }
+    if ((BREAK_ON_TRAP || PRINTINSTR || PRINTSTATE) && (cont_with || trapped))
+    {
+        delayMicroseconds(100);
+    }
 
     curPC = R[7];
     uint16_t instr = dd11::read16(kt11::decode(R[7], false, curuser));
     // return;
     R[7] += 2;
 
-    // if (PRINTINSTR && (trapped || cont_with))
-    // {
-    //     Serial.print("%% Step: I=");
-    //     Serial.println(instr, OCT);
-    // }
+    if (PRINTINSTR && (trapped || cont_with))
+    {
+        _printf("%%%% instr 0%06o: 0%06o\r\n", kd11::curPC, dd11::read16(kt11::decode(kd11::curPC, false, kd11::curuser)));
+    }
 
-    // if ((BREAK_ON_TRAP || PRINTSTATE) && (trapped || cont_with))
-    //     printstate();
+    if ((BREAK_ON_TRAP || PRINTSTATE) && (trapped || cont_with))
+        printstate();
 
     switch ((instr >> 12) & 007)
     {
@@ -1455,7 +1456,7 @@ void step()
         {
             break;
         }
-        waiting = true;
+        //waiting = true;
         return;
     case 02:  // RTI
 

@@ -59,6 +59,9 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
         return a;
     }
 
+    //if (kd11::isReg(a))
+    //    return (uint32_t)((uint32_t)a + 0600000);
+
     // kt11 enabled
     const uint16_t m = user ? 8 : 0;
     const uint16_t i = (a >> 13) + m;
@@ -106,6 +109,8 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
         pages[i].pdr |= 1 << 6;
 
     uint32_t aa = ((block + pages[i].addr()) << 6) + disp;
+
+#if DEBUG_MMU
     if (DEBUG_MMU)
     {
         Serial.print("%% decode: slow ");
@@ -113,6 +118,8 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
         Serial.print(" -> ");
         Serial.println(aa, OCT);
     }
+#endif
+
     return aa;
 }
 

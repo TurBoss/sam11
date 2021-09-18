@@ -2,7 +2,8 @@
   "files.associations": {
     "*.asm": "asm-collection",
     "algorithm": "cpp",
-    "random": "cpp"
+    "random": "cpp",
+    "*.tcc": "cpp"
   },
   "C_Cpp.errorSquiggles": "Enabled",
   "C_Cpp.intelliSenseEngine": "Tag Parser"

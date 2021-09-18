@@ -2,8 +2,9 @@
 // Mostly 11/40 KD11-A with KE11/KG11 extensions from 11/45 KB11-B
 
 // this is all kinds of wrong
-#include <setjmp.h>
 #include "pdp1140.h"
+
+#include <setjmp.h>
 
 extern jmp_buf trapbuf;
 
@@ -31,6 +32,7 @@ extern volatile bool curuser;    // (true = user)
 extern volatile bool prevuser;   // (true = user)
 extern volatile bool trapped;
 
+bool isReg(const uint16_t a);
 void step();
 void reset(void);
 void switchmode(bool newm);
