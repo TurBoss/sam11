@@ -6,6 +6,7 @@ enum
     PRINTSTATE = false,
     INSTR_TIMING = false,
     DEBUG_INTER = false,
+    DEBUG_TRAP = false,
     DEBUG_RK05 = false,
     DEBUG_MMU = false,
     BREAK_ON_TRAP = false,

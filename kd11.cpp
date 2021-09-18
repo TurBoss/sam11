@@ -1456,7 +1456,7 @@ void step()
         {
             break;
         }
-        //waiting = true;
+        waiting = true;
         return;
     case 02:  // RTI
 
@@ -1501,12 +1501,13 @@ void trapat(uint16_t vec)
 
     Serial.print(F("%% trap: "));
     Serial.println(vec, OCT);
-
-    _printf("%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o\r\n",
-      uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]));
-    _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
-      uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), kd11::R[7]);  // uint16_t(kd11::R[7]));
-
+    if (DEBUG_TRAP)
+    {
+        _printf("%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o\r\n",
+          uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]));
+        _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
+          uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), kd11::R[7]);  // uint16_t(kd11::R[7]));
+    }
     /*var prev uint16
    	defer func() {
    		t = recover()
