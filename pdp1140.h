@@ -41,7 +41,7 @@
  * KM11         Maintenance Device
  * KT11     Y   Memory Management Unit (11/40 compliant ONLY)
  * KW11     *   Line Time Clock (P revision is also RTC - not implemented)
- * KY11     +   Developer/Diagnostics Console (front panel)
+ * KY11-D   +   Developer/Diagnostics Console (front panel)
  * 
  * KE11-F   P*  Floating Point Instructions Extension
  * FP11     P*  Floating Point Coprocessor

@@ -16,7 +16,7 @@
 namespace ms11 {
 void clear()
 {
-    return;
+    //return;
 
     // This crashes the processor!
     // uint16_t i = 0;

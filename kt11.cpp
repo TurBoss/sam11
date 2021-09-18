@@ -13,113 +13,127 @@ namespace kt11 {
 uint16_t SLR;
 
 struct page {
-    uint16_t par;
-    union {
-        struct {
-            uint8_t low;
-            uint8_t high;
-        } bytes;
-        uint16_t word;
-    } pdr;
+    uint16_t par;  // Page address register
+    uint16_t pdr;  // Page descriptor register
+    uint32_t addr()
+    {
+        return par & 07777;  // only bits 11-0 are valid
+    }
+    uint16_t len()
+    {
+        return ((pdr >> 8) & 0x7F);  // page length field - bits 14-8
+    }
+    bool read()
+    {
+        return (pdr & 2) == 2;
+    }
+    bool write()
+    {
+        return (pdr & 6) == 6;
+    }
+    bool ed()  // expansion directo, 0=up, 1=down
+    {
+        return (pdr & 8) == 8;
+    }
 };
 
-volatile page pages[16];
-volatile uint16_t SR0, SR2;
+page pages[17];
+uint16_t SR0, SR2;
+
+void errorSR0(const uint16_t a, const bool user)
+{
+    SR0 |= (a >> 12) & ~1;  // page no.
+    if (user)
+    {
+        SR0 |= (1 << 5) | (1 << 6);  // user mode
+    }
+    SR2 = kd11::curPC;
+}
 
 uint32_t decode(const uint16_t a, const bool w, const bool user)
 {
-    if (SR0 & 1)
+    if (!(SR0 & 1))
     {
-        // kt11 enabled
-        const uint8_t i = user ? ((a >> 13) + 8) : (a >> 13);
-        if (w && !pages[i].pdr.bytes.low & 6)  // write to page
-        {
-            SR0 = (1 << 13) | 1;
-            SR0 |= (a >> 12) & ~1;
-            if (user)
-            {
-                SR0 |= (1 << 5) | (1 << 6);
-            }
-            SR2 = kd11::curPC;
-
-            Serial.print(F("%% kt11::decode write to read-only page "));
-            Serial.println(a, OCT);
-            longjmp(trapbuf, INTFAULT);
-        }
-        if (!pages[i].pdr.bytes.low & 2)  // read from page
-        {
-            SR0 = (1 << 15) | 1;
-            SR0 |= (a >> 12) & ~1;
-            if (user)
-            {
-                SR0 |= (1 << 5) | (1 << 6);
-            }
-            SR2 = kd11::curPC;
-            Serial.print(F("%% kt11::decode read from no-access page "));
-            Serial.println(a, OCT);
-            longjmp(trapbuf, INTFAULT);
-        }
-        const uint8_t block = (a >> 6) & 0177;
-        const uint8_t disp = a & 077;
-        // if ((p.ed() && (block < p.len())) || (!p.ed() && (block > p.len()))) {
-        if ((pages[i].pdr.bytes.low & 8) ? (block < (pages[i].pdr.bytes.high & 0x7f)) : (block > (pages[i].pdr.bytes.high & 0x7f)))
-        {
-            SR0 = (1 << 14) | 1;
-            SR0 |= (a >> 12) & ~1;
-            if (user)
-            {
-                SR0 |= (1 << 5) | (1 << 6);
-            }
-            SR2 = kd11::curPC;
-            _printf("%%%% page length exceeded, address %06o (block %03o) is beyond length %03o\r\n", a, block, (pages[i].pdr.bytes.high & 0x7f));
-            longjmp(trapbuf, INTFAULT);
-        }
-        if (w)
-        {
-            pages[i].pdr.bytes.low |= 1 << 6;
-        }
-        // danger, this can be cast to a uint16_t if you aren't careful
-        /*
-        uint32_t aa = pages[i].par & 07777;
-        aa += block;
-        aa <<= 6;
-        aa += disp;
-        */
-        uint32_t aa = ((block + (pages[i].par)) << 6) + disp;
-        if (DEBUG_MMU)
-        {
-            Serial.print("%% decode: slow ");
-            Serial.print(a, OCT);
-            Serial.print(" -> ");
-            Serial.println(aa, OCT);
-        }
-        return aa;
+        if (a >= 0170000)
+            return (uint32_t)((uint32_t)a + 0600000);
+        return a;
     }
-    // kt11 disabled, fast path
-    //return a > 0167777 ? ((uint32_t)a) + 0600000 : a;
-    if (a >= 0170000)
-        return (uint32_t)((uint32_t)a + 0600000);
 
-    return a;
+    // kt11 enabled
+    const uint16_t m = user ? 8 : 0;
+    const uint16_t i = (a >> 13) + m;
+    const uint16_t block = (a >> 6) & 0177;
+    const uint16_t disp = a & 077;
+
+    if (w && !pages[i].write())  // write to RO page
+    {
+        SR0 = (1 << 13) | 1;  // abort RO
+        errorSR0(a, user);
+
+        Serial.print(F("%% kt11::decode write to read-only page "));
+        Serial.println(a, OCT);
+        longjmp(trapbuf, INTFAULT);
+    }
+    if (!pages[i].read())  // read from WO page
+    {
+        SR0 = (1 << 15) | 1;  //abort non-resident
+        errorSR0(a, user);
+
+        Serial.print(F("%% kt11::decode read from no-access page "));
+        Serial.println(a, OCT);
+        longjmp(trapbuf, INTFAULT);
+    }
+    if (pages[i].ed() && (block < pages[i].len()))
+    {
+        SR0 = (1 << 14) | 1;  //abort page len error
+        errorSR0(a, user);
+
+        _printf("%%%% page %i length exceeded (down).\r\n", i);
+        _printf("%%%% address 0%06o; block 0%03o is below length 0%03o\r\n", a, block, (pages[i].len()));
+        longjmp(trapbuf, INTFAULT);
+    }
+    if (!pages[i].ed() && block > pages[i].len())
+    {
+        SR0 = (1 << 14) | 1;  //abort page len error
+        errorSR0(a, user);
+
+        _printf("%%%% page %i length exceeded (up).\r\n", i);
+        _printf("%%%% address 0%06o; block 0%03o is above length 0%03o\r\n", a, block, (pages[i].len()));
+        longjmp(trapbuf, INTFAULT);
+    }
+
+    if (w)
+        pages[i].pdr |= 1 << 6;
+
+    uint32_t aa = ((block + pages[i].addr()) << 6) + disp;
+    if (DEBUG_MMU)
+    {
+        Serial.print("%% decode: slow ");
+        Serial.print(a, OCT);
+        Serial.print(" -> ");
+        Serial.println(aa, OCT);
+    }
+    return aa;
 }
 
 uint16_t read16(const uint32_t a)
 {
+    uint8_t i = ((a & 017) >> 1);
     if ((a >= 0772300) && (a < 0772320))
     {
-        return pages[((a & 017) >> 1)].pdr.word;
+        return pages[i].pdr;
     }
     if ((a >= 0772340) && (a < 0772360))
     {
-        return pages[((a & 017) >> 1)].par;
+        return pages[i].par;
     }
     if ((a >= 0777600) && (a < 0777620))
     {
-        return pages[((a & 017) >> 1) + 8].pdr.word;
+        return pages[i + 8].pdr;
     }
     if ((a >= 0777640) && (a < 0777660))
     {
-        return pages[((a & 017) >> 1) + 8].par;
+        return pages[i + 8].par;
     }
     Serial.print(F("%% kt11::read16 invalid read from "));
     Serial.println(a, OCT);
@@ -131,22 +145,26 @@ void write16(const uint32_t a, const uint16_t v)
     uint8_t i = ((a & 017) >> 1);
     if ((a >= 0772300) && (a < 0772320))
     {
-        pages[i].pdr.word = v;
+        pages[i].pdr = v;
+        pages[i].pdr &= ~(1 << 6);
         return;
     }
     if ((a >= 0772340) && (a < 0772360))
     {
         pages[i].par = v;
+        pages[i].pdr &= ~(1 << 6);
         return;
     }
     if ((a >= 0777600) && (a < 0777620))
     {
-        pages[i + 8].pdr.word = v;
+        pages[i + 8].pdr = v;
+        pages[i].pdr &= ~(1 << 6);
         return;
     }
     if ((a >= 0777640) && (a < 0777660))
     {
         pages[i + 8].par = v;
+        pages[i].pdr &= ~(1 << 6);
         return;
     }
     Serial.print(F("%% kt11::write16 0"));

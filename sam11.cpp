@@ -37,11 +37,7 @@ const char* disks[] =
     "rt11v3.dsk",
     "rt11v4.dsk",
     "rt11v5.dsk",
-    "dennisv6.dsk",
     "dos-11.dsk",
-    "calderav5.dsk",
-    "rt11v1.dsk",
-    "rt11v2.dsk",
     "calderav6_0.dsk"};
 
 void setup(void)
@@ -68,12 +64,10 @@ void setup(void)
     Serial.println("%%  4: RT11 v3   - RT11 v3 DOS");
     Serial.println("%%  5: RT11 v4   - RT11 v4 DOS");
     Serial.println("%%  6: RT11 v5   - RT11 v5 DOS");
-    Serial.println("%%  7: RichieV6  - UnixV6 from Dennis Richie (no boot)");
-    Serial.println("%%  8: DOS-11v9  - DOS-11 v9");
-    Serial.println("%%  9: CalderaV5 - UnixV5 from Caldera Ancient Unix");
-    Serial.println("%% 10: RT11 v1   - RT11 v1 DOS (no boot)");
-    Serial.println("%% 11: RT11 v2   - RT11 v2 DOS ()");
-    Serial.println("%% 12: CalderaV6 - UnixV6 from Caldera Ancient Unix");  // This one is multi-part, we only load disk 0
+    Serial.println("%%  7: DOS-11v9  - DOS-11 v9");
+    Serial.println("%%  8: CalderaV6 - UnixV6 from Caldera Ancient Unix");  // This one is multi-part, we only load disk 0
+
+    Serial.println("\r\n%% Type disk number followed by '.' to select image.");
 
     char disk;
     char c;
@@ -104,7 +98,7 @@ reprompt:
     }
     Serial.println();
 
-    if (disk > 12)
+    if (disk > 8)
         goto reprompt;
 
     Serial.print(F("%% Init disk "));
@@ -126,10 +120,8 @@ reprompt:
     }
 
     ky11::reset();  // reset the front panel - sets the switches to INST_BOOTSTRAP (0173030)
-
-    Serial.println(F("%% Ready\r\n"));
-
     kd11::reset();  // reset the processor
+    Serial.println(F("%% Ready\r\n"));
 }
 
 static void loop0()
@@ -176,7 +168,7 @@ void loop()
 
 void panic()  // aka what it does when halted
 {
-    Serial.println("%% HALT");
+    Serial.println("%% Processor halted.");
 
 #ifdef PIN_OUT_PROC_RUN
     digitalWrite(PIN_OUT_PROC_RUN, LED_OFF);

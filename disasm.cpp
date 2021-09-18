@@ -207,7 +207,7 @@ void disasm(uint32_t a)
 
 void printstate()
 {
-    _printf("\r\n%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o\r\n",
+    _printf("%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o\r\n",
       uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]));
     _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
       uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), kd11::curPC);  // uint16_t(kd11::R[7]));
