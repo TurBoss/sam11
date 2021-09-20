@@ -37,7 +37,7 @@ struct page {
     }
 };
 
-page pages[17];
+page pages[16];
 uint16_t SR0, SR2;
 
 void errorSR0(const uint16_t a, const bool user)
