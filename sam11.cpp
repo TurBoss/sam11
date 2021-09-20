@@ -106,7 +106,7 @@ void setup(void)
     Serial.println(disks[disk]);
 
     // init the sd card
-    if (!sd.begin(PIN_OUT_SD_CS, SD_SCK_MHZ(7)))
+    if (!sd.begin(PIN_OUT_SD_CS, SD_SCK_MHZ(SD_SPEED_MHZ)))
         sd.initErrorHalt();
 
     // Initialise the RAM
