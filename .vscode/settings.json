@@ -3,7 +3,9 @@
     "*.asm": "asm-collection",
     "algorithm": "cpp",
     "random": "cpp",
-    "*.tcc": "cpp"
+    "*.tcc": "cpp",
+    "initializer_list": "cpp",
+    "xutility": "cpp"
   },
   "C_Cpp.errorSquiggles": "Enabled",
   "C_Cpp.intelliSenseEngine": "Tag Parser"

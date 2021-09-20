@@ -55,62 +55,62 @@ void setup(void)
     while (!Serial)
         ;
 
-    Serial.println("%% RK05 Boot List:");
-    Serial.println("%% ===================================================");
-    Serial.println("%%  0: UnixV6    - UnixV6 (default)");
-    Serial.println("%%  1: UnixV5    - UnixV5 (needs serial tty)");
-    Serial.println("%%  2: RSTS      - RSTS DEC OS (no boot)");
-    Serial.println("%%  3: XXDP      - XXDP DEC OS (no boot)");
-    Serial.println("%%  4: RT11 v3   - RT11 v3 DOS (no boot)");
-    Serial.println("%%  5: RT11 v4   - RT11 v4 DOS (no boot)");
-    Serial.println("%%  6: RT11 v5   - RT11 v5 DOS (no boot)");
-    Serial.println("%%  7: DOS-11v9  - DOS-11 v9 (irq fault)");
+    // Serial.println("%% RK05 Boot List:");
+    // Serial.println("%% ===================================================");
+    // Serial.println("%%  0: UnixV6    - UnixV6 (default)");
+    // Serial.println("%%  1: UnixV5    - UnixV5 (needs serial tty)");
+    // Serial.println("%%  2: RSTS      - RSTS DEC OS (no boot)");
+    // Serial.println("%%  3: XXDP      - XXDP DEC OS (no boot)");
+    // Serial.println("%%  4: RT11 v3   - RT11 v3 DOS (no boot)");
+    // Serial.println("%%  5: RT11 v4   - RT11 v4 DOS (no boot)");
+    // Serial.println("%%  6: RT11 v5   - RT11 v5 DOS (no boot)");
+    // Serial.println("%%  7: DOS-11v9  - DOS-11 v9 (irq fault)");
 
-    Serial.println("\r\n%% Type disk number followed by '.' to select image.");
+    // Serial.println("\r\n%% Type disk number followed by '.' to select image.");
 
     char disk;
-    char c;
-    char cnt;
-reprompt:
+    //     char c;
+    //     char cnt;
+    // reprompt:
     disk = 0;
-    cnt = 0;
+    // cnt = 0;
 
-    Serial.print("%% disk=");
-    while (!Serial.available())
-        delay(1);
-    c = 0;
-    while (1)
-    {
-        c = Serial.read();
-        if (isprint((c)))
-        {
-            if (c >= '0' && c <= '9')
-            {
-                Serial.print(c);
-                disk += (c - '0') + (disk * 10 * cnt);
-                cnt++;
-            }
-        }
-        if (c == '.')
-            break;
-        c = 0;
-    }
-    Serial.println();
+    // Serial.print("%% disk=");
+    // while (!Serial.available())
+    //     delay(1);
+    // c = 0;
+    // while (1)
+    // {
+    //     c = Serial.read();
+    //     if (isprint((c)))
+    //     {
+    //         if (c >= '0' && c <= '9')
+    //         {
+    //             Serial.print(c);
+    //             disk += (c - '0') + (disk * 10 * cnt);
+    //             cnt++;
+    //         }
+    //     }
+    //     if (c == '.')
+    //         break;
+    //     c = 0;
+    // }
+    // Serial.println();
 
-    if (disk > 7)
-        goto reprompt;
+    // if (disk > 7)
+    //     goto reprompt;
 
     Serial.print(F("%% Init disk "));
     Serial.print(disk, DEC);
     Serial.print(", ");
     Serial.println(disks[disk]);
 
-    // Initialise the RAM
-    ms11::begin();
-
     // init the sd card
     if (!sd.begin(PIN_OUT_SD_CS, SD_SCK_MHZ(7)))
         sd.initErrorHalt();
+
+    // Initialise the RAM
+    ms11::begin();
 
     // Load RK05 Disk 0 as Read/Write
     if (!rk11::rkdata.open(disks[disk], O_RDWR))
@@ -180,6 +180,7 @@ void panic()  // aka what it does when halted
 #endif
 
     printstate();
+    Serial.flush();
     while (1)
         delay(1);
 }

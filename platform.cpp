@@ -45,6 +45,11 @@ void begin()
     digitalWrite(PIN_OUT_PROC_RUN, LED_OFF);
 #endif
 
+#if DISABLE_PIN_10
+    pinMode(10, OUTPUT);
+    digitalWrite(10, HIGH);
+#endif
+
     return;
 }
 

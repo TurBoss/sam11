@@ -7,6 +7,7 @@
 #define RAM_INTERNAL (1)  // Use internal RAM addresses (must leave at least 8K for simulator) -> YOU MUST HAVE A LINKER SCRIPT THAT FORCES THE SOFTWARE TO BE LOW!
 #define RAM_EXTENDED (2)  // Use extended, internal RAM (xmem library for AVRs)
 #define RAM_PARALLEL (3)  // Use Parallel addr/data RAM chips (not implmented)
+#define RAM_SWAPFILE (4)  // Use a file on the SD card as a swap file
 
 namespace platform {
 
@@ -46,10 +47,10 @@ uint16_t readSwitches();
 
 #define USE_SDIO false  // use an SDIO interface for cards
 
-#define ALLOW_DISASM    (false)    // allow disassembly (PDP-11) on crash/panic/state prints
+#define ALLOW_DISASM    (false)  // allow disassembly (PDP-11) on crash/panic/state prints
 #define MAX_RAM_ADDRESS (0760000)  // 248KB
 
-#define RAM_MODE     RAM_INTERNAL           // use the chip's onboard SRAM
+#define RAM_MODE     RAM_INTERNAL  // use the chip's onboard SRAM
 #define RAM_PTR_ADDR (0x20000000 + 0x2000)  // SRAM base + 8K buffer for simulator to run in
 
 #define LED_ON  (HIGH)
@@ -62,6 +63,31 @@ uint16_t readSwitches();
 //#define PIN_OUT_PROC_RUN  (13)
 //#define PIN_OUT_BUS_ACT   (13)
 //#define PIN_OUT_USER_MODE (13)
+
+// Adafruit Feather M0 and similar
+#elif defined(__SAMD21G18A__)
+
+#define _printf Serial.printf
+
+#define USE_SDIO false  // use an SDIO interface for cards
+
+#define ALLOW_DISASM    (false)  // allow disassembly (PDP-11) on crash/panic/state prints
+#define MAX_RAM_ADDRESS (0760000)  // 248KB
+
+#define RAM_MODE RAM_SWAPFILE  // use a swapfile as ram
+
+#define LED_ON  (LOW)
+#define LED_OFF (HIGH)
+
+#define PIN_OUT_SD_CS 4
+
+#define PIN_OUT_DISK_ACT  (6)
+#define PIN_OUT_MEM_ACT   (1)
+#define PIN_OUT_PROC_STEP (8)
+//#define PIN_OUT_PROC_RUN  (13)
+//#define PIN_OUT_BUS_ACT   (13)
+//#define PIN_OUT_USER_MODE (13)
+#define DISABLE_PIN_10    true
 
 #endif
 

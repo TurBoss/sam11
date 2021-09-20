@@ -1,6 +1,8 @@
 // sam11 software emulation of DEC PDP-11/40  MS11-MB Silicon Memory
 // 256KiB/128KiW, but system can only access up to 248KiB/124KiW
 #include "pdp1140.h"
+#include "platform.h"
+#include <SDFat.h>
 
 /* MS11 Silicon Memory:
  * ====================
@@ -18,6 +20,9 @@
  */
 
 namespace ms11 {
+#if RAM_MODE == RAM_SWAPFILE
+extern SdFile msdata;
+#endif
 void begin();
 void clear();
 uint16_t read8(uint32_t a);

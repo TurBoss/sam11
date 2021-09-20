@@ -13,7 +13,15 @@
 #include "xmem.h"
 #endif
 
+#if RAM_MODE == RAM_SWAPFILE
+#include <SdFat.h>
+#include <stdint.h>
+#endif
+
 namespace ms11 {
+#if RAM_MODE == RAM_SWAPFILE
+SdFile msdata;
+#endif
 void clear()
 {
 }
@@ -21,6 +29,8 @@ void clear()
 #include "ram_opts/ram_ext.cpp.h"
 #elif RAM_MODE == RAM_INTERNAL
 #include "ram_opts/ram_int.cpp.h"
+#elif RAM_MODE == RAM_SWAPFILE
+#include "ram_opts/ram_swapfile.cpp.h"
 #else
 #include "ram_opts/ram_no_select.cpp.h"  // if there is no ram option, add some dummy functions
 #error NO RAM OPTION SELECTED
