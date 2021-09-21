@@ -5,7 +5,9 @@
     "random": "cpp",
     "*.tcc": "cpp",
     "initializer_list": "cpp",
-    "xutility": "cpp"
+    "xutility": "cpp",
+    "memory": "cpp",
+    "optional": "cpp"
   },
   "C_Cpp.errorSquiggles": "Enabled",
   "C_Cpp.intelliSenseEngine": "Tag Parser"
