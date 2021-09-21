@@ -1015,7 +1015,6 @@ static void MFPI(uint16_t instr)
     uint16_t uval;
     if (da == 0170006)
     {
-        // val = (curuser == prevuser) ? R[6] : (prevuser ? k.USP : KSP);
         if (curuser == prevuser)
         {
             uval = R[6];
@@ -1492,7 +1491,7 @@ void step()
 }
 
 void trapat(uint16_t vec)
-{  // , msg string) {
+{
     if (vec & 1)
     {
         Serial.println(F("%% Thou darst calling trapat() with an odd vector number?"));
