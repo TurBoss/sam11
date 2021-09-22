@@ -16,7 +16,10 @@ void begin()
     results = xmem::selfTest();
     if (!results.succeeded)
     {
-        Serial.println(F("xram test failure"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% xram test failure"));
+        }
         panic();
     }
 
@@ -40,8 +43,11 @@ uint16_t read8(const uint32_t a)
         xmem::setMemoryBank(bank(a), false);
         return charptr[(a & 0x7fff)];
     }
-    Serial.print(F("%% ms11: read from invalid address "));
-    Serial.println(a, OCT);
+    if (PRINTSIMLINES)
+    {
+        Serial.print(F("%% ms11: read from invalid address "));
+        Serial.println(a, OCT);
+    }
     longjmp(trapbuf, INTBUS);
     return 0;
 }
@@ -55,8 +61,11 @@ void write8(const uint32_t a, const uint16_t v)
         charptr[(a & 0x7fff)] = v & 0xff;
         return;
     }
-    Serial.print(F("%% ms11: read from invalid address "));
-    Serial.println(a, OCT);
+    if (PRINTSIMLINES)
+    {
+        Serial.print(F("%% ms11: read from invalid address "));
+        Serial.println(a, OCT);
+    }
     longjmp(trapbuf, INTBUS);
     return;
 }
@@ -70,8 +79,11 @@ void write16(uint32_t a, uint16_t v)
         intptr[(a & 0x7fff) >> 1] = v;
         return;
     }
-    Serial.print(F("%% ms11: read from invalid address "));
-    Serial.println(a, OCT);
+    if (PRINTSIMLINES)
+    {
+        Serial.print(F("%% ms11: read from invalid address "));
+        Serial.println(a, OCT);
+    }
     longjmp(trapbuf, INTBUS);
     return;
 }
@@ -85,8 +97,11 @@ uint16_t read16(uint32_t a)
         return intptr[(a & 0x7fff) >> 1];
         return 0;
     }
-    Serial.print(F("%% ms11: read from invalid address "));
-    Serial.println(a, OCT);
+    if (PRINTSIMLINES)
+    {
+        Serial.print(F("%% ms11: read from invalid address "));
+        Serial.println(a, OCT);
+    }
     longjmp(trapbuf, INTBUS);
     return 0;
 }

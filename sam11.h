@@ -1,5 +1,8 @@
 #include "pdp1140.h"
 
+#ifndef H_SAM11
+#define H_SAM11
+
 enum
 {
     PRINTINSTR = false,
@@ -11,6 +14,7 @@ enum
     DEBUG_MMU = false,
     BREAK_ON_TRAP = false,
     FIRST_LF_BREAKS = false,
+    PRINTSIMLINES = false,
 };
 
 void printstate();
@@ -18,3 +22,5 @@ void panic();
 void disasm(uint32_t ia);
 
 void trap(uint16_t num);
+
+#endif

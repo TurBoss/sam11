@@ -83,8 +83,11 @@ void write16(uint32_t a, uint16_t v)
                 kd11::switchmode(true);
                 break;
             default:
-                Serial.print(F("%% invalid PS (>>14) mode: "));
-                Serial.println(c14, OCT);
+                if (PRINTSIMLINES)
+                {
+                    Serial.print(F("%% invalid PS (>>14) mode: "));
+                    Serial.println(c14, OCT);
+                }
                 panic();
             }
             int c12 = (v >> 12) & 3;
@@ -97,8 +100,11 @@ void write16(uint32_t a, uint16_t v)
                 kd11::prevuser = true;
                 break;
             default:
-                Serial.print(F("%% invalid PS (>>12 & 3) mode: "));
-                Serial.println(c12, OCT);
+                if (PRINTSIMLINES)
+                {
+                    Serial.print(F("%% invalid PS (>>12 & 3) mode: "));
+                    Serial.println(c12, OCT);
+                }
                 panic();
             }
             kd11::PS = v;
@@ -134,8 +140,11 @@ void write16(uint32_t a, uint16_t v)
         kt11::write16(a, v);
         return;
     }
-    Serial.print(F("%% dd11: write to invalid address 0"));
-    Serial.println(a, OCT);
+    if (PRINTSIMLINES)
+    {
+        Serial.print(F("%% dd11: write to invalid address 0"));
+        Serial.println(a, OCT);
+    }
     longjmp(trapbuf, INTBUS);
 }
 
@@ -143,8 +152,11 @@ uint16_t read16(uint32_t a)
 {
     if (a % 2 != 0)
     {
-        Serial.print(F("%% dd11: read16 from odd address 0"));
-        Serial.println(a, OCT);
+        if (PRINTSIMLINES)
+        {
+            Serial.print(F("%% dd11: read16 from odd address 0"));
+            Serial.println(a, OCT);
+        }
         longjmp(trapbuf, INTBUS);
     }
 
@@ -190,9 +202,11 @@ uint16_t read16(uint32_t a)
     {
         return kt11::read16(a);
     }
-
-    Serial.print(F("%% dd11: read from invalid address 0"));
-    Serial.println(a, OCT);
+    if (PRINTSIMLINES)
+    {
+        Serial.print(F("%% dd11: read from invalid address 0"));
+        Serial.println(a, OCT);
+    }
     longjmp(trapbuf, INTBUS);
 }
 

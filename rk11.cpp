@@ -34,7 +34,10 @@ uint16_t read16(uint32_t a)
     case 0777412:
         return (sector) | (surface << 4) | (cylinder << 5) | (drive << 13);
     default:
-        Serial.println(F("%% rk11::read16 invalid read"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% rk11::read16 invalid read"));
+        }
         //panic();
         return 0;
     }
@@ -77,22 +80,28 @@ again:
         w = false;
         break;
     default:
-        Serial.println(F("%% unimplemented RK05 operation"));  //  %#o", ((r.RKCS & 017) >> 1)))
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% unimplemented RK05 operation"));  //  %#o", ((r.RKCS & 017) >> 1)))
+        }
         panic();
     }
 
     if (DEBUG_RK05)
     {
-        Serial.print("%% rkstep: RKBA: ");
-        Serial.print(RKBA, DEC);
-        Serial.print(" RKWC: ");
-        Serial.print(RKWC, DEC);
-        Serial.print(" cylinder: ");
-        Serial.print(cylinder, DEC);
-        Serial.print(" sector: ");
-        Serial.print(sector, DEC);
-        Serial.print(" write: ");
-        Serial.println(w ? "true" : "false");
+        if (PRINTSIMLINES)
+        {
+            Serial.print("%% rkstep: RKBA: ");
+            Serial.print(RKBA, DEC);
+            Serial.print(" RKWC: ");
+            Serial.print(RKWC, DEC);
+            Serial.print(" cylinder: ");
+            Serial.print(cylinder, DEC);
+            Serial.print(" sector: ");
+            Serial.print(sector, DEC);
+            Serial.print(" write: ");
+            Serial.println(w ? "true" : "false");
+        }
     }
 
     if (drive != 0)
@@ -111,7 +120,10 @@ again:
     int32_t pos = (cylinder * 24 + surface * 12 + sector) * 512;
     if (!rkdata.seekSet(pos))
     {
-        Serial.println(F("%% rkstep: failed to seek"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% rkstep: failed to seek"));
+        }
         panic();
     }
 
@@ -130,7 +142,10 @@ again:
             int t = rkdata.read();
             if (t == -1)
             {
-                Serial.println(F("%% rkstep: failed to read (low)"));
+                if (PRINTSIMLINES)
+                {
+                    Serial.println(F("%% rkstep: failed to read (low)"));
+                }
                 panic();
             }
             val = t & 0xFF;
@@ -138,7 +153,10 @@ again:
             t = rkdata.read();
             if (t == -1)
             {
-                Serial.println(F("%% rkstep: failed to read (high)"));
+                if (PRINTSIMLINES)
+                {
+                    Serial.println(F("%% rkstep: failed to read (high)"));
+                }
                 panic();
             }
             val += ((t & 0xFF) << 8);
@@ -204,7 +222,10 @@ void write16(uint32_t a, uint16_t v)
                 step();
                 break;
             default:
-                Serial.println(F("%% unimplemented RK05 operation"));  // %#o", ((r.RKCS & 017) >> 1)))
+                if (PRINTSIMLINES)
+                {
+                    Serial.println(F("%% unimplemented RK05 operation"));  // %#o", ((r.RKCS & 017) >> 1)))
+                }
                 panic();
             }
         }
@@ -222,7 +243,10 @@ void write16(uint32_t a, uint16_t v)
         sector = v & 15;
         break;
     default:
-        Serial.println(F("%% rkwrite16: invalid write"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% rkwrite16: invalid write"));
+        }
         //panic();
     }
 }

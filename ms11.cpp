@@ -8,6 +8,7 @@
 #include "sam11.h"
 
 #include <Arduino.h>
+#include "sam11.h"
 
 #if RAM_MODE == RAM_EXTENDED
 #include "xmem.h"

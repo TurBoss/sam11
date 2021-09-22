@@ -99,12 +99,13 @@ void setup(void)
 
     // if (disk > 7)
     //     goto reprompt;
-
-    Serial.print(F("%% Init disk "));
-    Serial.print(disk, DEC);
-    Serial.print(", ");
-    Serial.println(disks[disk]);
-
+    if (PRINTSIMLINES)
+    {
+        Serial.print(F("%% Init disk "));
+        Serial.print(disk, DEC);
+        Serial.print(", ");
+        Serial.println(disks[disk]);
+    }
     // init the sd card
     if (!sd.begin(PIN_OUT_SD_CS, SD_SCK_MHZ(SD_SPEED_MHZ)))
         sd.initErrorHalt();
@@ -179,7 +180,10 @@ void panic()  // aka what it does when halted
     digitalWrite(PIN_OUT_PROC_STEP, LED_OFF);
 #endif
 
-    printstate();
+    if (PRINTSIMLINES)
+    {
+        printstate();
+    }
     Serial.flush();
     while (1)
         delay(1);

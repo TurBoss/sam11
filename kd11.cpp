@@ -452,7 +452,10 @@ static void JSR(uint16_t instr)
     uint16_t uval = aget(d, l);
     if (isReg(uval))
     {
-        Serial.println(F("%% JSR called on register"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% JSR called on register"));
+        }
         panic();
     }
     push(R[s & 7]);
@@ -979,7 +982,10 @@ static void JMP(uint16_t instr)
     uint16_t uval = aget(d, 2);
     if (isReg(uval))
     {
-        Serial.println(F("%% JMP called with register dest"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% JMP called with register dest"));
+        }
         panic();
     }
     R[7] = uval;
@@ -1033,7 +1039,10 @@ static void MFPI(uint16_t instr)
     }
     else if (isReg(da))
     {
-        Serial.println(F("%% invalid MFPI instruction"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% invalid MFPI instruction"));
+        }
         panic();
     }
     else
@@ -1073,7 +1082,10 @@ static void MTPI(uint16_t instr)
     }
     else if (isReg(da))
     {
-        Serial.println(F("%% invalid MTPI instruction"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% invalid MTPI instruction"));
+        }
         panic();
     }
     else
@@ -1155,55 +1167,59 @@ void step()
 {
     if (waiting)
         return;
-    if (BREAK_ON_TRAP && trapped)
-    {
-        //Serial.print("!");
-        //printstate();
 
-        Serial.print("\r\n%%!");
-        while (!Serial.available())
-            delay(1);
-        char c;
-        while (1)
+    if (PRINTSIMLINES)
+    {
+        if (BREAK_ON_TRAP && trapped)
         {
-            c = Serial.read();
-            if (c == '`')  // step individually
-            {
-                trapped = true;
-                cont_with = false;
-                break;
-            }
-            if (c == '>')  // continue to the next trap
-            {
-                trapped = false;
-                cont_with = false;
-                break;
-            }
-            if (c == '~')  // continue to the next trap, but keep printing
-            {
-                trapped = false;
-                cont_with = true;
-                break;
-            }
-            if (c == 'd' && ALLOW_DISASM)
-            {
-                trapped = false;
-                cont_with = false;
-                disasm(kt11::decode(kd11::curPC, false, kd11::curuser));
-                break;
-            }
-            if (c == 'a')
-            {
-                printstate();
-            }
-        }
-        Serial.print(c);
-        Serial.println();
-    }
+            //Serial.print("!");
+            //printstate();
 
-    if ((BREAK_ON_TRAP || PRINTINSTR || PRINTSTATE) && (cont_with || trapped))
-    {
-        delayMicroseconds(100);
+            Serial.print("\r\n%%!");
+            while (!Serial.available())
+                delay(1);
+            char c;
+            while (1)
+            {
+                c = Serial.read();
+                if (c == '`')  // step individually
+                {
+                    trapped = true;
+                    cont_with = false;
+                    break;
+                }
+                if (c == '>')  // continue to the next trap
+                {
+                    trapped = false;
+                    cont_with = false;
+                    break;
+                }
+                if (c == '~')  // continue to the next trap, but keep printing
+                {
+                    trapped = false;
+                    cont_with = true;
+                    break;
+                }
+                if (c == 'd' && ALLOW_DISASM)
+                {
+                    trapped = false;
+                    cont_with = false;
+                    disasm(kt11::decode(kd11::curPC, false, kd11::curuser));
+                    break;
+                }
+                if (c == 'a')
+                {
+                    printstate();
+                }
+            }
+            Serial.print(c);
+            Serial.println();
+        }
+
+        if ((BREAK_ON_TRAP || PRINTINSTR || PRINTSTATE) && (cont_with || trapped))
+        {
+            delayMicroseconds(100);
+        }
     }
 
     curPC = R[7];
@@ -1211,13 +1227,16 @@ void step()
     // return;
     R[7] += 2;
 
-    if (PRINTINSTR && (trapped || cont_with))
+    if (PRINTSIMLINES)
     {
-        _printf("%%%% instr 0%06o: 0%06o\r\n", kd11::curPC, dd11::read16(kt11::decode(kd11::curPC, false, kd11::curuser)));
-    }
+        if (PRINTINSTR && (trapped || cont_with))
+        {
+            _printf("%%%% instr 0%06o: 0%06o\r\n", kd11::curPC, dd11::read16(kt11::decode(kd11::curPC, false, kd11::curuser)));
+        }
 
-    if ((BREAK_ON_TRAP || PRINTSTATE) && (trapped || cont_with))
-        printstate();
+        if ((BREAK_ON_TRAP || PRINTSTATE) && (trapped || cont_with))
+            printstate();
+    }
 
     switch ((instr >> 12) & 007)
     {
@@ -1484,9 +1503,11 @@ void step()
             return;
         }
     }
-
-    Serial.print("%% invalid instruction 0");
-    Serial.println(instr, OCT);
+    if (PRINTSIMLINES)
+    {
+        Serial.print("%% invalid instruction 0");
+        Serial.println(instr, OCT);
+    }
     longjmp(trapbuf, INTINVAL);
 }
 
@@ -1494,20 +1515,26 @@ void trapat(uint16_t vec)
 {
     if (vec & 1)
     {
-        Serial.println(F("%% Thou darst calling trapat() with an odd vector number?"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% Thou darst calling trapat() with an odd vector number?"));
+        }
         panic();
     }
     trapped = true;
     cont_with = false;
-
-    Serial.print(F("%% trap: "));
-    Serial.println(vec, OCT);
-    if (DEBUG_TRAP)
+    if (PRINTSIMLINES)
     {
-        _printf("%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o\r\n",
-          uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]));
-        _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
-          uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), kd11::R[7]);  // uint16_t(kd11::R[7]));
+        Serial.print(F("%% trap: "));
+        Serial.println(vec, OCT);
+
+        if (DEBUG_TRAP)
+        {
+            _printf("%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o\r\n",
+              uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]));
+            _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
+              uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), kd11::R[7]);  // uint16_t(kd11::R[7]));
+        }
     }
     /*var prev uint16
    	defer func() {
@@ -1543,7 +1570,10 @@ void interrupt(uint8_t vec, uint8_t pri)
 {
     if (vec & 1)
     {
-        Serial.println(F("%% Thou darst calling interrupt() with an odd vector number?"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% Thou darst calling interrupt() with an odd vector number?"));
+        }
         panic();
     }
     // fast path
@@ -1570,7 +1600,10 @@ void interrupt(uint8_t vec, uint8_t pri)
     }
     if (i >= ITABN)
     {
-        _printf("%%%% interrupt table full (%i of %i)", i, ITABN);
+        if (PRINTSIMLINES)
+        {
+            _printf("%%%% interrupt table full (%i of %i)", i, ITABN);
+        }
         panic();
     }
     uint8_t j;
@@ -1599,8 +1632,11 @@ void handleinterrupt()
     uint8_t vec = itab[0].vec;
     if (DEBUG_INTER)
     {
-        Serial.print("%% IRQ: ");
-        Serial.println(vec, OCT);
+        if (PRINTSIMLINES)
+        {
+            Serial.print("%% IRQ: ");
+            Serial.println(vec, OCT);
+        }
     }
     uint16_t vv = setjmp(trapbuf);
     if (vv == 0)

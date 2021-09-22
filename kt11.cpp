@@ -72,36 +72,44 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
     {
         SR0 = (1 << 13) | 1;  // abort RO
         errorSR0(a, user);
-
-        Serial.print(F("%% kt11::decode write to read-only page "));
-        Serial.println(a, OCT);
+        if (PRINTSIMLINES)
+        {
+            Serial.print(F("%% kt11::decode write to read-only page "));
+            Serial.println(a, OCT);
+        }
         longjmp(trapbuf, INTFAULT);
     }
     if (!pages[i].read())  // read from WO page
     {
         SR0 = (1 << 15) | 1;  //abort non-resident
         errorSR0(a, user);
-
-        Serial.print(F("%% kt11::decode read from no-access page "));
-        Serial.println(a, OCT);
+        if (PRINTSIMLINES)
+        {
+            Serial.print(F("%% kt11::decode read from no-access page "));
+            Serial.println(a, OCT);
+        }
         longjmp(trapbuf, INTFAULT);
     }
     if (pages[i].ed() && (block < pages[i].len()))
     {
         SR0 = (1 << 14) | 1;  //abort page len error
         errorSR0(a, user);
-
-        _printf("%%%% page %i length exceeded (down).\r\n", i);
-        _printf("%%%% address 0%06o; block 0%03o is below length 0%03o\r\n", a, block, (pages[i].len()));
+        if (PRINTSIMLINES)
+        {
+            _printf("%%%% page %i length exceeded (down).\r\n", i);
+            _printf("%%%% address 0%06o; block 0%03o is below length 0%03o\r\n", a, block, (pages[i].len()));
+        }
         longjmp(trapbuf, INTFAULT);
     }
     if (!pages[i].ed() && block > pages[i].len())
     {
         SR0 = (1 << 14) | 1;  //abort page len error
         errorSR0(a, user);
-
-        _printf("%%%% page %i length exceeded (up).\r\n", i);
-        _printf("%%%% address 0%06o; block 0%03o is above length 0%03o\r\n", a, block, (pages[i].len()));
+        if (PRINTSIMLINES)
+        {
+            _printf("%%%% page %i length exceeded (up).\r\n", i);
+            _printf("%%%% address 0%06o; block 0%03o is above length 0%03o\r\n", a, block, (pages[i].len()));
+        }
         longjmp(trapbuf, INTFAULT);
     }
 
@@ -113,10 +121,13 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
 #if DEBUG_MMU
     if (DEBUG_MMU)
     {
-        Serial.print("%% decode: slow ");
-        Serial.print(a, OCT);
-        Serial.print(" -> ");
-        Serial.println(aa, OCT);
+        if (PRINTSIMLINES)
+        {
+            Serial.print("%% decode: slow ");
+            Serial.print(a, OCT);
+            Serial.print(" -> ");
+            Serial.println(aa, OCT);
+        }
     }
 #endif
 
@@ -142,8 +153,11 @@ uint16_t read16(const uint32_t a)
     {
         return pages[i + 8].par;
     }
-    Serial.print(F("%% kt11::read16 invalid read from "));
-    Serial.println(a, OCT);
+    if (PRINTSIMLINES)
+    {
+        Serial.print(F("%% kt11::read16 invalid read from "));
+        Serial.println(a, OCT);
+    }
     longjmp(trapbuf, INTBUS);
 }
 
@@ -174,10 +188,13 @@ void write16(const uint32_t a, const uint16_t v)
         pages[i].pdr &= ~(1 << 6);
         return;
     }
-    Serial.print(F("%% kt11::write16 0"));
-    Serial.print(v, OCT);
-    Serial.print(F(" from invalid address 0"));
-    Serial.println(a, OCT);
+    if (PRINTSIMLINES)
+    {
+        Serial.print(F("%% kt11::write16 0"));
+        Serial.print(v, OCT);
+        Serial.print(F(" from invalid address 0"));
+        Serial.println(a, OCT);
+    }
     longjmp(trapbuf, INTBUS);
 }
 

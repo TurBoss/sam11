@@ -11,7 +11,8 @@ void begin()
     // open the swap file as R/W
     if (!msdata.open("swapfile", O_RDWR))
     {
-        Serial.println(F("%% swapfile: failed to open for write"));
+        if (PRINTSIMLINES)
+            Serial.println(F("%% swapfile: failed to open for write"));
         panic();
     }
 #ifdef PIN_OUT_MEM_ACT
@@ -28,13 +29,15 @@ uint16_t read8(const uint32_t a)
     int val;
     if (!msdata.seekSet(a))
     {
-        Serial.println(F("%% swapfile: failed to seek"));
+        if (PRINTSIMLINES)
+            Serial.println(F("%% swapfile: failed to seek"));
         panic();
     }
     int t = msdata.read();
     if (t == -1)
     {
-        Serial.println(F("%% swapfile: failed to read"));
+        if (PRINTSIMLINES)
+            Serial.println(F("%% swapfile: failed to read"));
         panic();
     }
     val = t & 0xFF;
@@ -51,7 +54,10 @@ void write8(const uint32_t a, const uint16_t v)
 #endif
     if (!msdata.seekSet(a))
     {
-        Serial.println(F("%% swapfile: failed to seek"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% swapfile: failed to seek"));
+        }
         panic();
     }
     msdata.write(v & 0xFF);
@@ -68,7 +74,10 @@ void write16(uint32_t a, uint16_t v)
 #endif
     if (!msdata.seekSet(a))
     {
-        Serial.println(F("%% swapfile: failed to seek"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% swapfile: failed to seek"));
+        }
         panic();
     }
     msdata.write(v & 0xFF);
@@ -87,13 +96,17 @@ uint16_t read16(uint32_t a)
     int val;
     if (!msdata.seekSet(a))
     {
-        Serial.println(F("%% swapfile: failed to seek"));
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% swapfile: failed to seek"));
+        }
         panic();
     }
     int t = msdata.read();
     if (t == -1)
     {
-        Serial.println(F("%% swapfile: failed to read (low)"));
+        if (PRINTSIMLINES)
+            Serial.println(F("%% swapfile: failed to read (low)"));
         panic();
     }
     val = t & 0xFF;
@@ -101,7 +114,8 @@ uint16_t read16(uint32_t a)
     t = msdata.read();
     if (t == -1)
     {
-        Serial.println(F("%% swapfile: failed to read (high)"));
+        if (PRINTSIMLINES)
+            Serial.println(F("%% swapfile: failed to read (high)"));
         panic();
     }
     val += ((t & 0xFF) << 8);
