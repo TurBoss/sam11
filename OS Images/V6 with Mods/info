@@ -2,5 +2,6 @@ This is the unixv6.dsk image from the main directory with a couple of tweaks:
 1. Added myself as a user (chloe)
 2. Added csh shell from 2BSD (and setenv, though faulty)
 3. Added shutdown and halt commands (must have processor modded to enable user halt)
-4. Login and csh-init scripts for user chloe to set tty to allow upper and lower case
+4. cshrc scripts for user chloe to set tty to allow upper and lower case and set username prompt
 5. User chloe logs into csh instead of sh (Thompson)
+6. Added whomai command
