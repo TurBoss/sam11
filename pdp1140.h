@@ -182,28 +182,103 @@ enum
 // Device Addresses:
 enum
 {
-    DEV_CPU_STAT = 0777776,   // CPU Status
-    DEV_STACK_LIM = 0777774,  // Stack Limit Register
-    DEV_PIRQ_1145 = 0777772,  // 11/45 PIRQ Register
-    // 0777716 to 0777700,// CPU Registers
-    // 0777676 to 0777600 // 11/45 Segmentation Registers
-    // 0777656 to 0777600 // MX11 Memory Extention
+    DEV_CPU_STAT = 0777776,       // CPU Status
+    DEV_STACK_LIM = 0777774,      // Stack Limit Register
+    DEV_PIRQ_1145 = 0777772,      // 11/45 PIRQ Register
+    DEV_MICROPROG_BRK = 0777770,  // Microprogram break
+
+    DEV_CPU_ERROR = 0777766,
+    DEV_SYS_I_D = 0777764,
+    DEV_SYS_SIZE_UP = 0777762,
+    DEV_SYS_SIZE_LO = 0777760,
+
+    // 0777756 - NOT USED
+    // 0777754 - NOT USED
+
+    DEV_HIT_MISS = 0777752,
+    DEV_MAINTAIN = 0777750,
+
+    DEV_CONTROL = 0777746,
+    DEV_MEM_SYS_ERROR = 0777744,
+    DEV_ERROR_ADR_HI = 0777742,
+    DEV_ERROR_ADR_LO = 0777740,
+
+    DEV_CPU_USR_SP = 0777717,
+    DEV_CPU_SUP_SP = 0777716,
+    DEV_CPU_GEN1_R5 = 0777715,
+    DEV_CPU_GEN1_R4 = 0777714,
+    DEV_CPU_GEN1_R3 = 0777713,
+    DEV_CPU_GEN1_R2 = 0777712,
+    DEV_CPU_GEN1_R1 = 0777711,
+    DEV_CPU_GEN1_R0 = 0777710,
+
+    DEV_CPU_KER_PC = 0777707,
+    DEV_CPU_KER_SP = 0777706,
+    DEV_CPU_GEN0_R5 = 0777705,
+    DEV_CPU_GEN0_R4 = 0777704,
+    DEV_CPU_GEN0_R3 = 0777703,
+    DEV_CPU_GEN0_R2 = 0777702,
+    DEV_CPU_GEN0_R1 = 0777701,
+    DEV_CPU_GEN0_R0 = 0777700,
+
+    DEV_USR_DAT_PAR_R7 = 0777676,
+    DEV_USR_DAT_PAR_R6 = 0777674,
+    DEV_USR_DAT_PAR_R5 = 0777672,
+    DEV_USR_DAT_PAR_R4 = 0777670,
+    DEV_USR_DAT_PAR_R3 = 0777666,
+    DEV_USR_DAT_PAR_R2 = 0777664,
+    DEV_USR_DAT_PAR_R1 = 0777662,
+    DEV_USR_DAT_PAR_R0 = 0777660,
+
+    DEV_USR_INS_PAR_R7 = 0777656,
+    DEV_USR_INS_PAR_R6 = 0777654,
+    DEV_USR_INS_PAR_R5 = 0777652,
+    DEV_USR_INS_PAR_R4 = 0777650,
+    DEV_USR_INS_PAR_R3 = 0777646,
+    DEV_USR_INS_PAR_R2 = 0777644,
+    DEV_USR_INS_PAR_R1 = 0777642,
+    DEV_USR_INS_PAR_R0 = 0777640,
+
+    DEV_USR_DAT_PDR_R7 = 0777636,
+    DEV_USR_DAT_PDR_R6 = 0777634,
+    DEV_USR_DAT_PDR_R5 = 0777632,
+    DEV_USR_DAT_PDR_R4 = 0777630,
+    DEV_USR_DAT_PDR_R3 = 0777626,
+    DEV_USR_DAT_PDR_R2 = 0777624,
+    DEV_USR_DAT_PDR_R1 = 0777622,
+    DEV_USR_DAT_PDR_R0 = 0777620,
+
+    DEV_USR_INS_PDR_R7 = 0777616,
+    DEV_USR_INS_PDR_R6 = 0777614,
+    DEV_USR_INS_PDR_R5 = 0777612,
+    DEV_USR_INS_PDR_R4 = 0777610,
+    DEV_USR_INS_PDR_R3 = 0777606,
+    DEV_USR_INS_PDR_R2 = 0777604,
+    DEV_USR_INS_PDR_R1 = 0777602,
+    DEV_USR_INS_PDR_R0 = 0777600,
+
     DEV_MMU_SR2 = 0777576,
+    DEV_MMU_SR1 = 0777574,
     DEV_MMU_SR0 = 0777572,
+
     DEV_CONSOLE_SR = 0777570,  // Console switch/display register
     DEV_CONSOLE_DR = 0777570,  // Console display register
-    DEV_LKS = 0777546,         // Line Clock
-    DEV_KWP = 0772546,         // KW11-P (XX)
-    DEV_KWP_CNTR = 0772544,    // KW11-P Counter
-    DEV_KWP_CSB = 0772542,     // KW11-P Count Set Register
-    DEV_KWP_CSR = 0772540,     // KW11-P CSR
-    DEV_RK_DS = 0777400,       // RK11 Drive Status
-    DEV_RK_ER = 0777402,       // RK11 Error
-    DEV_RK_CS = 0777404,       // RK11 Control Status
-    DEV_RK_WC = 0777406,       // RK11 Word Count
-    DEV_RK_BA = 0777410,       // RK11 Bus Address (current memory address)
-    DEV_RK_DA = 0777412,       // RK11 Disk Address
-    DEV_RK_DB = 0777416,       // RK11 Data Buffer
-    DEV_MEMORY = 0760000,      // Main Memory (0->0760000 (excl))
+
+    DEV_LKS = 0777546,  // Line Clock
+
+    DEV_RK_DB = 0777416,  // RK11 Data Buffer
+    DEV_RK_DA = 0777412,  // RK11 Disk Address
+    DEV_RK_BA = 0777410,  // RK11 Bus Address (current memory address)
+    DEV_RK_WC = 0777406,  // RK11 Word Count
+    DEV_RK_CS = 0777404,  // RK11 Control Status
+    DEV_RK_ER = 0777402,  // RK11 Error
+    DEV_RK_DS = 0777400,  // RK11 Drive Status
+
+    DEV_KWP = 0772546,       // KW11-P (XX)
+    DEV_KWP_CNTR = 0772544,  // KW11-P Counter
+    DEV_KWP_CSB = 0772542,   // KW11-P Count Set Register
+    DEV_KWP_CSR = 0772540,   // KW11-P CSR
+
+    DEV_MEMORY = 0760000,  // Main Memory (0->0760000 (excl))
 };
 #endif
