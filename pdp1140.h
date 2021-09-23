@@ -133,44 +133,50 @@ struct intr {
 // Interrupt Vectors:
 enum
 {
-    INTRFU = 0000,       // Reserved
-    INTBUS = 0004,       // Bus timeout
-    INTINVAL = 0010,     // Reserved Intruction
-    INTDEBUG = 0014,     // Debugging trap
-    INTIOT = 0020,       // IOT Trap
-    INTPF = 0024,        // Power Fail
-    INTEMT = 0030,       // EMT
-    INTTRP = 0034,       // "TRAP"
-    INTSS0 = 0040,       // System Software 0
-    INTSS1 = 0044,       // System Software 1
-    INTSS2 = 0050,       // System Software 2
-    INTSS3 = 0054,       // System Software 3
-    INTTTYIN = 0060,     // TTY In
-    INTTTYOUT = 0064,    // TTY Out
-    INTPCRD = 0070,      // PC11 Reader
-    INTPCPU = 0074,      // PC11 Puncher
-    INTCLOCK = 0100,     // Line CLock
-    INTRTC = 0104,       // Programmer RTC
-    INTXYP = 0120,       // XY Plotter
-    INTDR = 0124,        // DR11B parallel interface
-    INTADO = 0130,       //
-    INTAFC = 0134,       //
-    INTAAS = 0140,       // AA11 Scope
-    INTAAL = 0144,       // AA11 Light
-    INTUR0 = 0170,       // User Reserved
-    INTUR1 = 0174,       // User Reserved
-    INTLP = 0200,        // Line Printer
-    INTRF = 0204,        // RF11 Disk Control
-    INTRC = 0210,        // RC11 Disk Control
-    INTTC = 0214,        // TC11 Disk Control
-    INTRK = 0220,        // RK11 Disk Control
-    INTTM = 0224,        // TM11 Disk Control
-    INTCR = 0230,        // CR11 Disk Control
-    INTUDC = 0234,       //
-    INTPIRQ1145 = 0240,  // 11/45 PIRQ
-    INTFPUERR = 0244,    // FPU Error
-    INTFAULT = 0250,     // General Fault (not in DEC's manual....?)
-    INTRP = 0254,        // RP Disk Control
+    INTRFU = 0000,     // Reserved
+    INTBUS = 0004,     // Bus timeout
+    INTINVAL = 0010,   // Reserved Intruction
+    INTDEBUG = 0014,   // Debugging trap
+    INTIOT = 0020,     // IOT Trap
+    INTPF = 0024,      // Power Fail
+    INTEMT = 0030,     // EMT
+    INTTRP = 0034,     // "TRAP"
+    INTSS0 = 0040,     // System Software 0
+    INTSS1 = 0044,     // System Software 1
+    INTSS2 = 0050,     // System Software 2
+    INTSS3 = 0054,     // System Software 3
+    INTTTYIN = 0060,   // TTY In
+    INTTTYOUT = 0064,  // TTY Out
+    INTPCRD = 0070,    // PC11 Reader
+    INTPCPU = 0074,    // PC11 Puncher
+    INTCLOCK = 0100,   // Line CLock
+    INTRTC = 0104,     // Programmer RTC
+    INTXYP = 0120,     // XY Plotter
+    INTDR = 0124,      // DR11B parallel interface
+    INTADO = 0130,     // a/d subsystem
+    INTAFC = 0134,     // analogue subsystem
+    INTAAS = 0140,     // AA11 Scope
+    INTAAL = 0144,     // AA11 Light
+    // 150 - 164 not used
+    INTUR0 = 0170,     // User Reserved
+    INTUR1 = 0174,     // User Reserved
+    INTLP = 0200,      // Line Printer
+    INTRF = 0204,      // RF11 Disk Control
+    INTRC = 0210,      // RC11 Disk Control
+    INTTC = 0214,      // TC11 Disk Control
+    INTRK = 0220,      // RK11 Disk Control
+    INTTM = 0224,      // TM11 Disk Control
+    INTCR = 0230,      // CR11 Disk Control
+    INTUDC = 0234,     // diigital control subsystem
+    INTPIRQ = 0240,    // 11/45 PIRQ
+    INTFPUERR = 0244,  // FPU Error
+    INTMMUERR = 0250,  // MMU Error
+    INTRP = 0254,      // RP Disk Control
+    INTTA = 0260,      // TA11 Cassette Control
+    INTRX = 0264,      // RX11 Floppy Control
+    INTUR2 = 0270,     // User Reserved
+    INTUR3 = 0274,     // User Reserved
+    INTFLOAT = 0300,   // Start of floating vectors
 };
 
 // Switch Settings:
@@ -184,7 +190,7 @@ enum
 {
     DEV_CPU_STAT = 0777776,       // CPU Status
     DEV_STACK_LIM = 0777774,      // Stack Limit Register
-    DEV_PIRQ_1145 = 0777772,      // 11/45 PIRQ Register
+    DEV_PIRQ = 0777772,           // Program Interrupt Request
     DEV_MICROPROG_BRK = 0777770,  // Microprogram break
 
     DEV_CPU_ERROR = 0777766,

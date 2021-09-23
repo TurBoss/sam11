@@ -101,7 +101,7 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
             Serial.print(F("%% kt11::decode write to read-only page "));
             Serial.println(a, OCT);
         }
-        longjmp(trapbuf, INTFAULT);
+        longjmp(trapbuf, INTMMUERR);
     }
     if (!pages[i].read())  // read from WO page
     {
@@ -112,7 +112,7 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
             Serial.print(F("%% kt11::decode read from no-access page "));
             Serial.println(a, OCT);
         }
-        longjmp(trapbuf, INTFAULT);
+        longjmp(trapbuf, INTMMUERR);
     }
     if (pages[i].ed() && (block < pages[i].len()))
     {
@@ -123,7 +123,7 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
             _printf("%%%% page %i length exceeded (down).\r\n", i);
             _printf("%%%% address 0%06o; block 0%03o is below length 0%03o\r\n", a, block, (pages[i].len()));
         }
-        longjmp(trapbuf, INTFAULT);
+        longjmp(trapbuf, INTMMUERR);
     }
     if (!pages[i].ed() && block > pages[i].len())
     {
@@ -134,7 +134,7 @@ uint32_t decode(const uint16_t a, const bool w, const bool user)
             _printf("%%%% page %i length exceeded (up).\r\n", i);
             _printf("%%%% address 0%06o; block 0%03o is above length 0%03o\r\n", a, block, (pages[i].len()));
         }
-        longjmp(trapbuf, INTFAULT);
+        longjmp(trapbuf, INTMMUERR);
     }
 
     if (w)
