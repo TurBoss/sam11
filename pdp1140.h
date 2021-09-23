@@ -197,6 +197,13 @@ enum
     DEV_KWP_CNTR = 0772544,    // KW11-P Counter
     DEV_KWP_CSB = 0772542,     // KW11-P Count Set Register
     DEV_KWP_CSR = 0772540,     // KW11-P CSR
+    DEV_RK_DS = 0777400,       // RK11 Drive Status
+    DEV_RK_ER = 0777402,       // RK11 Error
+    DEV_RK_CS = 0777404,       // RK11 Control Status
+    DEV_RK_WC = 0777406,       // RK11 Word Count
+    DEV_RK_BA = 0777410,       // RK11 Bus Address (current memory address)
+    DEV_RK_DA = 0777412,       // RK11 Disk Address
+    DEV_RK_DB = 0777416,       // RK11 Data Buffer
     DEV_MEMORY = 0760000,      // Main Memory (0->0760000 (excl))
 };
 #endif

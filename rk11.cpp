@@ -45,18 +45,19 @@ uint16_t read16(uint32_t a)
 {
     switch (a)
     {
-    case 0777400:
+    case DEV_RK_DS:  // Drive Status
         return RKDS;
-    case 0777402:
+    case DEV_RK_ER:  // Error Reg
         return RKER;
-    case 0777404:
+    case DEV_RK_CS:  // Control Status
         return RKCS | (RKBA & 0x30000) >> 12;
-    case 0777406:
+    case DEV_RK_WC:  // Word count
         return RKWC;
-    case 0777410:
+    case DEV_RK_BA:  // Bus Address
         return RKBA & 0xFFFF;
-    case 0777412:
+    case DEV_RK_DA:  // Disk Address
         return (sector) | (surface << 4) | (cylinder << 5) | (drive << 13);
+    case DEV_RK_DB:  // Data Buffer
     default:
         if (PRINTSIMLINES)
         {
@@ -224,11 +225,11 @@ void write16(uint32_t a, uint16_t v)
     //printf("%% rkwrite: %06o\n",a);
     switch (a)
     {
-    case 0777400:
+    case DEV_RK_DS:  // Drive Status
         break;
-    case 0777402:
+    case DEV_RK_ER:  // Error Reg
         break;
-    case 0777404:
+    case DEV_RK_CS:  // Control Status
         RKBA = (RKBA & 0xFFFF) | ((v & 060) << 12);
         v &= 017517;  // writable bits
         RKCS &= ~017517;
@@ -254,18 +255,19 @@ void write16(uint32_t a, uint16_t v)
             }
         }
         break;
-    case 0777406:
+    case DEV_RK_WC:  // Word Count
         RKWC = v;
         break;
-    case 0777410:
+    case DEV_RK_BA:  // Bus Address
         RKBA = (RKBA & 0x30000) | (v);
         break;
-    case 0777412:
+    case DEV_RK_DA:  // Disk Address
         drive = v >> 13;
         cylinder = (v >> 5) & 0377;
         surface = (v >> 4) & 1;
         sector = v & 15;
         break;
+    case DEV_RK_DB:  // Data Buffer
     default:
         if (PRINTSIMLINES)
         {

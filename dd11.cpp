@@ -134,29 +134,40 @@ void write16(uint32_t a, uint16_t v)
             kd11::PS = v;
             return;
         }
+
     case DEV_STACK_LIM:
         kt11::SLR = v;  // probs wrong
         return;
+
     case DEV_LKS:
         kw11::LKS = v;
         return;
+
     case DEV_MMU_SR0:
         kt11::SR0 = v;
         return;
+
     case DEV_CONSOLE_DR:
         ky11::write16(a, v);
         return;
+
+    case DEV_RK_DS:
+    case DEV_RK_ER:
+    case DEV_RK_CS:
+    case DEV_RK_WC:
+    case DEV_RK_BA:
+    case DEV_RK_DA:
+    case DEV_RK_DB:
+        rk11::write16(a, v);
+        return;
+
     default:
         break;
     }
+
     if ((a & 0777770) == 0777560)
     {
         kl11::write16(a, v);
-        return;
-    }
-    if ((a & 0777700) == 0777400)
-    {
-        rk11::write16(a, v);
         return;
     }
     if (((a & 0777600) == 0772200) || ((a & 0777600) == 0777600))
@@ -164,11 +175,13 @@ void write16(uint32_t a, uint16_t v)
         kt11::write16(a, v);
         return;
     }
+
     if (PRINTSIMLINES)
     {
         Serial.print(F("%% dd11: write to invalid address 0"));
         Serial.println(a, OCT);
     }
+
     longjmp(trapbuf, INTBUS);
 }
 
@@ -198,16 +211,31 @@ uint16_t read16(uint32_t a)
     {
     case DEV_CPU_STAT:
         return kd11::PS;
+
     case DEV_STACK_LIM:
         return kt11::SLR;  // probs wrong
+
     case DEV_LKS:
         return kw11::LKS;
+
     case DEV_MMU_SR0:
         return kt11::SR0;
+
     case DEV_MMU_SR2:
         return kt11::SR2;
+
     case DEV_CONSOLE_SR:
         return ky11::read16(a);
+
+    case DEV_RK_DS:
+    case DEV_RK_ER:
+    case DEV_RK_CS:
+    case DEV_RK_WC:
+    case DEV_RK_BA:
+    case DEV_RK_DA:
+    case DEV_RK_DB:
+        return rk11::read16(a);
+
     default:
         break;
     }
@@ -215,11 +243,6 @@ uint16_t read16(uint32_t a)
     if ((a & 0777770) == 0777560)
     {
         return kl11::read16(a);
-    }
-
-    if ((a & 0777760) == 0777400)
-    {
-        return rk11::read16(a);
     }
 
     if (((a & 0777600) == 0772200) || ((a & 0777600) == 0777600))
