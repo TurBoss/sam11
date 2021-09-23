@@ -1,5 +1,4 @@
-PDP-11/40 Simulator: sam11
-==========================
+# PDP-11/40 Simulator: sam11
 
 The sam11 software is a cross-platform MCU implementation for software emulation of a PDP-11/40\* and some of the supporting hardware.
 
@@ -7,9 +6,9 @@ The sam11 software is a cross-platform MCU implementation for software emulation
 
 The code "skeleton", processor instruction functions, RK11, and mmu is based on a fork of Dave Cheney's avr11 simulator. The JS Emulator folder contains the source for the JS PDP-11/40 emulator by Aiju that avr11 was based on.
 
-The original avr11 software supported UNIXv6, and this should to. As of 2021-09-17 some OSes boot, but crash out for various reasons. UNIXv6 runs, but some programs (e.g. cc, chess) fail due to the same MMU bugs in avr11 and Aiju's emulator.
+The original avr11 software supported UNIXv6, and this should to. As of 2021-09-17 some OSes boot, but crash out for various reasons. UNIXv6 runs, but some programs (e.g. chess) fail to run correctly. Most things appear good. You can even compile c programs!
 
-The structure was re-written from avr11 based on actual PDP physical structure, device names, and data paths from the PDP-11/40 manual in order to be more useful for learning the system, though there is still work to do, especially around MMU and FIS/FP11 processing.
+The structure was re-written from avr11 based on actual PDP physical structure, device names, and data paths from the PDP-11/40 processor handbook in order to be more useful for learning the system, though there is still work to do, especially around MMU and FIS/FP11 processing.
 
 The extended hardware modules and new structure should allow implementing the missing hardware modules easier to allow use of operating systems and configurations that rely on currently unimplemented hardware features or devices.
 
@@ -23,8 +22,7 @@ Because different boards all have different options for where the PDP ram lives,
 
 The RAM type is defined in platform.h, and depending the options different cpp files are inserted into ms11.cpp from the ram_opt folder cpp.h files.
 
-Installation:
--------------
+## Installation
 
 If you wish to use this as tested without defining a new board, you will need an Adafruit Grand Central M4, microSD card, and USB cable.
 
@@ -35,8 +33,7 @@ Then simply open up the terminal/serial, type "0." to select the UnixV6 image, t
 
 Expect a trap at 0760000 as this is by design and is Unix discovering the maximum RAM available (248KB).
 
-Recommended reading:
---------------------
+## Recommended reading
 
 - PDP-11/40 processor handbook: <https://pdos.csail.mit.edu/6.828/2005/readings/pdp11-40.pdf>
 

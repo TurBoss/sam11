@@ -19,3 +19,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+-------------------------------------------------------------------------------
+
+Ancient Unix images in the OS Images folder are licensed under the Caldera Unix
+License, which can be found as PDF in that folder.
+
+m40.s in that same folder is also covered under the Caldera Unix License.
+
+-------------------------------------------------------------------------------
+
+Dave Cheney's avr11 and Aiju's JS emulator are both licensed under WTFPL
