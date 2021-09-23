@@ -72,8 +72,8 @@ SOFTWARE.
  *  
  * Coms/Bus:
  *
- * AA11         (alias for DM11 type AA)
- * BB11         (alias for DM11 type BB)
+ * AA11         (alias for DL11 type AA?)
+ * BB11         (alias for DL11 type BB?)
  * DC11         Serial (async) Line Controller
  * DD11     Y   UNIBUS Backplane
  * DH11         Serial (async) Line Controller 
@@ -95,7 +95,7 @@ SOFTWARE.
  * 
  * Storage:
  *  
- * RK11     Y+  RK Hard Disk Controller (RK05) (only supports 1 disk)
+ * RK11     Y+  RK Hard Disk Controller (RK05) (only supports 1 disk currently)
  * RF11         RS Disk Controller
  * RL11         RL Disk Controller
  * RP11         RP Disk Pack Controller
