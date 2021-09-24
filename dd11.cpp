@@ -164,15 +164,18 @@ void write16(uint32_t a, uint16_t v)
         rk11::write16(a, v);
         return;
 
+    case DEV_CONSOLE_TTY_OUT_DATA:
+    case DEV_CONSOLE_TTY_OUT_STATUS:
+    case DEV_CONSOLE_TTY_IN_DATA:
+    case DEV_CONSOLE_TTY_IN_STATUS:
+        kl11::write16(a, v);
+        return;
+
     default:
         break;
     }
 
-    if ((a & 0777770) == 0777560)
-    {
-        kl11::write16(a, v);
-        return;
-    }
+    // don't use switch/case for this because there would be like 112 lines of "case DEV_USR_DAT_PAR_R7:"
     if (((a & 0777600) == 0772200) || ((a & 0777600) == 0777600))
     {
         kt11::write16(a, v);
@@ -239,19 +242,22 @@ uint16_t read16(uint32_t a)
     case DEV_RK_DB:
         return rk11::read16(a);
 
+    case DEV_CONSOLE_TTY_OUT_DATA:
+    case DEV_CONSOLE_TTY_OUT_STATUS:
+    case DEV_CONSOLE_TTY_IN_DATA:
+    case DEV_CONSOLE_TTY_IN_STATUS:
+        return kl11::read16(a);
+
     default:
         break;
     }
 
-    if ((a & 0777770) == 0777560)
-    {
-        return kl11::read16(a);
-    }
-
+    // don't use switch/case for this because there would be like 112 lines of "case DEV_USR_DAT_PAR_R7:"
     if (((a & 0777600) == 0772200) || ((a & 0777600) == 0777600))
     {
         return kt11::read16(a);
     }
+
     if (PRINTSIMLINES)
     {
         Serial.print(F("%% dd11: read from invalid address 0"));

@@ -270,7 +270,36 @@ enum
     DEV_CONSOLE_SR = 0777570,  // Console switch/display register
     DEV_CONSOLE_DR = 0777570,  // Console display register
 
-    DEV_LKS = 0777546,  // Line Clock
+    DEV_CONSOLE_TTY_OUT_DATA = 0777566,    // First KL/DL is Console TTY - data out
+    DEV_CONSOLE_TTY_OUT_STATUS = 0777564,  // First KL/DL - status out
+    DEV_CONSOLE_TTY_IN_DATA = 0777562,     // First KL/DL - data in
+    DEV_CONSOLE_TTY_IN_STATUS = 0777560,   // First KL/DL - status in
+
+    DEV_PC_PPB = 0777556,
+    DEV_PC_PPS = 0777554,
+    DEV_PC_PRB = 0777552,
+    DEV_PC_PRS = 0777550,
+
+    DEV_LKS = 0777546,  // Line clock status
+
+    DEV_LP_DATA = 0777516,    // LP11 Data out
+    DEV_LP_STATUS = 0777514,  // LP11 Status
+    DEV_LP_RFU0 = 0777512,    // LP11 (not used)
+    DEV_LP_RFU1 = 0777510,    // LP11 (not used)
+
+    DEV_TA_RFU0 = 0777506,  // TA11 (not used)
+    DEV_TA_RFU1 = 0777504,  // TA11 (not used)
+    DEV_TA_DB = 0777502,    // TA11 Data Buffer
+    DEV_TA_CS = 0777500,    // TA11 Control Status
+
+    DEV_RF_ADS = 0777476,
+    DEV_RF_MA = 0777474,
+    DEV_RF_DBR = 0777472,
+    DEV_RF_DAE = 0777470,
+    DEV_RF_DAR = 0777466,
+    DEV_RF_CMA = 0777464,
+    DEV_RF_WC = 0777462,
+    DEV_RF_DCS = 0777460,
 
     DEV_RK_DB = 0777416,  // RK11 Data Buffer
     DEV_RK_DA = 0777412,  // RK11 Disk Address
@@ -280,10 +309,98 @@ enum
     DEV_RK_ER = 0777402,  // RK11 Error
     DEV_RK_DS = 0777400,  // RK11 Drive Status
 
+    DEV_DL_16_OUT_DATA = 0776676,        // KL/DL TTY Interface #16 data out
+    DEV_DL_16_TTY_OUT_STATUS = 0776674,  // KL/DL TTY Interface #16 status out
+    DEV_DL_16_TTY_IN_DATA = 0776672,     // KL/DL TTY Interface #16 data in
+    DEV_DL_16_TTY_IN_STATUS = 0776670,   // KL/DL TTY Interface #16 status in
+    DEV_DL_15_OUT_DATA = 0776666,        // KL/DL TTY Interface #15 data out
+    DEV_DL_15_TTY_OUT_STATUS = 0776664,  // KL/DL TTY Interface #15 status out
+    DEV_DL_15_TTY_IN_DATA = 0776662,     // KL/DL TTY Interface #15 data in
+    DEV_DL_15_TTY_IN_STATUS = 0776660,   // KL/DL TTY Interface #15 status in
+    // ... UNTIL
+    DEV_DL_1_OUT_DATA = 0776506,        // KL/DL TTY Interface #1 data out
+    DEV_DL_1_TTY_OUT_STATUS = 0776504,  // KL/DL TTY Interface #1 status out
+    DEV_DL_1_TTY_IN_DATA = 0776502,     // KL/DL TTY Interface #1 data in
+    DEV_DL_1_TTY_IN_STATUS = 0776500,   // KL/DL TTY Interface #1 status in
+
     DEV_KWP = 0772546,       // KW11-P (XX)
     DEV_KWP_CNTR = 0772544,  // KW11-P Counter
     DEV_KWP_CSB = 0772542,   // KW11-P Count Set Register
     DEV_KWP_CSR = 0772540,   // KW11-P CSR
+
+    DEV_MMU_SR3 = 0772516,
+
+    DEV_KER_DAT_PAR_R7 = 0772376,  // MMU Kernel Data PAR Register 7
+    DEV_KER_DAT_PAR_R6 = 0772374,  // MMU Kernel Data PAR Register 6
+    DEV_KER_DAT_PAR_R5 = 0772372,  // MMU Kernel Data PAR Register 5
+    DEV_KER_DAT_PAR_R4 = 0772370,  // MMU Kernel Data PAR Register 4
+    DEV_KER_DAT_PAR_R3 = 0772366,  // MMU Kernel Data PAR Register 3
+    DEV_KER_DAT_PAR_R2 = 0772364,  // MMU Kernel Data PAR Register 2
+    DEV_KER_DAT_PAR_R1 = 0772362,  // MMU Kernel Data PAR Register 1
+    DEV_KER_DAT_PAR_R0 = 0772360,  // MMU Kernel Data PAR Register 0
+
+    DEV_KER_INS_PAR_R7 = 0772356,  // MMU Kernel Instruction PAR Register 7
+    DEV_KER_INS_PAR_R6 = 0772354,  // MMU Kernel Instruction PAR Register 6
+    DEV_KER_INS_PAR_R5 = 0772352,  // MMU Kernel Instruction PAR Register 5
+    DEV_KER_INS_PAR_R4 = 0772350,  // MMU Kernel Instruction PAR Register 4
+    DEV_KER_INS_PAR_R3 = 0772346,  // MMU Kernel Instruction PAR Register 3
+    DEV_KER_INS_PAR_R2 = 0772344,  // MMU Kernel Instruction PAR Register 2
+    DEV_KER_INS_PAR_R1 = 0772342,  // MMU Kernel Instruction PAR Register 1
+    DEV_KER_INS_PAR_R0 = 0772340,  // MMU Kernel Instruction PAR Register 0
+
+    DEV_KER_DAT_PDR_R7 = 0772336,  // MMU Kernel Data PDR Register 7
+    DEV_KER_DAT_PDR_R6 = 0772334,  // MMU Kernel Data PDR Register 6
+    DEV_KER_DAT_PDR_R5 = 0772332,  // MMU Kernel Data PDR Register 5
+    DEV_KER_DAT_PDR_R4 = 0772330,  // MMU Kernel Data PDR Register 4
+    DEV_KER_DAT_PDR_R3 = 0772326,  // MMU Kernel Data PDR Register 3
+    DEV_KER_DAT_PDR_R2 = 0772324,  // MMU Kernel Data PDR Register 2
+    DEV_KER_DAT_PDR_R1 = 0772322,  // MMU Kernel Data PDR Register 1
+    DEV_KER_DAT_PDR_R0 = 0772320,  // MMU Kernel Data PDR Register 0
+
+    DEV_KER_INS_PDR_R7 = 0772316,  // MMU Kernel Instruction PDR Register 7
+    DEV_KER_INS_PDR_R6 = 0772314,  // MMU Kernel Instruction PDR Register 6
+    DEV_KER_INS_PDR_R5 = 0772312,  // MMU Kernel Instruction PDR Register 5
+    DEV_KER_INS_PDR_R4 = 0772310,  // MMU Kernel Instruction PDR Register 4
+    DEV_KER_INS_PDR_R3 = 0772306,  // MMU Kernel Instruction PDR Register 3
+    DEV_KER_INS_PDR_R2 = 0772304,  // MMU Kernel Instruction PDR Register 2
+    DEV_KER_INS_PDR_R1 = 0772302,  // MMU Kernel Instruction PDR Register 1
+    DEV_KER_INS_PDR_R0 = 0772300,  // MMU Kernel Instruction PDR Register 0
+
+    DEV_SUP_DAT_PAR_R7 = 0772276,  // MMU Supervisor Data PAR Register 7
+    DEV_SUP_DAT_PAR_R6 = 0772274,  // MMU Supervisor Data PAR Register 6
+    DEV_SUP_DAT_PAR_R5 = 0772272,  // MMU Supervisor Data PAR Register 5
+    DEV_SUP_DAT_PAR_R4 = 0772270,  // MMU Supervisor Data PAR Register 4
+    DEV_SUP_DAT_PAR_R3 = 0772266,  // MMU Supervisor Data PAR Register 3
+    DEV_SUP_DAT_PAR_R2 = 0772264,  // MMU Supervisor Data PAR Register 2
+    DEV_SUP_DAT_PAR_R1 = 0772262,  // MMU Supervisor Data PAR Register 1
+    DEV_SUP_DAT_PAR_R0 = 0772260,  // MMU Supervisor Data PAR Register 0
+
+    DEV_SUP_INS_PAR_R7 = 0772256,  // MMU Supervisor Instruction PAR Register 7
+    DEV_SUP_INS_PAR_R6 = 0772254,  // MMU Supervisor Instruction PAR Register 6
+    DEV_SUP_INS_PAR_R5 = 0772252,  // MMU Supervisor Instruction PAR Register 5
+    DEV_SUP_INS_PAR_R4 = 0772250,  // MMU Supervisor Instruction PAR Register 4
+    DEV_SUP_INS_PAR_R3 = 0772246,  // MMU Supervisor Instruction PAR Register 3
+    DEV_SUP_INS_PAR_R2 = 0772244,  // MMU Supervisor Instruction PAR Register 2
+    DEV_SUP_INS_PAR_R1 = 0772242,  // MMU Supervisor Instruction PAR Register 1
+    DEV_SUP_INS_PAR_R0 = 0772240,  // MMU Supervisor Instruction PAR Register 0
+
+    DEV_SUP_DAT_PDR_R7 = 0772236,  // MMU Supervisor Data PDR Register 7
+    DEV_SUP_DAT_PDR_R6 = 0772234,  // MMU Supervisor Data PDR Register 6
+    DEV_SUP_DAT_PDR_R5 = 0772232,  // MMU Supervisor Data PDR Register 5
+    DEV_SUP_DAT_PDR_R4 = 0772230,  // MMU Supervisor Data PDR Register 4
+    DEV_SUP_DAT_PDR_R3 = 0772226,  // MMU Supervisor Data PDR Register 3
+    DEV_SUP_DAT_PDR_R2 = 0772224,  // MMU Supervisor Data PDR Register 2
+    DEV_SUP_DAT_PDR_R1 = 0772222,  // MMU Supervisor Data PDR Register 1
+    DEV_SUP_DAT_PDR_R0 = 0772220,  // MMU Supervisor Data PDR Register 0
+
+    DEV_SUP_INS_PDR_R7 = 0772216,  // MMU Supervisor Instruction PDR Register 7
+    DEV_SUP_INS_PDR_R6 = 0772214,  // MMU Supervisor Instruction PDR Register 6
+    DEV_SUP_INS_PDR_R5 = 0772212,  // MMU Supervisor Instruction PDR Register 5
+    DEV_SUP_INS_PDR_R4 = 0772210,  // MMU Supervisor Instruction PDR Register 4
+    DEV_SUP_INS_PDR_R3 = 0772206,  // MMU Supervisor Instruction PDR Register 3
+    DEV_SUP_INS_PDR_R2 = 0772204,  // MMU Supervisor Instruction PDR Register 2
+    DEV_SUP_INS_PDR_R1 = 0772202,  // MMU Supervisor Instruction PDR Register 1
+    DEV_SUP_INS_PDR_R0 = 0772200,  // MMU Supervisor Instruction PDR Register 0
 
     DEV_MEMORY = 0760000,  // Main Memory (0->0760000 (excl))
 };
