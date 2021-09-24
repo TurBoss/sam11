@@ -14,11 +14,11 @@ The extended hardware modules and new structure should allow implementing the mi
 
 See pdp1140.h for more information about file names/splits and pdp-11/40 device structure.
 
-It is also inspired/informed by various other emulators such as simh, and nankervis js emulator, but it does not derrive any code from them.
+It is also inspired/informed by various other emulators such as simh, and nankervis js emulator, but it does not derive any code from them at all.
 
 The software is designed to be programmed to a device using the arduino IDE .ino file, or other compatible editors/IDEs.
 
-Because different boards all have different options for where the PDP ram lives, how much, and what pins for LEDs/CSs there is a file platform.h which is used to define these variables, along with a corrosponding platform.cpp file which actuates some of these physical parts. You will need to add new information for chips not currently implemented.
+Because different boards all have different options for where the PDP ram lives, how much, and what pins for LEDs/CSs there is a file platform.h which is used to define these variables, along with a corresponding platform.cpp file which actuates some of these physical parts. You will need to add new information for chips not currently implemented.
 
 The RAM type is defined in platform.h, and depending the options different cpp files are inserted into ms11.cpp from the ram_opt folder cpp.h files.
 
@@ -33,13 +33,17 @@ Then simply open up the terminal/serial, type "0." to select the UnixV6 image, t
 
 Expect a trap at 0760000 as this is by design and is Unix discovering the maximum RAM available (248KB).
 
+On an Adafruit Grand Central (SAMD51P20A), I suggest compile options: with Cache Enabled, 180MHz CPU Clock, "Fastest" optimisation.
+
 ## Performance
+
+On a real PDP-11/40 or 11-45, the fastest complete operation is a CLR on Reg 0, with a cycle time of 0.99us (from the DEC handbooks). This translates to a instructions speed of approx. 1 MIPS. The PDP-11/70 has a recorded speed of 2-2.5 MIPS (Microsoft's Miss Piggy), and the VAX 11/780 has a recorded speed of 1 MIPS when running PDP-11 code (Wikipedia).
 
 On a SAMD51P20A (PDP using Internal RAM, 180MHz Clock, Cache enabled) the emulated processor operates with a MIPS of 1->1.25 when measuring from inside UNIX V6. I you boot up my modified V6 you will find a note in the root directory along those lines, along with a command 'mips' to test it yourself. This makes the simulator almost exactly as fast as a real PDP-11/40, which allows you to experience the processor at it's real speed. On that note, it is actually pretty amazingly fast, UNIX V6 boots faster than many modern CLI systems!
 
 On a SAMD21G18A, using the swapfile as RAM, the emulated processor.... is too slow to be worth using, 5 seconds per character print slow... Still, I tried it, and the SAMD21G18A did successfully boot UNIX V6 and compile a program, it's just agonising to use.
 
-The AVR has NOT been tried, but the software should compile back to something close-to avr11 with similar performance; Dave Cheney reported a MIPS of ~0.1 on his AVR Mega.
+The AVR (ATmega2560) has NOT been tried, but the software should compile back to something close-to avr11 with similar performance; Dave Cheney reported a MIPS of ~0.1 on his AVR 2560 (or "10 times slower").
 
 ## Recommended reading
 

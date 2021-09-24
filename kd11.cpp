@@ -1372,6 +1372,12 @@ void step()
     case 0006600:  // MTPI
         MTPI(instr);
         return;
+        // case 0106500:  // MFPD
+        //     MFPI(instr);
+        //     return;
+        // case 0106600:  // MTPD
+        //     MTPI(instr);
+        //     return;
     }
     if ((instr & 0177770) == 0000200)
     {  // RTS
