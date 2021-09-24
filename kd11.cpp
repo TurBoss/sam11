@@ -1561,20 +1561,20 @@ void trapat(uint16_t vec)
         }
     }
     /*var prev uint16
-   	defer func() {
-   		t = recover()
-   		switch t = t.(type) {
-   		case trap:
-   			writedebug("red stack trap!\n")
-   			memory[0] = uint16(k.R[7])
-   			memory[1] = prev
-   			vec = 4
-   			panic("fatal")
-   		case nil:
-   			break
-   		default:
-   			panic(t)
-   		}
+       defer func() {
+           t = recover()
+           switch t = t.(type) {
+           case trap:
+               writedebug("red stack trap!\n")
+               memory[0] = uint16(k.R[7])
+               memory[1] = prev
+               vec = 4
+               panic("fatal")
+           case nil:
+               break
+           default:
+               panic(t)
+           }
    */
     uint16_t prev = PS;
     switchmode(false);

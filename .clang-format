@@ -49,7 +49,7 @@ AlwaysBreakBeforeMultilineStrings: false
 #BreakBeforeBraces: Stroustrup # <- Like Attach, but break before function definitions, and ‘else’
 #BreakBeforeBraces: WebKit # <- Like Attach, but break before functions
 #BreakBeforeBraces: Whitesmiths # <- Like Allman but always indent braces and line up code with braces
-BreakBeforeBraces: Custom # <- Define your own 
+BreakBeforeBraces: Custom # <- Define your own
 BraceWrapping:
   AfterCaseLabel: true
   AfterClass: true
@@ -118,16 +118,4 @@ UseCRLF: false
 #SpaceBeforeCaseColon: false
 
 ---
-Language: CSharp
 
-# Change this to true to disable formatting
-DisableFormat: false
-
-# Below makes it match the default for Visual Studio
-BasedOnStyle: LLVM
-UseTab: Never
-IndentWidth: 4
-BreakBeforeBraces: Allman
-AllowShortIfStatementsOnASingleLine: false
-IndentCaseLabels: false
-ColumnLimit: 0
