@@ -94,7 +94,7 @@ static const uint16_t bootrom_rl0[] = {
   0005007                    /* CLR PC */
 };
 
-static const uint16 bootrom_rp0[] = {
+static const uint16_t bootrom_rp0[] = {
   0042102,                   /* "BD" */
   0012706, BOOT_START,       /* mov #boot_start, sp */
   0012700, 0000000,          /* mov #unit, r0 */
