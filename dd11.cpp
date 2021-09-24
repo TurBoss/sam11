@@ -74,10 +74,13 @@ void write16(uint32_t a, uint16_t v)
 {
     if (a % 2 != 0)
     {
-        Serial.print(F("%% dd11: write16 0"));
-        Serial.print(v, OCT);
-        Serial.print(F(" to odd address 0"));
-        Serial.println(a, OCT);
+        if (PRINTSIMLINES)
+        {
+            Serial.print(F("%% dd11: write16 0"));
+            Serial.print(v, OCT);
+            Serial.print(F(" to odd address 0"));
+            Serial.println(a, OCT);
+        }
         longjmp(trapbuf, INTBUS);
     }
 

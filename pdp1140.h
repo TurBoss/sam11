@@ -134,7 +134,7 @@ struct intr {
 enum
 {
     INTRFU = 0000,     // Reserved
-    INTBUS = 0004,     // Bus timeout
+    INTBUS = 0004,     // Bus timeout and generally other CPU/System faults
     INTINVAL = 0010,   // Reserved Intruction
     INTDEBUG = 0014,   // Debugging trap
     INTIOT = 0020,     // IOT Trap
@@ -145,8 +145,8 @@ enum
     INTSS1 = 0044,     // System Software 1
     INTSS2 = 0050,     // System Software 2
     INTSS3 = 0054,     // System Software 3
-    INTTTYIN = 0060,   // TTY In
-    INTTTYOUT = 0064,  // TTY Out
+    INTTTYIN = 0060,   // TTY In ("Console Reader/Keyboard")
+    INTTTYOUT = 0064,  // TTY Out ("Console Puncher/Printer")
     INTPCRD = 0070,    // PC11 Reader
     INTPCPU = 0074,    // PC11 Puncher
     INTCLOCK = 0100,   // Line CLock
@@ -154,7 +154,7 @@ enum
     INTXYP = 0120,     // XY Plotter
     INTDR = 0124,      // DR11B parallel interface
     INTADO = 0130,     // a/d subsystem
-    INTAFC = 0134,     // analogue subsystem
+    INTAFC = 0134,     // Analogue control subsystem
     INTAAS = 0140,     // AA11 Scope
     INTAAL = 0144,     // AA11 Light
     // 150 - 164 not used
@@ -167,7 +167,7 @@ enum
     INTRK = 0220,      // RK11 Disk Control
     INTTM = 0224,      // TM11 Disk Control
     INTCR = 0230,      // CR11 Disk Control
-    INTUDC = 0234,     // diigital control subsystem
+    INTUDC = 0234,     // Digital control subsystem
     INTPIRQ = 0240,    // 11/45 PIRQ
     INTFPUERR = 0244,  // FPU Error
     INTMMUERR = 0250,  // MMU Error
@@ -185,7 +185,7 @@ enum
     INST_UNIX_SINGLEUSER = 0173030,  // this boots Unix into single user mode and keeps it there
 };
 
-// Device Addresses:
+// Device/Register Addresses:
 enum
 {
     DEV_CPU_STAT = 0777776,       // CPU Status
@@ -193,79 +193,79 @@ enum
     DEV_PIRQ = 0777772,           // Program Interrupt Request
     DEV_MICROPROG_BRK = 0777770,  // Microprogram break
 
-    DEV_CPU_ERROR = 0777766,
-    DEV_SYS_I_D = 0777764,
-    DEV_SYS_SIZE_UP = 0777762,
-    DEV_SYS_SIZE_LO = 0777760,
+    DEV_CPU_ERROR = 0777766,    // CPU Errors
+    DEV_SYS_I_D = 0777764,      // System I/D
+    DEV_SYS_SIZE_UP = 0777762,  // System Size Upper
+    DEV_SYS_SIZE_LO = 0777760,  // System Size Lower
 
     // 0777756 - NOT USED
     // 0777754 - NOT USED
 
-    DEV_HIT_MISS = 0777752,
-    DEV_MAINTAIN = 0777750,
+    DEV_HIT_MISS = 0777752,  // Hit/Miss Register
+    DEV_MAINTAIN = 0777750,  // System Maintenance Register
 
-    DEV_CONTROL = 0777746,
-    DEV_MEM_SYS_ERROR = 0777744,
-    DEV_ERROR_ADR_HI = 0777742,
-    DEV_ERROR_ADR_LO = 0777740,
+    DEV_CONTROL = 0777746,        // Control Register
+    DEV_MEM_SYS_ERROR = 0777744,  // Memory System Error
+    DEV_ERROR_ADR_HI = 0777742,   // Error Address High
+    DEV_ERROR_ADR_LO = 0777740,   // Error Address Low
 
-    DEV_CPU_USR_SP = 0777717,
-    DEV_CPU_SUP_SP = 0777716,
-    DEV_CPU_GEN1_R5 = 0777715,
-    DEV_CPU_GEN1_R4 = 0777714,
-    DEV_CPU_GEN1_R3 = 0777713,
-    DEV_CPU_GEN1_R2 = 0777712,
-    DEV_CPU_GEN1_R1 = 0777711,
-    DEV_CPU_GEN1_R0 = 0777710,
+    DEV_CPU_USR_SP = 0777717,   // CPU User Stack Pointer (R6)
+    DEV_CPU_SUP_SP = 0777716,   // CPU Super Stack Pointer (R6)
+    DEV_CPU_GEN1_R5 = 0777715,  // CPU General Register (set 1) R5
+    DEV_CPU_GEN1_R4 = 0777714,  // CPU General Register (set 1) R4
+    DEV_CPU_GEN1_R3 = 0777713,  // CPU General Register (set 1) R3
+    DEV_CPU_GEN1_R2 = 0777712,  // CPU General Register (set 1) R2
+    DEV_CPU_GEN1_R1 = 0777711,  // CPU General Register (set 1) R1
+    DEV_CPU_GEN1_R0 = 0777710,  // CPU General Register (set 1) R0
 
-    DEV_CPU_KER_PC = 0777707,
-    DEV_CPU_KER_SP = 0777706,
-    DEV_CPU_GEN0_R5 = 0777705,
-    DEV_CPU_GEN0_R4 = 0777704,
-    DEV_CPU_GEN0_R3 = 0777703,
-    DEV_CPU_GEN0_R2 = 0777702,
-    DEV_CPU_GEN0_R1 = 0777701,
-    DEV_CPU_GEN0_R0 = 0777700,
+    DEV_CPU_KER_PC = 0777707,   // CPU (Kernel) Program Counter (R7)
+    DEV_CPU_KER_SP = 0777706,   // CPU Kernel Stack Pointer (R6)
+    DEV_CPU_GEN0_R5 = 0777705,  // CPU General Register (set 0) R5
+    DEV_CPU_GEN0_R4 = 0777704,  // CPU General Register (set 0) R4
+    DEV_CPU_GEN0_R3 = 0777703,  // CPU General Register (set 0) R3
+    DEV_CPU_GEN0_R2 = 0777702,  // CPU General Register (set 0) R2
+    DEV_CPU_GEN0_R1 = 0777701,  // CPU General Register (set 0) R1
+    DEV_CPU_GEN0_R0 = 0777700,  // CPU General Register (set 0) R0
 
-    DEV_USR_DAT_PAR_R7 = 0777676,
-    DEV_USR_DAT_PAR_R6 = 0777674,
-    DEV_USR_DAT_PAR_R5 = 0777672,
-    DEV_USR_DAT_PAR_R4 = 0777670,
-    DEV_USR_DAT_PAR_R3 = 0777666,
-    DEV_USR_DAT_PAR_R2 = 0777664,
-    DEV_USR_DAT_PAR_R1 = 0777662,
-    DEV_USR_DAT_PAR_R0 = 0777660,
+    DEV_USR_DAT_PAR_R7 = 0777676,  // MMU User Data PAR Register 7
+    DEV_USR_DAT_PAR_R6 = 0777674,  // MMU User Data PAR Register 6
+    DEV_USR_DAT_PAR_R5 = 0777672,  // MMU User Data PAR Register 5
+    DEV_USR_DAT_PAR_R4 = 0777670,  // MMU User Data PAR Register 4
+    DEV_USR_DAT_PAR_R3 = 0777666,  // MMU User Data PAR Register 3
+    DEV_USR_DAT_PAR_R2 = 0777664,  // MMU User Data PAR Register 2
+    DEV_USR_DAT_PAR_R1 = 0777662,  // MMU User Data PAR Register 1
+    DEV_USR_DAT_PAR_R0 = 0777660,  // MMU User Data PAR Register 0
 
-    DEV_USR_INS_PAR_R7 = 0777656,
-    DEV_USR_INS_PAR_R6 = 0777654,
-    DEV_USR_INS_PAR_R5 = 0777652,
-    DEV_USR_INS_PAR_R4 = 0777650,
-    DEV_USR_INS_PAR_R3 = 0777646,
-    DEV_USR_INS_PAR_R2 = 0777644,
-    DEV_USR_INS_PAR_R1 = 0777642,
-    DEV_USR_INS_PAR_R0 = 0777640,
+    DEV_USR_INS_PAR_R7 = 0777656,  // MMU User Instruction PAR Register 7
+    DEV_USR_INS_PAR_R6 = 0777654,  // MMU User Instruction PAR Register 6
+    DEV_USR_INS_PAR_R5 = 0777652,  // MMU User Instruction PAR Register 5
+    DEV_USR_INS_PAR_R4 = 0777650,  // MMU User Instruction PAR Register 4
+    DEV_USR_INS_PAR_R3 = 0777646,  // MMU User Instruction PAR Register 3
+    DEV_USR_INS_PAR_R2 = 0777644,  // MMU User Instruction PAR Register 2
+    DEV_USR_INS_PAR_R1 = 0777642,  // MMU User Instruction PAR Register 1
+    DEV_USR_INS_PAR_R0 = 0777640,  // MMU User Instruction PAR Register 0
 
-    DEV_USR_DAT_PDR_R7 = 0777636,
-    DEV_USR_DAT_PDR_R6 = 0777634,
-    DEV_USR_DAT_PDR_R5 = 0777632,
-    DEV_USR_DAT_PDR_R4 = 0777630,
-    DEV_USR_DAT_PDR_R3 = 0777626,
-    DEV_USR_DAT_PDR_R2 = 0777624,
-    DEV_USR_DAT_PDR_R1 = 0777622,
-    DEV_USR_DAT_PDR_R0 = 0777620,
+    DEV_USR_DAT_PDR_R7 = 0777636,  // MMU User Data PDR Register 7
+    DEV_USR_DAT_PDR_R6 = 0777634,  // MMU User Data PDR Register 6
+    DEV_USR_DAT_PDR_R5 = 0777632,  // MMU User Data PDR Register 5
+    DEV_USR_DAT_PDR_R4 = 0777630,  // MMU User Data PDR Register 4
+    DEV_USR_DAT_PDR_R3 = 0777626,  // MMU User Data PDR Register 3
+    DEV_USR_DAT_PDR_R2 = 0777624,  // MMU User Data PDR Register 2
+    DEV_USR_DAT_PDR_R1 = 0777622,  // MMU User Data PDR Register 1
+    DEV_USR_DAT_PDR_R0 = 0777620,  // MMU User Data PDR Register 0
 
-    DEV_USR_INS_PDR_R7 = 0777616,
-    DEV_USR_INS_PDR_R6 = 0777614,
-    DEV_USR_INS_PDR_R5 = 0777612,
-    DEV_USR_INS_PDR_R4 = 0777610,
-    DEV_USR_INS_PDR_R3 = 0777606,
-    DEV_USR_INS_PDR_R2 = 0777604,
-    DEV_USR_INS_PDR_R1 = 0777602,
-    DEV_USR_INS_PDR_R0 = 0777600,
+    DEV_USR_INS_PDR_R7 = 0777616,  // MMU User Instruction PDR Register 7
+    DEV_USR_INS_PDR_R6 = 0777614,  // MMU User Instruction PDR Register 6
+    DEV_USR_INS_PDR_R5 = 0777612,  // MMU User Instruction PDR Register 5
+    DEV_USR_INS_PDR_R4 = 0777610,  // MMU User Instruction PDR Register 4
+    DEV_USR_INS_PDR_R3 = 0777606,  // MMU User Instruction PDR Register 3
+    DEV_USR_INS_PDR_R2 = 0777604,  // MMU User Instruction PDR Register 2
+    DEV_USR_INS_PDR_R1 = 0777602,  // MMU User Instruction PDR Register 1
+    DEV_USR_INS_PDR_R0 = 0777600,  // MMU User Instruction PDR Register 0
 
-    DEV_MMU_SR2 = 0777576,
-    DEV_MMU_SR1 = 0777574,
-    DEV_MMU_SR0 = 0777572,
+    DEV_MMU_SR2 = 0777576,  // MMU System Register 2
+    DEV_MMU_SR1 = 0777574,  // MMU System Register 1
+    DEV_MMU_SR0 = 0777572,  // MMU System Register 0
 
     DEV_CONSOLE_SR = 0777570,  // Console switch/display register
     DEV_CONSOLE_DR = 0777570,  // Console display register
