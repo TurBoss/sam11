@@ -33,6 +33,14 @@ Then simply open up the terminal/serial, type "0." to select the UnixV6 image, t
 
 Expect a trap at 0760000 as this is by design and is Unix discovering the maximum RAM available (248KB).
 
+## Performance
+
+On a SAMD51P20A (PDP using Internal RAM, 180MHz Clock, Cache enabled) the emulated processor operates with a MIPS of 1->1.25 when measuring from inside UNIX V6. I you boot up my modified V6 you will find a note in the root directory along those lines, along with a command 'mips' to test it yourself. This makes the simulator almost exactly as fast as a real PDP-11/40, which allows you to experience the processor at it's real speed. On that note, it is actually pretty amazingly fast, UNIX V6 boots faster than many modern CLI systems!
+
+On a SAMD21G18A, using the swapfile as RAM, the emulated processor.... is too slow to be worth using, 5 seconds per character print slow... Still, I tried it, and the SAMD21G18A did successfully boot UNIX V6 and compile a program, it's just agonising to use.
+
+The AVR has NOT been tried, but the software should compile back to something close-to avr11 with similar performance; Dave Cheney reported a MIPS of ~0.1 on his AVR Mega.
+
 ## Recommended reading
 
 - PDP-11/40 processor handbook: <https://pdos.csail.mit.edu/6.828/2005/readings/pdp11-40.pdf>
