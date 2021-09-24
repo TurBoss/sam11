@@ -78,7 +78,7 @@ void reset(void)
     ms11::clear();
     for (i = 0; i < BOOT_LEN; i++)
     {
-        dd11::write16(BOOT_START + (i * 2), bootrom[i]);
+        dd11::write16(BOOT_START + (i * 2), bootrom_rk0[i]);
     }
     R[7] = BOOT_START;
     kl11::clearterminal();
@@ -1373,10 +1373,10 @@ void step()
         MTPI(instr);
         return;
         // case 0106500:  // MFPD
-        //     MFPI(instr);
+        //     MFPD(instr);
         //     return;
         // case 0106600:  // MTPD
-        //     MTPI(instr);
+        //     MTPD(instr);
         //     return;
     }
     if ((instr & 0177770) == 0000200)

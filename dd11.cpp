@@ -150,6 +150,10 @@ void write16(uint32_t a, uint16_t v)
         kt11::SR0 = v;
         return;
 
+    case DEV_MMU_SR2:
+        kt11::SR2 = v;
+        return;
+
     case DEV_CONSOLE_DR:
         ky11::write16(a, v);
         return;
