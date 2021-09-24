@@ -82,6 +82,6 @@ void writeData(uint16_t data) { }     // write to data pins
 void writeDispReg(uint16_t disp) { }  // write display register
 uint16_t readSwitches()               // read processor front switches
 {
-    return INST_UNIX_SINGLEUSER;
+    return 0;  //INST_UNIX_SINGLEUSER;
 }
 };  // namespace platform

@@ -37,7 +37,7 @@ uint16_t SLR;  // Register of status LEDs separate to addr/data/display
 
 void reset()
 {
-    SR = INST_UNIX_SINGLEUSER;
+    SR = 0000000;  // INST_UNIX_SINGLEUSER;
     DR = 0000000;
 
     SR = platform::readSwitches();
