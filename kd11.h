@@ -45,21 +45,22 @@ enum
 };
 
 namespace kd11 {
-
+//R[2][8];
 extern volatile int32_t R[8];  // R6 = SP, R7 = PC
 
-extern volatile uint16_t curPC;  // R7
-extern volatile uint16_t PS;     // Processor Status
-extern volatile uint16_t USP;    // R6 (user)
-extern volatile uint16_t KSP;    // R6 (kernel)
-extern volatile bool curuser;    // (true = user)
-extern volatile bool prevuser;   // (true = user)
+extern volatile uint16_t curPC;    // R7
+extern volatile uint16_t PS;       // Processor Status
+extern volatile uint16_t USP;      // R6 (user)
+extern volatile uint16_t SSP;      // R6 (Super)
+extern volatile uint16_t KSP;      // R6 (kernel)
+extern volatile uint8_t curuser;   // 0: kernel, 1: supervisor, 2: illegal, 3: user
+extern volatile uint8_t prevuser;  // 0: kernel, 1: supervisor, 2: illegal, 3: user
 extern volatile bool trapped;
 
 bool isReg(const uint16_t a);
 void step();
 void reset(void);
-void switchmode(bool newm);
+void switchmode(uint8_t newm);
 
 void trapat(uint16_t vec);
 void interrupt(uint8_t vec, uint8_t pri);

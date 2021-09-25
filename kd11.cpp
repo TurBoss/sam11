@@ -51,8 +51,10 @@ volatile uint16_t PS;     // Processor Status
 volatile uint16_t curPC;  // R7, address of current instruction
 volatile uint16_t KSP;    // R6 (kernel), stack pointer
 volatile uint16_t USP;    // R6 (user), stack pointer
-volatile bool curuser;    // (true = user)
-volatile bool prevuser;   // (true = user)
+volatile uint16_t SSP;    // R6 (Super), stack pointer
+
+volatile uint8_t curuser;   // 0: kernel, 1: supervisor, 2: illegal, 3: user
+volatile uint8_t prevuser;  // 0: kernel, 1: supervisor, 2: illegal, 3: user
 
 volatile bool trapped = false;
 volatile bool cont_with = false;
@@ -66,7 +68,7 @@ void reset(void)
     {
         R[i] = 0;
     }
-    kt11::SLR = 0400;
+    kt11::SLR = 0xFF;
     PS = 0;
     KSP = 0;
     USP = 0;
@@ -256,24 +258,35 @@ static void branch(int16_t o)
     R[7] += o;
 }
 
-void switchmode(const bool newm)
+void switchmode(const uint8_t newm)
 {
     prevuser = curuser;
     curuser = newm;
-    if (prevuser)
+    if (prevuser == 3)
     {
         USP = R[6];
+    }
+    else if (prevuser == 1)
+    {
+        SSP = R[6];
     }
     else
     {
         KSP = R[6];
     }
-    if (curuser)
+    if (curuser == 3)
     {
 #ifdef PIN_OUT_USER_MODE
         digitalWrite(PIN_OUT_USER_MODE, LED_ON);
 #endif
         R[6] = USP;
+    }
+    if (curuser == 1)
+    {
+#ifdef PIN_OUT_SUPER_MODE
+        digitalWrite(PIN_OUT_SUPER_MODE, LED_ON);
+#endif
+        R[6] = SSP;
     }
     else
     {
@@ -1154,7 +1167,7 @@ static void EMTX(uint16_t instr)
         uval = 020;
     }
     uint16_t prev = PS;
-    switchmode(false);
+    switchmode(0);
     push(prev);
     push(R[7]);
     R[7] = dd11::read16(uval);
@@ -1378,6 +1391,12 @@ void step()
         // case 0106600:  // MTPD
         //     MTPD(instr);
         //     return;
+        // case 0106700:  // MFPS
+        //     MFPS(instr);
+        //     return;
+        // case 0106400:  // MTPS
+        //     MTPS(instr);
+        //     return;
     }
     if ((instr & 0177770) == 0000200)
     {  // RTS
@@ -1475,11 +1494,11 @@ void step()
         }
         return;
     }
-    if (((instr & 0177000) == 0104000) || (instr == 3) || (instr == 4))
-    {  // EMT TRAP IOT BPT
-        EMTX(instr);
-        return;
-    }
+    // if (((instr & 0177000) == 0104000) || (instr == 3) || (instr == 4))
+    // {  // EMT TRAP IOT BPT
+    //     EMTX(instr);
+    //     return;
+    // }
     if ((instr & 0177740) == 0240)
     {  // CL?, SE?
         if (instr & 020)
@@ -1495,7 +1514,7 @@ void step()
     switch (instr & 7)
     {
     case 00:  // HALT
-        // if (curuser)
+        // if (curuser) // modded, usually a HALT in user mode fails with a trap
         // {
         //     break;
         // }
@@ -1508,17 +1527,23 @@ void step()
         }
         waiting = true;
         return;
+    case 03:  // BPT
+    case 04:  // IOT
+        EMTX(instr);
+        return;
     case 02:  // RTI
-
     case 06:  // RTT
         RTT(instr);
         return;
     case 05:  // RESET
         RESET(instr);
         return;
+        // case 07:
+        //     MFPT(instr);  // 11/44 only
+        //     return;
     }
 
-    // FP11 / FIS
+    // FP11
     if ((instr & 0177000) == 0170000)
     {
         switch (instr)
@@ -1583,7 +1608,7 @@ void trapat(uint16_t vec)
            }
    */
     uint16_t prev = PS;
-    switchmode(false);
+    switchmode(0);
     push(prev);
     push(R[7]);
 
@@ -1672,7 +1697,7 @@ void handleinterrupt()
     if (vv == 0)
     {
         uint16_t prev = PS;
-        switchmode(false);
+        switchmode(0);
         push(prev);
         push(R[7]);
     }

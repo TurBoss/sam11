@@ -104,15 +104,18 @@ void write16(uint32_t a, uint16_t v)
             switch (c14)
             {
             case 0:
-                kd11::switchmode(false);
+                kd11::switchmode(0);  //Kernel
+                break;
+            case 1:
+                kd11::switchmode(1);  // Super
                 break;
             case 3:
-                kd11::switchmode(true);
+                kd11::switchmode(3);  // User
                 break;
             default:
                 if (PRINTSIMLINES)
                 {
-                    Serial.print(F("%% invalid PS (>>14) mode: "));
+                    Serial.print(F("%% invalid current user mode: "));
                     Serial.println(c14, OCT);
                 }
                 panic();
@@ -121,15 +124,18 @@ void write16(uint32_t a, uint16_t v)
             switch (c12)
             {
             case 0:
-                kd11::prevuser = false;
+                kd11::prevuser = 0;  // Kernel
+                break;
+            case 1:
+                kd11::prevuser = 1;  // Super
                 break;
             case 3:
-                kd11::prevuser = true;
+                kd11::prevuser = 3;  // User
                 break;
             default:
                 if (PRINTSIMLINES)
                 {
-                    Serial.print(F("%% invalid PS (>>12 & 3) mode: "));
+                    Serial.print(F("%% invalid previous user mode: "));
                     Serial.println(c12, OCT);
                 }
                 panic();
@@ -148,6 +154,10 @@ void write16(uint32_t a, uint16_t v)
 
     case DEV_MMU_SR0:
         kt11::SR0 = v;
+        return;
+
+    case DEV_MMU_SR1:
+        kt11::SR1 = v;
         return;
 
     case DEV_MMU_SR2:
@@ -180,7 +190,7 @@ void write16(uint32_t a, uint16_t v)
     }
 
     // don't use switch/case for this because there would be like 112 lines of "case DEV_USR_DAT_PAR_R7:"
-    if (((a & 0777600) == 0772200) || ((a & 0777600) == 0777600))
+    if (((a & 0777600) == DEV_SUP_INS_PDR_R0) || ((a & 0777600) == DEV_USR_INS_PDR_R0) || ((a & 0777600) == DEV_KER_INS_PDR_R0))
     {
         kt11::write16(a, v);
         return;
@@ -231,6 +241,9 @@ uint16_t read16(uint32_t a)
     case DEV_MMU_SR0:
         return kt11::SR0;
 
+    case DEV_MMU_SR1:
+        return kt11::SR1;
+
     case DEV_MMU_SR2:
         return kt11::SR2;
 
@@ -257,7 +270,7 @@ uint16_t read16(uint32_t a)
     }
 
     // don't use switch/case for this because there would be like 112 lines of "case DEV_USR_DAT_PAR_R7:"
-    if (((a & 0777600) == 0772200) || ((a & 0777600) == 0777600))
+    if (((a & 0777600) == DEV_SUP_INS_PDR_R0) || ((a & 0777600) == DEV_USR_INS_PDR_R0) || ((a & 0777600) == DEV_KER_INS_PDR_R0))
     {
         return kt11::read16(a);
     }
