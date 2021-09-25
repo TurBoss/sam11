@@ -28,7 +28,7 @@ SOFTWARE.
 // this is all kinds of wrong
 #include "pdp1140.h"
 
-#if !PROC_11_45
+#if PROC_11_45
 
 #include <setjmp.h>
 
@@ -38,7 +38,7 @@ extern jmp_buf trapbuf;
 
 extern pdp11::intr itab[ITABN];
 
-namespace kd11 {
+namespace kb11 {
 
 enum
 {
@@ -54,9 +54,10 @@ extern volatile int32_t R[8];  // R6 = SP, R7 = PC
 extern volatile uint16_t curPC;    // R7
 extern volatile uint16_t PS;       // Processor Status
 extern volatile uint16_t USP;      // R6 (user)
+extern volatile uint16_t SSP;      // R6 (Super)
 extern volatile uint16_t KSP;      // R6 (kernel)
-extern volatile uint8_t curuser;   // 0: kernel, 1,2: illegal, 3: user
-extern volatile uint8_t prevuser;  // 0: kernel, 1,2: illegal, 3: user
+extern volatile uint8_t curuser;   // 0: kernel, 1: supervisor, 2: illegal, 3: user
+extern volatile uint8_t prevuser;  // 0: kernel, 1: supervisor, 2: illegal, 3: user
 extern volatile bool trapped;
 
 bool isReg(const uint16_t a);
@@ -88,6 +89,6 @@ static bool C()
     return (uint8_t)PS & FLAGC;
 }
 
-};  // namespace kd11
+};  // namespace kb11
 
 #endif

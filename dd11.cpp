@@ -26,7 +26,8 @@ SOFTWARE.
 
 #include "dd11.h"
 
-#include "kd11.h"
+#include "kb11.h"  // 11/45
+#include "kd11.h"  // 11/40
 #include "kl11.h"
 #include "kt11.h"
 #include "kw11.h"
@@ -89,12 +90,6 @@ void write16(uint32_t a, uint16_t v)
         ms11::write16(a, v);
         return;
     }
-
-    // if ((a & 0777770) == 0770000)
-    // {
-    //     kd11::R[a & 07] = v;
-    //     return;
-    // }
 
     switch (a)
     {

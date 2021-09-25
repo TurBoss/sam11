@@ -26,6 +26,8 @@ SOFTWARE.
 
 #include "ky11.h"
 
+#include "kb11.h"  // 11/45
+#include "kd11.h"  // 11/40
 #include "platform.h"
 #include "sam11.h"
 

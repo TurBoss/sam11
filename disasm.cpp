@@ -25,7 +25,8 @@ SOFTWARE.
 // sam11 debug dissassembler
 
 #include "dd11.h"
-#include "kd11.h"
+#include "kb11.h"  // 11/45
+#include "kd11.h"  // 11/40
 #include "kt11.h"
 #include "platform.h"
 #include "sam11.h"

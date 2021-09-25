@@ -26,7 +26,8 @@ SOFTWARE.
 
 #include "kw11.h"
 
-#include "kd11.h"
+#include "kb11.h"  // 11/45
+#include "kd11.h"  // 11/40
 #include "pdp1140.h"
 
 namespace kw11 {
