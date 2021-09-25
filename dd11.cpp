@@ -165,6 +165,10 @@ void write16(uint32_t a, uint16_t v)
         kt11::SR2 = v;
         return;
 
+    case DEV_MMU_SR3:
+        kt11::SR3 = v;
+        return;
+
     case DEV_CONSOLE_DR:
         ky11::write16(a, v);
         return;
@@ -191,7 +195,7 @@ void write16(uint32_t a, uint16_t v)
     }
 
     // don't use switch/case for this because there would be like 112 lines of "case DEV_USR_DAT_PAR_R7:"
-    if (((a & 0777600) == DEV_SUP_INS_PDR_R0) || ((a & 0777600) == DEV_USR_INS_PDR_R0) || ((a & 0777600) == DEV_KER_INS_PDR_R0))
+    if (((a & 0777700) == DEV_SUP_INS_PDR_R0) || ((a & 0777700) == DEV_USR_INS_PDR_R0) || ((a & 0777700) == DEV_KER_INS_PDR_R0))
     {
         kt11::write16(a, v);
         return;
@@ -243,6 +247,9 @@ uint16_t read16(uint32_t a)
     case DEV_MMU_SR2:
         return kt11::SR2;
 
+    case DEV_MMU_SR3:
+        return kt11::SR3;
+
     case DEV_CONSOLE_SR:
         return ky11::read16(a);
 
@@ -266,7 +273,7 @@ uint16_t read16(uint32_t a)
     }
 
     // don't use switch/case for this because there would be like 112 lines of "case DEV_USR_DAT_PAR_R7:"
-    if (((a & 0777600) == DEV_SUP_INS_PDR_R0) || ((a & 0777600) == DEV_USR_INS_PDR_R0) || ((a & 0777600) == DEV_KER_INS_PDR_R0))
+    if (((a & 0777700) == DEV_SUP_INS_PDR_R0) || ((a & 0777700) == DEV_USR_INS_PDR_R0) || ((a & 0777700) == DEV_KER_INS_PDR_R0))
     {
         return kt11::read16(a);
     }

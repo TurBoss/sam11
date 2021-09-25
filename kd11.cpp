@@ -46,13 +46,14 @@ pdp11::intr itab[ITABN];
 
 namespace kd11 {
 
-// signed integer registers
+// signed integer registers -- change to R[2][8]
 volatile int32_t R[8];  // R6 = SP, R7 = PC
 
-volatile uint16_t PS;       // Processor Status
-volatile uint16_t curPC;    // R7, address of current instruction
-volatile uint16_t KSP;      // R6 (kernel), stack pointer
-volatile uint16_t USP;      // R6 (user), stack pointer
+volatile uint16_t PS;     // Processor Status
+volatile uint16_t curPC;  // R7, address of current instruction
+volatile uint16_t KSP;    // R6 (kernel), stack pointer
+volatile uint16_t USP;    // R6 (user), stack pointer
+
 volatile uint8_t curuser;   // (true = user)
 volatile uint8_t prevuser;  // (true = user)
 
@@ -72,9 +73,12 @@ void reset(void)
     PS = 0;
     KSP = 0;
     USP = 0;
-    curuser = false;
-    prevuser = false;
+    curuser = 0;
+    prevuser = 0;
     kt11::SR0 = 0;
+    kt11::SR1 = 0;
+    kt11::SR2 = 0;
+    kt11::SR3 = 0;
     curPC = 0;
     kw11::reset();
     ms11::clear();
@@ -260,12 +264,9 @@ static void branch(int16_t o)
 
 void switchmode(uint8_t newm)
 {
-    if (newm)
-        newm = 3;
-
     prevuser = curuser;
     curuser = newm;
-    if (prevuser)
+    if (prevuser == 3)
     {
         USP = R[6];
     }
@@ -274,7 +275,7 @@ void switchmode(uint8_t newm)
         KSP = R[6];
     }
 
-    if (curuser)
+    if (curuser == 3)
     {
 #ifdef PIN_OUT_USER_MODE
         digitalWrite(PIN_OUT_USER_MODE, LED_ON);
@@ -1166,7 +1167,7 @@ static void EMTX(uint16_t instr)
         uval = 020;
     }
     uint16_t prev = PS;
-    switchmode(false);
+    switchmode(0);
     push(prev);
     push(R[7]);
     R[7] = dd11::read16(uval);
@@ -1240,7 +1241,7 @@ void step()
                 {
                     trapped = false;
                     cont_with = false;
-                    disasm(kt11::decode_instr(kd11::curPC, false, kd11::curuser));
+                    disasm(kt11::decode_instr(curPC, false, curuser));
                     break;
                 }
                 if (c == 'a')
@@ -1267,7 +1268,7 @@ void step()
     {
         if (PRINTINSTR && (trapped || cont_with))
         {
-            _printf("%%%% instr 0%06o: 0%06o\r\n", kd11::curPC, dd11::read16(kt11::decode_instr(kd11::curPC, false, kd11::curuser)));
+            _printf("%%%% instr 0%06o: 0%06o\r\n", curPC, dd11::read16(kt11::decode_instr(curPC, false, curuser)));
         }
 
         if ((BREAK_ON_TRAP || PRINTSTATE) && (trapped || cont_with))
@@ -1507,7 +1508,7 @@ void step()
     switch (instr & 7)
     {
     case 00:  // HALT
-        // if (curuser)
+        // if (curuser)  // modded, usually a HALT in user mode fails with a trap
         // {
         //     break;
         // }
@@ -1520,17 +1521,23 @@ void step()
         }
         waiting = true;
         return;
+    case 03:  // BPT
+    case 04:  // IOT
+        EMTX(instr);
+        return;
     case 02:  // RTI
-
     case 06:  // RTT
         RTT(instr);
         return;
     case 05:  // RESET
         RESET(instr);
         return;
+        // case 07:
+        //     MFPT(instr);  // 11/44 only
+        //     return;
     }
 
-    // FP11 / FIS
+    // FP11
     if ((instr & 0177000) == 0170000)
     {
         switch (instr)
@@ -1573,9 +1580,9 @@ void trapat(uint16_t vec)
         if (DEBUG_TRAP)
         {
             _printf("%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o\r\n",
-              uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]));
+              uint16_t(R[0]), uint16_t(R[1]), uint16_t(R[2]), uint16_t(R[3]));
             _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
-              uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), kd11::R[7]);  // uint16_t(kd11::R[7]));
+              uint16_t(R[4]), uint16_t(R[5]), uint16_t(R[6]), uint16_t(R[7]));
         }
     }
     /*var prev uint16
@@ -1595,16 +1602,14 @@ void trapat(uint16_t vec)
            }
    */
     uint16_t prev = PS;
-    switchmode(false);
+    switchmode(0);
     push(prev);
     push(R[7]);
 
     R[7] = dd11::read16(vec);
     PS = dd11::read16(vec + 2);
-    if (prevuser)
-    {
-        PS |= (1 << 13) | (1 << 12);
-    }
+    PS |= (curuser << 14);
+    PS |= (prevuser << 12);
     waiting = false;
 }
 
@@ -1684,7 +1689,7 @@ void handleinterrupt()
     if (vv == 0)
     {
         uint16_t prev = PS;
-        switchmode(false);
+        switchmode(0);
         push(prev);
         push(R[7]);
     }
@@ -1695,10 +1700,8 @@ void handleinterrupt()
 
     R[7] = dd11::read16(vec);
     PS = dd11::read16(vec + 2);
-    if (prevuser)
-    {
-        PS |= (1 << 13) | (1 << 12);
-    }
+    PS |= (curuser << 14);
+    PS |= (prevuser << 12);
     waiting = false;
     popirq();
 }

@@ -75,9 +75,12 @@ void reset(void)
     KSP = 0;
     SSP = 0;
     USP = 0;
-    curuser = false;
-    prevuser = false;
+    curuser = 0;
+    prevuser = 0;
     kt11::SR0 = 0;
+    kt11::SR1 = 0;
+    kt11::SR2 = 0;
+    kt11::SR3 = 0;
     curPC = 0;
     kw11::reset();
     ms11::clear();
@@ -263,6 +266,9 @@ static void branch(int16_t o)
 
 void switchmode(uint8_t newm)
 {
+    if (newm)
+        newm = 3;
+
     prevuser = curuser;
     curuser = newm;
     if (prevuser == 3)
@@ -277,6 +283,7 @@ void switchmode(uint8_t newm)
     {
         KSP = R[6];
     }
+
     if (curuser == 3)
     {
 #ifdef PIN_OUT_USER_MODE
@@ -1155,6 +1162,95 @@ static void MTPI(uint16_t instr)
     return;
 }
 
+static void MFPD(uint16_t instr)
+{
+    uint8_t d = instr & 077;
+    uint16_t da = aget(d, 2);
+    uint16_t uval;
+    if (da == 0170006)
+    {
+        if (curuser == prevuser)
+        {
+            uval = R[6];
+        }
+        else
+        {
+            if (prevuser)
+            {
+                uval = USP;
+            }
+            else
+            {
+                uval = KSP;
+            }
+        }
+    }
+    else if (isReg(da))
+    {
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% invalid MFPD instruction"));
+        }
+        panic();
+    }
+    else
+    {
+        uval = dd11::read16(kt11::decode_data((uint16_t)da, false, prevuser));
+    }
+    push(uval);
+    PS &= 0xFFF0;
+    PS |= FLAGC;
+    setZ(uval == 0);
+    if (uval & 0x8000)
+    {
+        PS |= FLAGN;
+    }
+}
+
+static void MTPD(uint16_t instr)
+{
+    uint32_t sa = 0;
+    uint8_t d = instr & 077;
+    uint16_t da = aget(d, 2);
+    uint16_t uval = pop();
+    if (da == 0170006)
+    {
+        if (curuser == prevuser)
+        {
+            R[6] = uval;
+        }
+        else if (prevuser)
+        {
+            USP = uval;
+        }
+        else
+        {
+            KSP = uval;
+        }
+    }
+    else if (isReg(da))
+    {
+        if (PRINTSIMLINES)
+        {
+            Serial.println(F("%% invalid MTPD instruction"));
+        }
+        panic();
+    }
+    else
+    {
+        sa = kt11::decode_data(da, true, prevuser);
+        dd11::write16(sa, uval);
+    }
+    PS &= 0xFFF0;
+    PS |= FLAGC;
+    setZ(uval == 0);
+    if (uval & 0x8000)
+    {
+        PS |= FLAGN;
+    }
+    return;
+}
+
 static void RTS(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -1207,10 +1303,10 @@ static void RTT(uint16_t instr)
 
 static void RESET(uint16_t instr)
 {
-    if (curuser)
-    {
-        return;
-    }
+    // if (curuser)
+    // {
+    //     return;
+    // }
     kl11::clearterminal();
     rk11::reset();
 }
@@ -1256,7 +1352,7 @@ void step()
                 {
                     trapped = false;
                     cont_with = false;
-                    disasm(kt11::decode_instr(kb11::curPC, false, kb11::curuser));
+                    disasm(kt11::decode_instr(curPC, false, curuser));
                     break;
                 }
                 if (c == 'a')
@@ -1283,7 +1379,7 @@ void step()
     {
         if (PRINTINSTR && (trapped || cont_with))
         {
-            _printf("%%%% instr 0%06o: 0%06o\r\n", kb11::curPC, dd11::read16(kt11::decode_instr(kb11::curPC, false, kb11::curuser)));
+            _printf("%%%% instr 0%06o: 0%06o\r\n", curPC, dd11::read16(kt11::decode_instr(curPC, false, curuser)));
         }
 
         if ((BREAK_ON_TRAP || PRINTSTATE) && (trapped || cont_with))
@@ -1400,18 +1496,12 @@ void step()
     case 0006600:  // MTPI
         MTPI(instr);
         return;
-        // case 0106500:  // MFPD
-        //     MFPD(instr);
-        //     return;
-        // case 0106600:  // MTPD
-        //     MTPD(instr);
-        //     return;
-        // case 0106700:  // MFPS
-        //     MFPS(instr);
-        //     return;
-        // case 0106400:  // MTPS
-        //     MTPS(instr);
-        //     return;
+    case 0106500:  // MFPD
+        MFPD(instr);
+        return;
+    case 0106600:  // MTPD
+        MTPD(instr);
+        return;
     }
     if ((instr & 0177770) == 0000200)
     {  // RTS
@@ -1509,11 +1599,11 @@ void step()
         }
         return;
     }
-    // if (((instr & 0177000) == 0104000) || (instr == 3) || (instr == 4))
-    // {  // EMT TRAP IOT BPT
-    //     EMTX(instr);
-    //     return;
-    // }
+    if (((instr & 0177000) == 0104000) || (instr == 3) || (instr == 4))
+    {  // EMT TRAP IOT BPT
+        EMTX(instr);
+        return;
+    }
     if ((instr & 0177740) == 0240)
     {  // CL?, SE?
         if (instr & 020)
@@ -1528,11 +1618,11 @@ void step()
     }
     switch (instr & 7)
     {
-    case 00:          // HALT
-        if (curuser)  // modded, usually a HALT in user mode fails with a trap
-        {
-            break;
-        }
+    case 00:  // HALT
+        // if (curuser)  // modded, usually a HALT in user mode fails with a trap
+        // {
+        //     break;
+        // }
         //Serial.println(F("%% HALT"));
         panic();
     case 01:  // WAIT
@@ -1601,9 +1691,9 @@ void trapat(uint16_t vec)
         if (DEBUG_TRAP)
         {
             _printf("%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o\r\n",
-              uint16_t(kb11::R[0]), uint16_t(kb11::R[1]), uint16_t(kb11::R[2]), uint16_t(kb11::R[3]));
+              uint16_t(R[0]), uint16_t(R[1]), uint16_t(R[2]), uint16_t(R[3]));
             _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
-              uint16_t(kb11::R[4]), uint16_t(kb11::R[5]), uint16_t(kb11::R[6]), kb11::R[7]);  // uint16_t(kb11::R[7]));
+              uint16_t(R[4]), uint16_t(R[5]), uint16_t(R[6]), uint16_t(R[7]));
         }
     }
     /*var prev uint16
@@ -1629,10 +1719,8 @@ void trapat(uint16_t vec)
 
     R[7] = dd11::read16(vec);
     PS = dd11::read16(vec + 2);
-    if (prevuser)
-    {
-        PS |= (1 << 13) | (1 << 12);
-    }
+    PS |= (curuser << 14);
+    PS |= (prevuser << 12);
     waiting = false;
 }
 
@@ -1723,10 +1811,8 @@ void handleinterrupt()
 
     R[7] = dd11::read16(vec);
     PS = dd11::read16(vec + 2);
-    if (prevuser)
-    {
-        PS |= (1 << 13) | (1 << 12);
-    }
+    PS |= (curuser << 14);
+    PS |= (prevuser << 12);
     waiting = false;
     popirq();
 }

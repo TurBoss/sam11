@@ -56,14 +56,14 @@ SOFTWARE.
  * 
  * Processor and Extensions:
  * 
- * KB11-A   Y   Main CPU 11/45 \_ Main processor is mostly 11/40 
+ * KB11-A   P+  Main CPU 11/45 \_ Main processor is mostly 11/40 
  * KD11-A   Y   Main CPU 11/40 /  but has a few 11/45 things
  * KE11-E   *   Extended instructions (EIS)
  * KG11     *   XOR/CRC "cagey" calculations controller
- * KJ11     +   Stack Limit Register
+ * KJ11     *+  Stack Limit Register
  * KL11     Y   Main Console TTY Interface
  * KM11         Maintenance Device
- * KT11     Y   Memory Management Unit (11/40 compliant ONLY)
+ * KT11     Y+  Memory Management Unit (11/40 compliant ONLY)
  * KW11     *   Line Time Clock (P revision is also RTC - not implemented)
  * KY11-D   +   Developer/Diagnostics Console (front panel)
  * 
@@ -78,7 +78,7 @@ SOFTWARE.
  * DD11     Y   UNIBUS Backplane
  * DH11         Serial (async) Line Controller 
  * DJ11         Serial (async) Line Controller
- * DL11         Serial (async) Line Controller <- this is the one you add to expand the no. TTYs
+ * DL11     +   Serial (async) Line Controller <- this is the one you add to expand the no. TTYs
  * DM11         Serial (async) Line Controller
  * DQ11         Serial (NPR sync) Line Controller  
  * DR11         Parallel Controller
@@ -91,7 +91,7 @@ SOFTWARE.
  * 
  * KF11-A       Processor Core Memory (ignored if external memory exists)
  * MM11         Ferrite Core Memory
- * MS11     P+  Silicon Memory
+ * MS11     Y+  Silicon Memory
  * 
  * Storage:
  *  

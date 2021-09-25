@@ -38,7 +38,7 @@ enum
     DEBUG_MMU = false,
     BREAK_ON_TRAP = false,
     FIRST_LF_BREAKS = false,
-    PRINTSIMLINES = true,
+    PRINTSIMLINES = false,
 };
 
 void printstate();

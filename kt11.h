@@ -35,6 +35,7 @@ extern uint16_t SR2;
 extern uint16_t SR3;
 
 uint32_t decode_instr(uint16_t a, bool w, uint8_t user);
+uint32_t decode_data(uint16_t a, bool w, uint8_t user);
 uint16_t read16(uint32_t a);
 void write16(uint32_t a, uint16_t v);
 
