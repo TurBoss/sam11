@@ -115,7 +115,7 @@ SOFTWARE.
 #ifndef _H_PDP1140_
 #define _H_PDP1140_
 
-#define PROC_11_45 false  // change this line to true to compile with an 11/45 processor (WIP)
+#define USE_11_45 false  // change this line to true to compile with an 11/45 processor (WIP)
 
 enum
 {

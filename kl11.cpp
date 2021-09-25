@@ -32,6 +32,12 @@ SOFTWARE.
 
 #include <Arduino.h>
 
+#if USE_11_45
+#define procNS kb11
+#else
+#define procNS kd11
+#endif
+
 namespace kl11 {
 
 uint16_t TKS;
@@ -66,7 +72,7 @@ static void addchar(char c)
     TKS |= 0x80;
     if (TKS & (1 << 6))
     {
-        kd11::interrupt(INTTTYIN, 4);
+        procNS::interrupt(INTTTYIN, 4);
     }
 }
 
@@ -78,7 +84,7 @@ void poll()
     {
         char c = Serial.read();
         if (FIRST_LF_BREAKS && (c == '\n' || c == '\r'))
-            kd11::trapped = true;
+            procNS::trapped = true;
         addchar(c & 0x7f);
     }
 
@@ -90,7 +96,7 @@ void poll()
             TPS |= 0x80;
             if (TPS & (1 << 6))
             {
-                kd11::interrupt(INTTTYOUT, 4);
+                procNS::interrupt(INTTTYOUT, 4);
             }
         }
     }

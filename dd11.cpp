@@ -37,6 +37,12 @@ SOFTWARE.
 #include "sam11.h"
 #include "xmem.h"
 
+#if USE_11_45
+#define procNS kb11
+#else
+#define procNS kd11
+#endif
+
 #include <SdFat.h>
 
 namespace dd11 {
@@ -99,13 +105,13 @@ void write16(uint32_t a, uint16_t v)
             switch (c14)
             {
             case 0:
-                kd11::switchmode(0);  //Kernel
+                procNS::switchmode(0);  //Kernel
                 break;
             case 1:
-                kd11::switchmode(1);  // Super
+                procNS::switchmode(1);  // Super
                 break;
             case 3:
-                kd11::switchmode(3);  // User
+                procNS::switchmode(3);  // User
                 break;
             default:
                 if (PRINTSIMLINES)
@@ -119,13 +125,13 @@ void write16(uint32_t a, uint16_t v)
             switch (c12)
             {
             case 0:
-                kd11::prevuser = 0;  // Kernel
+                procNS::prevuser = 0;  // Kernel
                 break;
             case 1:
-                kd11::prevuser = 1;  // Super
+                procNS::prevuser = 1;  // Super
                 break;
             case 3:
-                kd11::prevuser = 3;  // User
+                procNS::prevuser = 3;  // User
                 break;
             default:
                 if (PRINTSIMLINES)
@@ -135,7 +141,7 @@ void write16(uint32_t a, uint16_t v)
                 }
                 panic();
             }
-            kd11::PS = v;
+            procNS::PS = v;
             return;
         }
 
@@ -217,15 +223,10 @@ uint16_t read16(uint32_t a)
         return ms11::read16(a);
     }
 
-    // if ((a & 0777770) == 0770000)
-    // {
-    //     return kd11::R[a & 07];
-    // }
-
     switch (a)  // Switch by address, and read from virtual device as appropriate
     {
     case DEV_CPU_STAT:
-        return kd11::PS;
+        return procNS::PS;
 
     case DEV_STACK_LIM:
         return kt11::SLR;  // probs wrong

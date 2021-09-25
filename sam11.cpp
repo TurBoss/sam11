@@ -39,6 +39,12 @@ SOFTWARE.
 #include <Arduino.h>
 #include <SdFat.h>
 
+#if USE_11_45
+#define procNS kb11
+#else
+#define procNS kd11
+#endif
+
 #if defined(__AVR_ATmega2560__)
 int serialWrite(char c, FILE* f)
 {
@@ -144,8 +150,8 @@ void setup(void)
         sd.errorHalt("%% opening disk for write failed");
     }
 
-    ky11::reset();  // reset the front panel - sets the switches to INST_UNIX_SINGLEUSER (0173030)
-    kd11::reset();  // reset the processor
+    ky11::reset();    // reset the front panel - sets the switches to INST_UNIX_SINGLEUSER (0173030)
+    procNS::reset();  // reset the processor
     Serial.println(F("%% Ready\r\n"));
 }
 
@@ -156,9 +162,9 @@ static void loop0()
         //delayMicroseconds(10);  // a touch of throttle... the processor is plenty fast enough, so we add this to mimic the slower pdp
 
         // Check for interruptd
-        if ((itab[0].vec) && (itab[0].pri >= ((kd11::PS >> 5) & 7)))
+        if ((itab[0].vec) && (itab[0].pri >= ((procNS::PS >> 5) & 7)))
         {
-            kd11::handleinterrupt();
+            procNS::handleinterrupt();
             return;  // reset the loop to reset interrupt
         }
 
@@ -166,7 +172,7 @@ static void loop0()
         digitalWrite(PIN_OUT_PROC_STEP, LED_ON);
 #endif
 
-        kd11::step();  // step the instructions
+        procNS::step();  // step the instructions
 
 #ifdef PIN_OUT_PROC_STEP
         digitalWrite(PIN_OUT_PROC_STEP, LED_OFF);
@@ -188,7 +194,7 @@ void loop()
     uint16_t vec = setjmp(trapbuf);
     if (vec)
     {
-        kd11::trapat(vec);
+        procNS::trapat(vec);
     }
     loop0();  // restart step loop
 }

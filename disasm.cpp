@@ -33,6 +33,12 @@ SOFTWARE.
 
 #include <Arduino.h>
 
+#if USE_11_45
+#define procNS kb11
+#else
+#define procNS kd11
+#endif
+
 const char* rs[] = {
   "R0", "R1", "R2", "R3", "R4", "R5", "SP", "PC"};
 
@@ -233,19 +239,19 @@ void disasm(uint32_t a)
 void printstate()
 {
     _printf("%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o\r\n",
-      uint16_t(kd11::R[0]), uint16_t(kd11::R[1]), uint16_t(kd11::R[2]), uint16_t(kd11::R[3]));
+      uint16_t(procNS::R[0]), uint16_t(procNS::R[1]), uint16_t(procNS::R[2]), uint16_t(procNS::R[3]));
     _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
-      uint16_t(kd11::R[4]), uint16_t(kd11::R[5]), uint16_t(kd11::R[6]), kd11::curPC);  // uint16_t(kd11::R[7]));
-    _printf("%%%% [%s%s%s%s%s%s]\r\n",
-      kd11::prevuser ? "u" : "k",
-      kd11::curuser ? "U" : "K",
-      kd11::N() ? "N" : " ",
-      kd11::Z() ? "Z" : " ",
-      kd11::V() ? "V" : " ",
-      kd11::C() ? "C" : " ");
-    _printf("%%%% instr 0%06o: 0%06o\t", kd11::curPC, dd11::read16(kt11::decode(kd11::curPC, false, kd11::curuser)));
+      uint16_t(procNS::R[4]), uint16_t(procNS::R[5]), uint16_t(procNS::R[6]), procNS::curPC);  // uint16_t(procNS::R[7]));
+    _printf("%%%% [%i%i%s%s%s%s]\r\n",
+      procNS::prevuser,
+      procNS::curuser,
+      procNS::N() ? "N" : " ",
+      procNS::Z() ? "Z" : " ",
+      procNS::V() ? "V" : " ",
+      procNS::C() ? "C" : " ");
+    _printf("%%%% instr 0%06o: 0%06o\t", procNS::curPC, dd11::read16(kt11::decode_instr(procNS::curPC, false, procNS::curuser)));
 #if ALLOW_DISASM
-    disasm(kt11::decode(kd11::curPC, false, kd11::curuser));
+    disasm(kt11::decode_instr(procNS::curPC, false, procNS::curuser));
 #endif
     Serial.println("\r\n");
     Serial.flush();

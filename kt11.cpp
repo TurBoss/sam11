@@ -33,6 +33,12 @@ SOFTWARE.
 
 #include <Arduino.h>
 
+#if USE_11_45
+#define procNS kb11
+#else
+#define procNS kd11
+#endif
+
 namespace kt11 {
 
 uint16_t SLR;
@@ -62,12 +68,9 @@ struct page {
     }
 };
 
-page instr_pages[24];  //0-7=Kernel, 8-15=Super, 16-23=User
-page data_pages[24];   //0-7=Kernel, 8-15=Super, 16-23=User -- not implemented
+page instr_pages[4][8];  //0 = kern, 1 = super, 2 = illegal, 3 = user
+page data_pages[4][8];   //0 = kern, 1 = super, 2 = illegal, 3 = user
 uint16_t SR0, SR1, SR2, SR3;
-#define USER_OFFSET  16
-#define SUPER_OFFSET 8
-#define KERN_OFFSET  0
 
 void errorSR0(const uint16_t a, const uint8_t user)
 {
@@ -77,10 +80,10 @@ void errorSR0(const uint16_t a, const uint8_t user)
     {
         SR0 |= (1 << 5) | (1 << 6);
     }
-    SR2 = kd11::curPC;
+    SR2 = procNS::curPC;
 }
 
-uint32_t decode(const uint16_t a, const bool w, const uint8_t user)
+uint32_t decode_instr(const uint16_t a, const bool w, const uint8_t user)
 {
     // disabled
     if (!(SR0 & 1))
@@ -90,66 +93,61 @@ uint32_t decode(const uint16_t a, const bool w, const uint8_t user)
         return a;
     }
 
-    // kt11 enabled
-    uint16_t m = KERN_OFFSET;
-    if (user == 1)
-        m += SUPER_OFFSET;
-    else if (user == 3)
-        m += USER_OFFSET;
+    // enabled
 
-    const uint16_t i = (a >> 13) + m;
+    const uint16_t i = (a >> 13);
     const uint16_t block = (a >> 6) & 0177;
     const uint16_t disp = a & 077;
 
-    if (w && !instr_pages[i].write())  // write to RO page
+    if (w && !instr_pages[user][i].write())  // write to RO page
     {
         SR0 = (1 << 13) | 1;  // abort RO
         errorSR0(a, user);
         if (PRINTSIMLINES)
         {
-            Serial.print(F("%% kt11::decode write to read-only page "));
+            Serial.print(F("%% kt11::decode write to read-only page 0"));
             Serial.println(a, OCT);
         }
         longjmp(trapbuf, INTMMUERR);
     }
-    if (!instr_pages[i].read())  // read from WO page
+    if (!instr_pages[user][i].read())  // read from WO page
     {
         SR0 = (1 << 15) | 1;  //abort non-resident
         errorSR0(a, user);
         if (PRINTSIMLINES)
         {
-            Serial.print(F("%% kt11::decode read from no-access page "));
+            Serial.print(F("%% kt11::decode read from no-access page 0"));
             Serial.println(a, OCT);
         }
         longjmp(trapbuf, INTMMUERR);
     }
-    if (instr_pages[i].ed() && (block < instr_pages[i].len()))
+    if (instr_pages[user][i].ed() && (block < instr_pages[user][i].len()))
     {
         SR0 = (1 << 14) | 1;  //abort page len error
         errorSR0(a, user);
         if (PRINTSIMLINES)
         {
             _printf("%%%% page %i length exceeded (down).\r\n", i);
-            _printf("%%%% address 0%06o; block 0%03o is below length 0%03o\r\n", a, block, (instr_pages[i].len()));
+            _printf("%%%% address 0%06o; block 0%03o is below length 0%03o\r\n", a, block, (instr_pages[user][i].len()));
         }
         longjmp(trapbuf, INTMMUERR);
     }
-    if (!instr_pages[i].ed() && block > instr_pages[i].len())
+    if (!instr_pages[user][i].ed() && block > instr_pages[user][i].len())
     {
         SR0 = (1 << 14) | 1;  //abort page len error
         errorSR0(a, user);
         if (PRINTSIMLINES)
         {
             _printf("%%%% page %i length exceeded (up).\r\n", i);
-            _printf("%%%% address 0%06o; block 0%03o is above length 0%03o\r\n", a, block, (instr_pages[i].len()));
+            _printf("%%%% address 0%06o; block 0%03o is above length 0%03o\r\n", a, block, (instr_pages[user][i].len()));
         }
         longjmp(trapbuf, INTMMUERR);
     }
 
     if (w)
-        instr_pages[i].pdr |= 1 << 6;
+        instr_pages[user][i].pdr |= 1 << 6;
 
-    uint32_t aa = ((block + instr_pages[i].addr()) << 6) + disp;
+    uint32_t aa = ((block + instr_pages[user][i].addr()) << 6) + disp;
 
 #if DEBUG_MMU
     if (DEBUG_MMU)
@@ -173,29 +171,29 @@ uint16_t read16(const uint32_t a)
 
     if ((a >= DEV_KER_INS_PDR_R0) && (a <= DEV_KER_INS_PDR_R7))
     {
-        return instr_pages[i].pdr;
+        return instr_pages[0][i].pdr;
     }
     if ((a >= DEV_KER_INS_PAR_R0) && (a <= DEV_KER_INS_PAR_R7))
     {
-        return instr_pages[i].par;
+        return instr_pages[0][i].par;
     }
 
     if ((a >= DEV_SUP_INS_PDR_R0) && (a <= DEV_SUP_INS_PDR_R7))
     {
-        return instr_pages[i + SUPER_OFFSET].pdr;
+        return instr_pages[1][i].pdr;
     }
     if ((a >= DEV_SUP_INS_PAR_R0) && (a <= DEV_SUP_INS_PAR_R7))
     {
-        return instr_pages[i + SUPER_OFFSET].par;
+        return instr_pages[1][i].par;
     }
 
     if ((a >= DEV_USR_INS_PDR_R0) && (a <= DEV_USR_INS_PDR_R7))
     {
-        return instr_pages[i + USER_OFFSET].pdr;
+        return instr_pages[3][i].pdr;
     }
     if ((a >= DEV_USR_INS_PAR_R0) && (a <= DEV_USR_INS_PAR_R7))
     {
-        return instr_pages[i + USER_OFFSET].par;
+        return instr_pages[3][i].par;
     }
 
     if (PRINTSIMLINES)
@@ -211,40 +209,40 @@ void write16(const uint32_t a, const uint16_t v)
     uint8_t i = ((a & 017) >> 1);
     if ((a >= DEV_KER_INS_PDR_R0) && (a <= DEV_KER_INS_PDR_R7))
     {
-        instr_pages[i].pdr = v;
-        instr_pages[i].pdr &= ~(1 << 6);
+        instr_pages[0][i].pdr = v;
+        instr_pages[0][i].pdr &= ~(1 << 6);
         return;
     }
     if ((a >= DEV_KER_INS_PAR_R0) && (a <= DEV_KER_INS_PAR_R7))
     {
-        instr_pages[i].par = v;
-        instr_pages[i].pdr &= ~(1 << 6);
+        instr_pages[0][i].par = v;
+        instr_pages[0][i].pdr &= ~(1 << 6);
         return;
     }
 
     if ((a >= DEV_SUP_INS_PDR_R0) && (a <= DEV_SUP_INS_PDR_R7))
     {
-        instr_pages[i + SUPER_OFFSET].pdr = v;
-        instr_pages[i + SUPER_OFFSET].pdr &= ~(1 << 6);
+        instr_pages[1][i].pdr = v;
+        instr_pages[1][i].pdr &= ~(1 << 6);
         return;
     }
     if ((a >= DEV_SUP_INS_PAR_R0) && (a <= DEV_SUP_INS_PAR_R7))
     {
-        instr_pages[i + SUPER_OFFSET].par = v;
-        instr_pages[i + SUPER_OFFSET].pdr &= ~(1 << 6);
+        instr_pages[1][i].par = v;
+        instr_pages[1][i].pdr &= ~(1 << 6);
         return;
     }
 
     if ((a >= DEV_USR_INS_PDR_R0) && (a <= DEV_USR_INS_PDR_R7))
     {
-        instr_pages[i + USER_OFFSET].pdr = v;
-        instr_pages[i + USER_OFFSET].pdr &= ~(1 << 6);
+        instr_pages[3][i].pdr = v;
+        instr_pages[3][i].pdr &= ~(1 << 6);
         return;
     }
     if ((a >= DEV_USR_INS_PAR_R0) && (a <= DEV_USR_INS_PAR_R7))
     {
-        instr_pages[i + USER_OFFSET].par = v;
-        instr_pages[i + USER_OFFSET].pdr &= ~(1 << 6);
+        instr_pages[3][i].par = v;
+        instr_pages[3][i].pdr &= ~(1 << 6);
         return;
     }
 

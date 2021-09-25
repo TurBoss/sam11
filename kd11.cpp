@@ -27,7 +27,7 @@ SOFTWARE.
 
 #include "kd11.h"
 
-#if !PROC_11_45
+#if !USE_11_45
 
 #include "bootrom.h"
 #include "dd11.h"
@@ -94,22 +94,22 @@ void reset(void)
 
 static uint16_t read8(const uint16_t a)
 {
-    return dd11::read8(kt11::decode(a, false, curuser));
+    return dd11::read8(kt11::decode_instr(a, false, curuser));
 }
 
 static uint16_t read16(const uint16_t a)
 {
-    return dd11::read16(kt11::decode(a, false, curuser));
+    return dd11::read16(kt11::decode_instr(a, false, curuser));
 }
 
 static void write8(const uint16_t a, const uint16_t v)
 {
-    dd11::write8(kt11::decode(a, true, curuser), v);
+    dd11::write8(kt11::decode_instr(a, true, curuser), v);
 }
 
 static void write16(const uint16_t a, const uint16_t v)
 {
-    dd11::write16(kt11::decode(a, true, curuser), v);
+    dd11::write16(kt11::decode_instr(a, true, curuser), v);
 }
 
 bool isReg(const uint16_t a)
@@ -273,29 +273,36 @@ void switchmode(uint8_t newm)
     {
         KSP = R[6];
     }
+
     if (curuser)
     {
 #ifdef PIN_OUT_USER_MODE
         digitalWrite(PIN_OUT_USER_MODE, LED_ON);
+#endif
+#ifdef PIN_OUT_SUPER_MODE
+        digitalWrite(PIN_OUT_SUPER_MODE, LED_OFF);
+#endif
+#ifdef PIN_OUT_KERNEL_MODE
+        digitalWrite(PIN_OUT_KERNEL_MODE, LED_OFF);
 #endif
         R[6] = USP;
     }
     else
     {
 #ifdef PIN_OUT_USER_MODE
-        digitalWrite(PIN_OUT_USER_MODE, LED_OFF;
+        digitalWrite(PIN_OUT_USER_MODE, LED_OFF);
+#endif
+#ifdef PIN_OUT_SUPER_MODE
+        digitalWrite(PIN_OUT_SUPER_MODE, LED_OFF);
+#endif
+#ifdef PIN_OUT_KERNEL_MODE
+        digitalWrite(PIN_OUT_KERNEL_MODE, LED_ON);
 #endif
         R[6] = KSP;
     }
     PS &= 0007777;
-    if (curuser)
-    {
-        PS |= (1 << 15) | (1 << 14);
-    }
-    if (prevuser)
-    {
-        PS |= (1 << 13) | (1 << 12);
-    }
+    PS |= (curuser << 14);
+    PS |= (prevuser << 12);
 }
 
 static void setZ(bool b)
@@ -1076,7 +1083,7 @@ static void MFPI(uint16_t instr)
     }
     else
     {
-        uval = dd11::read16(kt11::decode((uint16_t)da, false, prevuser));
+        uval = dd11::read16(kt11::decode_instr((uint16_t)da, false, prevuser));
     }
     push(uval);
     PS &= 0xFFF0;
@@ -1119,7 +1126,7 @@ static void MTPI(uint16_t instr)
     }
     else
     {
-        sa = kt11::decode(da, true, prevuser);
+        sa = kt11::decode_instr(da, true, prevuser);
         dd11::write16(sa, uval);
     }
     PS &= 0xFFF0;
@@ -1233,7 +1240,7 @@ void step()
                 {
                     trapped = false;
                     cont_with = false;
-                    disasm(kt11::decode(kd11::curPC, false, kd11::curuser));
+                    disasm(kt11::decode_instr(kd11::curPC, false, kd11::curuser));
                     break;
                 }
                 if (c == 'a')
@@ -1252,7 +1259,7 @@ void step()
     }
 
     curPC = R[7];
-    uint16_t instr = dd11::read16(kt11::decode(R[7], false, curuser));
+    uint16_t instr = dd11::read16(kt11::decode_instr(R[7], false, curuser));
     // return;
     R[7] += 2;
 
@@ -1260,7 +1267,7 @@ void step()
     {
         if (PRINTINSTR && (trapped || cont_with))
         {
-            _printf("%%%% instr 0%06o: 0%06o\r\n", kd11::curPC, dd11::read16(kt11::decode(kd11::curPC, false, kd11::curuser)));
+            _printf("%%%% instr 0%06o: 0%06o\r\n", kd11::curPC, dd11::read16(kt11::decode_instr(kd11::curPC, false, kd11::curuser)));
         }
 
         if ((BREAK_ON_TRAP || PRINTSTATE) && (trapped || cont_with))

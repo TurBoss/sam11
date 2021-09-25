@@ -30,6 +30,12 @@ SOFTWARE.
 #include "kd11.h"  // 11/40
 #include "pdp1140.h"
 
+#if USE_11_45
+#define procNS kb11
+#else
+#define procNS kd11
+#endif
+
 namespace kw11 {
 
 uint16_t LKS;
@@ -58,7 +64,7 @@ void tick()
             LKS |= (1 << 7);
             if (LKS & (1 << 6))
             {
-                kd11::interrupt(INTCLOCK, 6);
+                procNS::interrupt(INTCLOCK, 6);
             }
         }
     }

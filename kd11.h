@@ -28,7 +28,7 @@ SOFTWARE.
 // this is all kinds of wrong
 #include "pdp1140.h"
 
-#if !PROC_11_45
+#if !USE_11_45
 
 #include <setjmp.h>
 

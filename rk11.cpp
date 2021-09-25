@@ -35,6 +35,12 @@ SOFTWARE.
 #include <SdFat.h>
 #include <stdint.h>
 
+#if USE_11_45
+#define procNS kb11
+#else
+#define procNS kd11
+#endif
+
 namespace rk11 {
 
 uint32_t RKBA, RKDS, RKER, RKCS, RKWC;
@@ -212,7 +218,7 @@ again:
         rkready();
         if (RKCS & (1 << 6))
         {
-            kd11::interrupt(INTRK, 5);
+            procNS::interrupt(INTRK, 5);
         }
     }
     else
