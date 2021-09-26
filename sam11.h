@@ -31,7 +31,6 @@ enum
 {
     PRINTINSTR = false,
     PRINTSTATE = false,
-    INSTR_TIMING = false,
     DEBUG_INTER = false,
     DEBUG_TRAP = false,
     DEBUG_RK05 = false,

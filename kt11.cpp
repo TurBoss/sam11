@@ -292,7 +292,7 @@ uint16_t read16(const uint32_t a)
     if ((a >= DEV_SUP_INS_PAR_R0) && (a <= DEV_SUP_INS_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par read: page %i, user %i, instr area\r\n", i, 0);
+            _printf("%%%% kt11: par read: page %i, user %i, instr area\r\n", i, 1);
         return instr_pages[1][i].par;
     }
 
@@ -333,7 +333,7 @@ uint16_t read16(const uint32_t a)
     if ((a >= DEV_SUP_DAT_PAR_R0) && (a <= DEV_SUP_DAT_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par read: page %i, user %i, data area\r\n", i, 0);
+            _printf("%%%% kt11: par read: page %i, user %i, data area\r\n", i, 1);
         return data_pages[1][i].par;
     }
 
