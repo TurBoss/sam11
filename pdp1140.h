@@ -117,11 +117,6 @@ SOFTWARE.
 
 #define USE_11_45 false  // change this line to true to compile with an 11/45 processor (WIP)
 
-enum
-{
-    ENABLE_LKS = true,
-};
-
 namespace pdp11 {
 
 struct intr {

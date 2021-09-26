@@ -182,7 +182,7 @@ static void loop0()
 
         kl11::poll();  // check the terminal
 
-        Serial.flush();
+        //Serial.flush();
     }
 }
 

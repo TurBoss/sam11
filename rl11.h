@@ -22,48 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-// sam11 software emulation of DEC PDP-11/40 KW11 Line Clock
+#if false
 
-#include "kw11.h"
-
-#include "kb11.h"  // 11/45
-#include "kd11.h"  // 11/40
+// sam11 software emulation of DEC PDP-11/40 RK11 RK Disk Controller
 #include "pdp1140.h"
 
-#if USE_11_45
-#define procNS kb11
-#else
-#define procNS kd11
+#include <SDFat.h>
+
+namespace rl11 {
+
+extern SdFile rkdata;
+
+void reset();
+void write16(uint32_t a, uint16_t v);
+uint16_t read16(uint32_t a);
+};  // namespace rl11
+
+enum
+{
+    // RKOVR = (1 << 14),
+    // RKNXD = (1 << 7),
+    // RKNXC = (1 << 6),
+    // RKNXS = (1 << 5)
+};
+
 #endif
-
-namespace kw11 {
-
-uint16_t LKS;
-
-union {
-    struct {
-        uint8_t low;
-        uint8_t high;
-    } bytes;
-    uint16_t value;
-} clkcounter;
-
-void reset()
-{
-    LKS = 1 << 7;
-    clkcounter.value = 0;
-}
-void tick()
-{
-    ++clkcounter.value;
-    if (clkcounter.bytes.high == 1 << 6)
-    {
-        clkcounter.value = 0;
-        LKS |= (1 << 7);
-        if (LKS & (1 << 6))
-        {
-            procNS::interrupt(INTCLOCK, 6);
-        }
-    }
-}
-};  // namespace kw11

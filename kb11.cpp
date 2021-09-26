@@ -100,22 +100,22 @@ void reset(void)
 
 static uint16_t read8(const uint16_t a)
 {
-    return dd11::read8(kt11::decode_instr(a, false, curuser));
+    return dd11::read8(kt11::decode_data(a, false, curuser));
 }
 
 static uint16_t read16(const uint16_t a)
 {
-    return dd11::read16(kt11::decode_instr(a, false, curuser));
+    return dd11::read16(kt11::decode_data(a, false, curuser));
 }
 
 static void write8(const uint16_t a, const uint16_t v)
 {
-    dd11::write8(kt11::decode_instr(a, true, curuser), v);
+    dd11::write8(kt11::decode_data(a, true, curuser), v);
 }
 
 static void write16(const uint16_t a, const uint16_t v)
 {
-    dd11::write16(kt11::decode_instr(a, true, curuser), v);
+    dd11::write16(kt11::decode_data(a, true, curuser), v);
 }
 
 bool isReg(const uint16_t a)
@@ -266,9 +266,6 @@ static void branch(int16_t o)
 
 void switchmode(uint8_t newm)
 {
-    if (newm)
-        newm = 3;
-
     prevuser = curuser;
     curuser = newm;
     if (prevuser == 3)
@@ -1649,7 +1646,7 @@ void step()
     }
 
     // FP11
-    if ((instr & 0177000) == 0170000)
+    if ((instr & 0177700) == 0170000)
     {
         switch (instr)
         {

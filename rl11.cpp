@@ -22,8 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-// sam11 software emulation of DEC PDP-11/40 RK11 RK Disk Controller
-#include "rk11.h"
+// sam11 software emulation of DEC PDP-11/40 RL11 RL Disk Controller
+#include "rl11.h"
+
+#if false
 
 #include "dd11.h"
 #include "kb11.h"  // 11/45
@@ -41,59 +43,59 @@ SOFTWARE.
 #define procNS kd11
 #endif
 
-namespace rk11 {
+namespace rl11 {
 
-uint32_t RKBA, RKDS, RKER, RKCS, RKWC;
-uint32_t drive, sector, surface, cylinder;
+uint32_t RLBA, RLDA, RLMP, RLCS, RLWC;
+uint32_t drive, sector, track, cylinder;
 
-SdFile rkdata;
+SdFile rldata;
 
 uint16_t read16(uint32_t a)
 {
     switch (a)
     {
-    case DEV_RK_DS:  // Drive Status
-        return RKDS;
-    case DEV_RK_ER:  // Error Reg
-        return RKER;
-    case DEV_RK_CS:  // Control Status
-        return RKCS | (RKBA & 0x30000) >> 12;
-    case DEV_RK_WC:  // Word count
-        return RKWC;
-    case DEV_RK_BA:  // Bus Address
-        return RKBA & 0xFFFF;
-    case DEV_RK_DA:  // Disk Address
+    case DEV_RL_DS:  // Drive Status
+        return RLDS;
+    case DEV_RL_ER:  // Error Reg
+        return RLER;
+    case DEV_RL_CS:  // Control Status
+        return RLCS | (RLBA & 0x30000) >> 12;
+    case DEV_RL_WC:  // Word count
+        return RLWC;
+    case DEV_RL_BA:  // Bus Address
+        return RLBA & 0xFFFF;
+    case DEV_RL_DA:  // Disk Address
         return (sector) | (surface << 4) | (cylinder << 5) | (drive << 13);
-    case DEV_RK_DB:  // Data Buffer
+    case DEV_RL_DB:  // Data Buffer
     default:
         if (PRINTSIMLINES)
         {
-            Serial.println(F("%% rk11::read16 invalid read"));
+            Serial.println(F("%% rl11::read16 invalid read"));
         }
         //panic();
         return 0;
     }
 }
 
-static void rknotready()
+static void rlnotready()
 {
 #ifdef PIN_OUT_DISK_ACT
     digitalWrite(PIN_OUT_DISK_ACT, LED_ON);
 #endif
-    RKDS &= ~(1 << 6);
-    RKCS &= ~(1 << 7);
+    RLDS &= ~(1 << 6);
+    RLCS &= ~(1 << 7);
 }
 
-static void rkready()
+static void rlready()
 {
-    RKDS |= 1 << 6;
-    RKCS |= 1 << 7;
+    RLDS |= 1 << 6;
+    RLCS |= 1 << 7;
 #ifdef PIN_OUT_DISK_ACT
     digitalWrite(PIN_OUT_DISK_ACT, LED_OFF);
 #endif
 }
 
-void rkerror(uint16_t e)
+void rlerror(uint16_t e)
 {
 }
 
@@ -101,37 +103,32 @@ static void step()
 {
 again:
     bool w;
-    switch ((RKCS & 017) >> 1)
+    switch ((RLCS & 017) >> 1)
     {
-    case 0:  // reset
-        //reset();
+    case 0:
         return;
-    case 1:  // write
+    case 1:
         w = true;
         break;
-    case 2:  // read
+    case 2:
         w = false;
         break;
-    case 3:  // check
-    case 4:  // seek
-    case 5:  // read check
-    case 6:  // write lock
     default:
         if (PRINTSIMLINES)
         {
-            Serial.println(F("%% unimplemented RK05 operation"));  //  %#o", ((r.RKCS & 017) >> 1)))
+            Serial.println(F("%% unimplemented RL05 operation"));  //  %#o", ((r.RLCS & 017) >> 1)))
         }
         panic();
     }
 
-    if (DEBUG_RK05)
+    if (DEBUG_RL05)
     {
         if (PRINTSIMLINES)
         {
-            Serial.print("%% rkstep: RKBA: ");
-            Serial.print(RKBA, DEC);
-            Serial.print(" RKWC: ");
-            Serial.print(RKWC, DEC);
+            Serial.print("%% rlstep: RLBA: ");
+            Serial.print(RLBA, DEC);
+            Serial.print(" RLWC: ");
+            Serial.print(RLWC, DEC);
             Serial.print(" cylinder: ");
             Serial.print(cylinder, DEC);
             Serial.print(" sector: ");
@@ -143,65 +140,65 @@ again:
 
     if (drive != 0)
     {
-        rkerror(RKNXD);
+        rlerror(RLNXD);
     }
     if (cylinder > 0312)
     {
-        rkerror(RKNXC);
+        rlerror(RLNXC);
     }
     if (sector > 013)
     {
-        rkerror(RKNXS);
+        rlerror(RLNXS);
     }
 
     int32_t pos = (cylinder * 24 + surface * 12 + sector) * 512;
-    if (!rkdata.seekSet(pos))
+    if (!rldata.seekSet(pos))
     {
         if (PRINTSIMLINES)
         {
-            Serial.println(F("%% rkstep: failed to seek"));
+            Serial.println(F("%% rlstep: failed to seek"));
         }
         panic();
     }
 
     uint16_t i;
     uint16_t val;
-    for (i = 0; i < 256 && RKWC != 0; i++)
+    for (i = 0; i < 256 && RLWC != 0; i++)
     {
         if (w)
         {
-            val = dd11::read16(RKBA);
-            rkdata.write(val & 0xFF);
-            rkdata.write((val >> 8) & 0xFF);
+            val = dd11::read16(RLBA);
+            rldata.write(val & 0xFF);
+            rldata.write((val >> 8) & 0xFF);
         }
         else
         {
-            int t = rkdata.read();
+            int t = rldata.read();
             if (t == -1)
             {
                 if (PRINTSIMLINES)
                 {
-                    Serial.println(F("%% rkstep: failed to read (low)"));
+                    Serial.println(F("%% rlstep: failed to read (low)"));
                 }
                 panic();
             }
             val = t & 0xFF;
 
-            t = rkdata.read();
+            t = rldata.read();
             if (t == -1)
             {
                 if (PRINTSIMLINES)
                 {
-                    Serial.println(F("%% rkstep: failed to read (high)"));
+                    Serial.println(F("%% rlstep: failed to read (high)"));
                 }
                 panic();
             }
             val += ((t & 0xFF) << 8);
 
-            dd11::write16(RKBA, val);
+            dd11::write16(RLBA, val);
         }
-        RKBA += 2;
-        RKWC = (RKWC + 1) & 0xFFFF;
+        RLBA += 2;
+        RLWC = (RLWC + 1) & 0xFFFF;
     }
     sector++;
     if (sector > 013)
@@ -214,16 +211,16 @@ again:
             cylinder++;
             if (cylinder > 0312)
             {
-                rkerror(RKOVR);
+                rlerror(RLOVR);
             }
         }
     }
-    if (RKWC == 0)
+    if (RLWC == 0)
     {
-        rkready();
-        if (RKCS & (1 << 6))
+        rlready();
+        if (RLCS & (1 << 6))
         {
-            procNS::interrupt(INTRK, 5);
+            procNS::interrupt(INTRL, 5);
         }
     }
     else
@@ -234,56 +231,56 @@ again:
 
 void write16(uint32_t a, uint16_t v)
 {
-    //printf("%% rkwrite: %06o\n",a);
+    //printf("%% rlwrite: %06o\n",a);
     switch (a)
     {
-    case DEV_RK_DS:  // Drive Status
+    case DEV_RL_DS:  // Drive Status
         break;
-    case DEV_RK_ER:  // Error Reg
+    case DEV_RL_ER:  // Error Reg
         break;
-    case DEV_RK_CS:  // Control Status
-        RKBA = (RKBA & 0xFFFF) | ((v & 060) << 12);
+    case DEV_RL_CS:  // Control Status
+        RLBA = (RLBA & 0xFFFF) | ((v & 060) << 12);
         v &= 017517;  // writable bits
-        RKCS &= ~017517;
-        RKCS |= v & ~1;  // don't set GO bit
+        RLCS &= ~017517;
+        RLCS |= v & ~1;  // don't set GO bit
         if (v & 1)
         {
-            switch ((RKCS & 017) >> 1)
+            switch ((RLCS & 017) >> 1)
             {
             case 0:
                 reset();
                 break;
             case 1:
             case 2:
-                rknotready();
+                rlnotready();
                 step();
                 break;
             default:
                 if (PRINTSIMLINES)
                 {
-                    Serial.println(F("%% unimplemented RK05 operation"));  // %#o", ((r.RKCS & 017) >> 1)))
+                    Serial.println(F("%% unimplemented RL05 operation"));  // %#o", ((r.RLCS & 017) >> 1)))
                 }
                 panic();
             }
         }
         break;
-    case DEV_RK_WC:  // Word Count
-        RKWC = v;
+    case DEV_RL_WC:  // Word Count
+        RLWC = v;
         break;
-    case DEV_RK_BA:  // Bus Address
-        RKBA = (RKBA & 0x30000) | (v);
+    case DEV_RL_BA:  // Bus Address
+        RLBA = (RLBA & 0x30000) | (v);
         break;
-    case DEV_RK_DA:  // Disk Address
+    case DEV_RL_DA:  // Disk Address
         drive = v >> 13;
         cylinder = (v >> 5) & 0377;
         surface = (v >> 4) & 1;
         sector = v & 15;
         break;
-    case DEV_RK_DB:  // Data Buffer
+    case DEV_RL_DB:  // Data Buffer
     default:
         if (PRINTSIMLINES)
         {
-            Serial.println(F("%% rkwrite16: invalid write"));
+            Serial.println(F("%% rlwrite16: invalid write"));
         }
         //panic();
     }
@@ -291,11 +288,12 @@ void write16(uint32_t a, uint16_t v)
 
 void reset()
 {
-    RKDS = (1 << 11) | (1 << 7) | (1 << 6);
-    RKER = 0;
-    RKCS = 1 << 7;
-    RKWC = 0;
-    RKBA = 0;
+    RLCS = 0x81;
+    RLBA = 0;
+    RLDA = 0;
+    RLMP = 0;
 }
 
-};  // namespace rk11
+};  // namespace rl11
+
+#endif
