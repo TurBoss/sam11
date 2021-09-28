@@ -25,7 +25,7 @@ SOFTWARE.
 // sam11 software emulation of DEC PDP-11/40 RL11 RL Disk Controller
 #include "rl11.h"
 
-#if false
+#if true
 
 #include "dd11.h"
 #include "kb11.h"  // 11/45
@@ -46,7 +46,7 @@ SOFTWARE.
 namespace rl11 {
 
 uint32_t RLBA, RLDA, RLMP, RLCS, RLWC;
-uint32_t drive, sector, track, cylinder;
+uint32_t drive, status, sectors, tracks, cylinders, m_addr;
 
 SdFile rldata;
 
@@ -54,19 +54,20 @@ uint16_t read16(uint32_t a)
 {
     switch (a)
     {
-    case DEV_RL_DS:  // Drive Status
-        return RLDS;
-    case DEV_RL_ER:  // Error Reg
-        return RLER;
-    case DEV_RL_CS:  // Control Status
+    case 0774400:  //DEV_RL_CS:  // Control Status
         return RLCS | (RLBA & 0x30000) >> 12;
-    case DEV_RL_WC:  // Word count
-        return RLWC;
-    case DEV_RL_BA:  // Bus Address
+        // case DEV_RL_DS:  // Drive Status
+        //     return RLDS;
+        // case DEV_RL_ER:  // Error Reg
+        //     return RLER;
+
+    case 0774406:  //DEV_RL_MP:  // Multi Purpose
+        return RLMP;
+    case 0774402:  //DEV_RL_BA:  // Bus Address
         return RLBA & 0xFFFF;
-    case DEV_RL_DA:  // Disk Address
+    case 0774404:  //DEV_RL_DA:  // Disk Address
         return (sector) | (surface << 4) | (cylinder << 5) | (drive << 13);
-    case DEV_RL_DB:  // Data Buffer
+    // case DEV_RL_DB:  // Data Buffer
     default:
         if (PRINTSIMLINES)
         {
@@ -102,15 +103,41 @@ void rlerror(uint16_t e)
 static void step()
 {
 again:
+
+    drive = (RLCS >> 8) & 3;
+    RLCS &= ~1;
+
     bool w;
     switch ((RLCS & 017) >> 1)
     {
-    case 0:
+    case 0:  // no op
         return;
-    case 1:
+    case 1:  // write check
+        return;
+    case 2:  //status
+        if (RLMP & 0x8)
+            RLCS &= 0x3F;
+        RLMP = status | m_addr & 0100;
+        return;
+    case 3:  //seek
+        if ((m_addr & 3) == 1)
+        {
+            if ((m_addr & 4))
+            {
+                RLDA = ((RLDA + (m_addr & 0xFF80)) & 0xFF80) | ((m_addr << 2) & 0x40);
+            }
+            else
+            {
+                RLDA = ((RLDA - (m_addr & 0xFF80)) & 0xFF80) | ((m_addr << 2) & 0x40);
+            }
+            m_addr = RLDA;
+        }
+        return;
+    case 5:  // write
         w = true;
         break;
-    case 2:
+    case 6:  // read
+    case 7:  // read no header
         w = false;
         break;
     default:
@@ -138,17 +165,15 @@ again:
         }
     }
 
-    if (drive != 0)
+    if ((m_addr >>> 6) >= tracks)
     {
-        rlerror(RLNXD);
+        RLCS |= 0x9400;  // HNF
+        break;
     }
-    if (cylinder > 0312)
+    if ((m_addr & 0x3f) >= sectors)
     {
-        rlerror(RLNXC);
-    }
-    if (sector > 013)
-    {
-        rlerror(RLNXS);
+        RLCS |= 0x9400;  // HNF
+        break;
     }
 
     int32_t pos = (cylinder * 24 + surface * 12 + sector) * 512;
