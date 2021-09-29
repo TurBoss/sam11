@@ -25,6 +25,8 @@ SOFTWARE.
 // sam11 software emulation of DEC PDP-11/40 KW11 Line Clock
 #include "pdp1140.h"
 
+#define LKS_FREQ (60)  // 60Hz or 50Hz
+
 namespace kw11 {
 
 extern uint16_t LKS;
