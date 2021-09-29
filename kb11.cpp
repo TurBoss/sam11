@@ -1629,11 +1629,11 @@ void step()
     }
     switch (instr & 7)
     {
-    case 00:          // HALT
-        if (curuser)  // modded, usually a HALT in user mode fails with a trap
-        {
-            break;
-        }
+    case 00:  // HALT
+        // if (curuser)  // modded, usually a HALT in user mode fails with a trap
+        // {
+        //     break;
+        // }
         //Serial.println(F("%% HALT"));
         panic();
     case 01:  // WAIT
