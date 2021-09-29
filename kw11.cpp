@@ -29,6 +29,15 @@ SOFTWARE.
 #include "kb11.h"  // 11/45
 #include "kd11.h"  // 11/40
 #include "pdp1140.h"
+#include "platform.h"
+
+#ifndef LKS_ACC
+#define LKS_ACC LKS_SHIFT_TICK
+#endif
+
+#if LKS_ACC == LKS_MID_ACC || LKS_ACC == LKS_HIGH_ACC
+#include <elapsedMillis.h>
+#endif
 
 #if USE_11_45
 #define procNS kb11
@@ -40,25 +49,40 @@ namespace kw11 {
 
 uint16_t LKS;
 
-union {
-    struct {
-        uint8_t low;
-        uint8_t high;
-    } bytes;
-    uint16_t value;
-} clkcounter;
+#if LKS_ACC == LKS_SHIFT_TICK
+uint16_t time;
+uint32_t multip = 1000;
+#define LKS_PER = LKS_PERIOD_MS
+#elif LKS_ACC == LKS_MID_ACC
+elapsedMillis time;
+uint16_t multip = 1;
+#define LKS_PER LKS_PERIOD_MS
+#elif LKS_ACC == LKS_HIGH_ACC
+elapsedMicros time;
+uint32_t multip = 1;
+#define LKS_PER LKS_PERIOD_US
+#endif
 
 void reset()
 {
     LKS = 1 << 7;
-    clkcounter.value = 0;
+    time = 0;
 }
 void tick()
 {
-    ++clkcounter.value;
-    if (clkcounter.bytes.high == 1 << 6)
+    bool tick = false;
+
+#if LKS_ACC == LKS_SHIFT_TICK
+    ++time;
+    //tick = (time >> 8 == 1 << 6);  //0b0100000000000000
+#endif
+
+    tick = !!(time >= (LKS_PER * multip));
+
+    if (tick)
     {
-        clkcounter.value = 0;
+        time = 0;
+
         LKS |= (1 << 7);
         if (LKS & (1 << 6))
         {
