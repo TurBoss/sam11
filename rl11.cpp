@@ -25,7 +25,7 @@ SOFTWARE.
 // sam11 software emulation of DEC PDP-11/40 RL11 RL Disk Controller
 #include "rl11.h"
 
-#if true
+#if false
 
 #include "dd11.h"
 #include "kb11.h"  // 11/45
@@ -66,7 +66,8 @@ uint16_t read16(uint32_t a)
     case 0774402:  //DEV_RL_BA:  // Bus Address
         return RLBA & 0xFFFF;
     case 0774404:  //DEV_RL_DA:  // Disk Address
-        return (sector) | (surface << 4) | (cylinder << 5) | (drive << 13);
+        if(m_addr >= 0)
+            return m_addr;
     // case DEV_RL_DB:  // Data Buffer
     default:
         if (PRINTSIMLINES)

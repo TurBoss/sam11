@@ -103,7 +103,7 @@ again:
     bool w;
     switch ((RKCS & 017) >> 1)
     {
-    case 0:  // reset
+    case 0:  // Controller reset
         //reset();
         return;
     case 1:  // write
@@ -115,7 +115,8 @@ again:
     case 3:  // check
     case 4:  // seek
     case 5:  // read check
-    case 6:  // write lock
+    case 6:  // Drive reset
+    case 7:  // write lock
     default:
         if (PRINTSIMLINES)
         {

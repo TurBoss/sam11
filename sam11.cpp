@@ -182,7 +182,7 @@ static void loop0()
 
         kl11::poll();  // check the terminal
 
-        //Serial.flush();
+        Serial.flush();
     }
 }
 
@@ -201,8 +201,6 @@ void loop()
 
 void panic()  // aka what it does when halted
 {
-    Serial.println("%% Processor halted.");
-
 #ifdef PIN_OUT_PROC_RUN
     digitalWrite(PIN_OUT_PROC_RUN, LED_OFF);
 #endif
@@ -211,6 +209,8 @@ void panic()  // aka what it does when halted
     digitalWrite(PIN_OUT_PROC_STEP, LED_OFF);
 #endif
 
+    rk11::rkdata.close();
+    Serial.println("%% Processor halted.");
     if (PRINTSIMLINES)
     {
         printstate();

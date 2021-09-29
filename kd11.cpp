@@ -1192,10 +1192,10 @@ static void RTT(uint16_t instr)
 
 static void RESET(uint16_t instr)
 {
-    // if (curuser)
-    // {
-    //     return;
-    // }
+    if (curuser)
+    {
+        return;
+    }
     kl11::clearterminal();
     rk11::reset();
 }
@@ -1507,11 +1507,11 @@ void step()
     }
     switch (instr & 7)
     {
-    case 00:  // HALT
-        // if (curuser)  // modded, usually a HALT in user mode fails with a trap
-        // {
-        //     break;
-        // }
+    case 00:          // HALT
+        if (curuser)  // modded, usually a HALT in user mode fails with a trap
+        {
+            break;
+        }
         //Serial.println(F("%% HALT"));
         panic();
     case 01:  // WAIT

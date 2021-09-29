@@ -85,7 +85,7 @@ void poll()
         char c = Serial.read();
         if (FIRST_LF_BREAKS && (c == '\n' || c == '\r'))
             procNS::trapped = true;
-        addchar(c & 0x7f);
+        addchar(c);
     }
 
     if ((TPS & 0x80) == 0)

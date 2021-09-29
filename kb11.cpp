@@ -1083,9 +1083,13 @@ static void MFPI(uint16_t instr)
         }
         else
         {
-            if (prevuser)
+            if (prevuser == 3)
             {
                 uval = USP;
+            }
+            else if (prevuser == 1)
+            {
+                uval = SSP;
             }
             else
             {
@@ -1127,7 +1131,11 @@ static void MTPI(uint16_t instr)
         {
             R[6] = uval;
         }
-        else if (prevuser)
+        else if (prevuser == 3)
+        {
+            USP = uval;
+        }
+        else if (prevuser == 1)
         {
             USP = uval;
         }
@@ -1172,9 +1180,13 @@ static void MFPD(uint16_t instr)
         }
         else
         {
-            if (prevuser)
+            if (prevuser == 3)
             {
                 uval = USP;
+            }
+            else if (prevuser == 1)
+            {
+                uval = SSP;
             }
             else
             {
@@ -1216,9 +1228,13 @@ static void MTPD(uint16_t instr)
         {
             R[6] = uval;
         }
-        else if (prevuser)
+        else if (prevuser == 3)
         {
             USP = uval;
+        }
+        else if (prevuser == 1)
+        {
+            SSP = uval;
         }
         else
         {
@@ -1280,10 +1296,8 @@ static void EMTX(uint16_t instr)
     push(R[7]);
     R[7] = dd11::read16(uval);
     PS = dd11::read16(uval + 2);
-    if (prevuser)
-    {
-        PS |= (1 << 13) | (1 << 12);
-    }
+    PS |= (curuser << 14);
+    PS |= (prevuser << 12);
 }
 
 static void RTT(uint16_t instr)
@@ -1300,10 +1314,10 @@ static void RTT(uint16_t instr)
 
 static void RESET(uint16_t instr)
 {
-    // if (curuser)
-    // {
-    //     return;
-    // }
+    if (curuser)
+    {
+        return;
+    }
     kl11::clearterminal();
     rk11::reset();
 }
@@ -1615,11 +1629,11 @@ void step()
     }
     switch (instr & 7)
     {
-    case 00:  // HALT
-        // if (curuser)  // modded, usually a HALT in user mode fails with a trap
-        // {
-        //     break;
-        // }
+    case 00:          // HALT
+        if (curuser)  // modded, usually a HALT in user mode fails with a trap
+        {
+            break;
+        }
         //Serial.println(F("%% HALT"));
         panic();
     case 01:  // WAIT
@@ -1646,7 +1660,7 @@ void step()
     }
 
     // FP11
-    if ((instr & 0177700) == 0170000)
+    if ((instr & 0177000) == 0170000)
     {
         switch (instr)
         {
