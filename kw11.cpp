@@ -31,7 +31,7 @@ SOFTWARE.
 #include "pdp1140.h"
 #include "platform.h"
 
-#define LKS_COMPROMISE 4  // factor to compromise the ticks by, 0 == disable
+#define LKS_COMPROMISE 8  // factor to compromise the ticks by, 0 == disable. Higher number is more accurate date/time in OS, but slows down processor speed
 
 #ifndef LKS_ACC
 #define LKS_ACC LKS_SHIFT_TICK
