@@ -1,7 +1,7 @@
 This is the unixv6.dsk image from the main OS image directory with a couple of tweaks:
 
-1. Added myself as a user (chloe, no password)
+1. Added a couple of users, along with login and logout scripts
 2. Added some extra tools/programs from 2BSD (inc. csh, whoami)
-3. Added shutdown and halt commands (must have processor modded to enable user halt)
-4. cshrc scripts for user chloe to set tty to allow upper and lower case and set username prompt
-5. User chloe logs into csh instead of sh (Thompson), root still uses sh
+3. Added the "em" editor, a predecessor of vi/ex which was designed for V6 (and not V7 like 2BSD's Ex)
+4. Added terminal clear and reset commands
+5. Added shutdown and halt commands (must have processor modded to enable user halt)

@@ -47,6 +47,8 @@ When it comes to performance, 3 uses up more processing time, 2 the next most, a
 
 If the LKS_ACC macro is not defined, it will revert to LKS_SHIFT_TICK
 
+There is an option in kw11.cpp, of LKS_COMPROMISE. When set to non-0 (and < 16384) this essentially offers a combined LKS_SHIFT_TICK and other options, allowing you to use a loop/step counter as the trigger to check whether it is time to send another interrupt. If 0, it is disabled
+
 ## Installation
 
 If you wish to use this as tested without defining a new board, you will need an Adafruit Grand Central M4, microSD card, and USB cable.
