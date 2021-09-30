@@ -81,7 +81,7 @@ uint16_t readSwitches();
 
 #define USE_SDIO false  // use an SDIO interface for cards
 
-#define ALLOW_DISASM    (false)    // allow disassembly (PDP-11) on crash/panic/state prints
+#define ALLOW_DISASM    (false)  // allow disassembly (PDP-11) on crash/panic/state prints
 #define MAX_RAM_ADDRESS (0760000)  // 248KB
 
 #define RAM_MODE RAM_INTERNAL  // use the chip's onboard SRAM
@@ -99,7 +99,7 @@ uint16_t readSwitches();
 //#define PIN_OUT_BUS_ACT   (13)
 //#define PIN_OUT_USER_MODE (13)
 
-#define LKS_ACC LKS_HIGH_ACC  //LKS_SHIFT_TICK
+#define LKS_ACC LKS_HIGH_ACC
 
 //-------------------------------------------------------------------------------------------------
 
@@ -110,7 +110,7 @@ uint16_t readSwitches();
 
 #define USE_SDIO false  // use an SDIO interface for cards
 
-#define ALLOW_DISASM    (false)    // allow disassembly (PDP-11) on crash/panic/state prints
+#define ALLOW_DISASM    (false)  // allow disassembly (PDP-11) on crash/panic/state prints
 #define MAX_RAM_ADDRESS (0760000)  // 248KB
 
 #define RAM_MODE RAM_SWAPFILE  // use a swapfile as ram

@@ -159,8 +159,6 @@ static void loop0()
 {
     while (1)
     {
-        //delayMicroseconds(10);  // a touch of throttle... the processor is plenty fast enough, so we add this to mimic the slower pdp
-
         // Check for interruptd
         if ((itab[0].vec) && (itab[0].pri >= ((procNS::PS >> 5) & 7)))
         {
@@ -181,8 +179,6 @@ static void loop0()
         kw11::tick();  // tick the clock
 
         kl11::poll();  // check the terminal
-
-        Serial.flush();
     }
 }
 

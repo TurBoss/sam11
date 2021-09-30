@@ -1537,7 +1537,7 @@ void step()
         //     return;
     }
 
-    // FP11
+    // FIS
     if ((instr & 0177000) == 0170000)
     {
         switch (instr)

@@ -31,6 +31,8 @@ SOFTWARE.
 #include "pdp1140.h"
 #include "platform.h"
 
+#define LKS_COMPROMISE 4  // factor to compromise the ticks by, 0 == disable
+
 #ifndef LKS_ACC
 #define LKS_ACC LKS_SHIFT_TICK
 #endif
@@ -68,21 +70,37 @@ void reset()
     LKS = 1 << 7;
     time = 0;
 }
-void tick()
-{
-    bool tick = false;
 
-#if LKS_ACC == LKS_SHIFT_TICK
-    ++time;
-    //tick = (time >> 8 == 1 << 6);  //0b0100000000000000
+#if LKS_COMPROMISE
+int loop_time = 0;
 #endif
 
-    tick = !!(time >= (LKS_PER * multip));
+bool lks_ticked = false;
 
-    if (tick)
+void tick()
+{
+#if LKS_ACC == LKS_SHIFT_TICK
+    ++time;
+#endif
+
+#if LKS_COMPROMISE
+    ++loop_time;
+#endif
+
+    if (!LKS_COMPROMISE)
+    {
+        lks_ticked = !!(time >= (LKS_PER * multip));  // normal mode, just use settings -- //tick = (time >> 8 == 1 << 6);  //0b0100000000000000
+    }
+    else if (loop_time >= (LKS_PERIOD_MS * 1000 / LKS_COMPROMISE))  // compromise, use loop ticks to tell if you should check the time ticks
+    {
+        loop_time = 0;
+        lks_ticked = !!(time >= (LKS_PER * multip));
+    }
+
+    if (lks_ticked)
     {
         time = 0;
-
+        lks_ticked = false;
         LKS |= (1 << 7);
         if (LKS & (1 << 6))
         {
