@@ -31,13 +31,13 @@ SOFTWARE.
 #include "pdp1140.h"
 #include "platform.h"
 
-#define LKS_COMPROMISE 8  // factor to compromise the ticks by, 0 == disable. Higher number is more accurate date/time in OS, but slows down processor speed
+#define LKS_COMPROMISE 0  // factor to compromise the ticks by, 0 == disable. Higher number or disabled is more accurate date/time in OS, but slows down processor speed
 
 #ifndef LKS_ACC
 #define LKS_ACC LKS_SHIFT_TICK
 #endif
 
-#if LKS_ACC == LKS_MID_ACC || LKS_ACC == LKS_HIGH_ACC
+#if LKS_ACC == LKS_LOW_ACC || LKS_ACC == LKS_HIGH_ACC
 #include <elapsedMillis.h>
 #endif
 
@@ -53,15 +53,12 @@ uint16_t LKS;
 
 #if LKS_ACC == LKS_SHIFT_TICK
 uint16_t time;
-uint32_t multip = 1000;
-#define LKS_PER = LKS_PERIOD_MS
-#elif LKS_ACC == LKS_MID_ACC
+#define LKS_PER (16384)
+#elif LKS_ACC == LKS_LOW_ACC
 elapsedMillis time;
-uint16_t multip = 1;
 #define LKS_PER LKS_PERIOD_MS
 #elif LKS_ACC == LKS_HIGH_ACC
 elapsedMicros time;
-uint32_t multip = 1;
 #define LKS_PER LKS_PERIOD_US
 #endif
 
@@ -87,15 +84,17 @@ void tick()
     ++loop_time;
 #endif
 
-    if (!LKS_COMPROMISE)
-    {
-        lks_ticked = !!(time >= (LKS_PER * multip));  // normal mode, just use settings -- //tick = (time >> 8 == 1 << 6);  //0b0100000000000000
-    }
-    else if (loop_time >= (LKS_PERIOD_MS * 1000 / LKS_COMPROMISE))  // compromise, use loop ticks to tell if you should check the time ticks
+#if !LKS_COMPROMISE
+
+    lks_ticked = !!(time >= (LKS_PER));  // normal mode, just use settings -- //tick = (time >> 8 == 1 << 6);  //0b0100000000000000, 16384, 040000, 0x4000
+
+#else
+    if (loop_time >= ((16384) / LKS_COMPROMISE))  // compromise, use loop ticks to tell if you should check the time ticks
     {
         loop_time = 0;
-        lks_ticked = !!(time >= (LKS_PER * multip));
+        lks_ticked = !!(time >= (LKS_PER));
     }
+#endif
 
     if (lks_ticked)
     {
