@@ -41,7 +41,7 @@ There are 3 options in my code for producing this tick, depending on the accurac
 
 2. LKS_LOW_ACC -> This uses the arduino elapsedMillis class/library to produce the interrupt on a fixed 16ms interval. It is not accurate, but it will be more consistent board-to-board than LKS_SHIFT_TICK and is less dependent on mips
 
-3. LKS_HIGH_ACC -> This uses the arduino elapsedMicros class/library to produce the interrupt on a fixed 16.580ms interval. This is not exactly 60Hz (16.667ms), but is ever so slightly faster. Whilst not RTC perfect, it will create a timer close enough that you can use the clock or date commands in Unix fairly accurately. It has ONLY been calibrated for SAMD51P20A processors and may not be accurate on others.
+3. LKS_HIGH_ACC -> This uses the arduino elapsedMicros class/library to produce the interrupt on a fixed 16.580ms interval. This is not exactly 60Hz (16.667ms), but is ever so slightly faster. Whilst not RTC perfect, it will create a timer close enough that you can use the clock or date commands in Unix fairly accurately. It has ONLY been calibrated for SAMD51P20A processors using the suggested compile options below and may not be accurate on others.
 
 When it comes to performance, 3 uses up more processing time, 2 the next most, and 1 is the least intensive. If you just want to get it working, then use LKS_SHIFT_TICK
 
@@ -60,7 +60,7 @@ Then simply open up the terminal/serial, type "0." to select the UnixV6 image, t
 
 Expect a trap at 0760000 as this is by design and is Unix discovering the maximum RAM available (248KB).
 
-On an Adafruit Grand Central (SAMD51P20A), I suggest compile options: with Cache Enabled, 180MHz CPU Clock, "Fastest" optimisation.
+On an Adafruit Grand Central (SAMD51P20A), I suggest compile options: with Cache Enabled, 200MHz CPU Clock, "Fastest" or "Dragon" optimisation.
 
 ## Performance
 

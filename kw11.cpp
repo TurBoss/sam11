@@ -31,7 +31,7 @@ SOFTWARE.
 #include "pdp1140.h"
 #include "platform.h"
 
-#define LKS_COMPROMISE 0  // factor to compromise the ticks by, 0 == disable. Higher number or disabled is more accurate date/time in OS, but slows down processor speed
+#define LKS_COMPROMISE 100  // factor to compromise the ticks by, 0 == disable. Higher number or disabled is more accurate date/time in OS, but slows down processor speed
 
 #ifndef LKS_ACC
 #define LKS_ACC LKS_SHIFT_TICK
@@ -89,7 +89,7 @@ void tick()
     lks_ticked = !!(time >= (LKS_PER));  // normal mode, just use settings -- //tick = (time >> 8 == 1 << 6);  //0b0100000000000000, 16384, 040000, 0x4000
 
 #else
-    if (loop_time >= ((16384) / LKS_COMPROMISE))  // compromise, use loop ticks to tell if you should check the time ticks
+    if (loop_time >= LKS_COMPROMISE)  // compromise, use loop ticks to tell if you should check the time ticks
     {
         loop_time = 0;
         lks_ticked = !!(time >= (LKS_PER));

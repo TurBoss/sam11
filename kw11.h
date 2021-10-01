@@ -27,7 +27,7 @@ SOFTWARE.
 
 #define LKS_FREQ      (60)     // 60Hz or 50Hz
 #define LKS_PERIOD_MS (16)     // 16ms or 20ms
-#define LKS_PERIOD_US (16580)  // 16666us or 20000us <- this is not technically 60Hz, but slightly faster, however it gives more accurate clock times in OSes
+#define LKS_PERIOD_US (16595)  // 16666us or 20000us <- this is not technically 60Hz, but slightly faster, however it gives more accurate clock times in OSes
 
 namespace kw11 {
 
