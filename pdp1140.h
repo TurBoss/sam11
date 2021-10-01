@@ -272,24 +272,24 @@ enum
     DEV_CONSOLE_TTY_IN_DATA = 0777562,     // First KL/DL - data in
     DEV_CONSOLE_TTY_IN_STATUS = 0777560,   // First KL/DL - status in
 
-    DEV_PC_PPB = 0777556,
+    DEV_PC_PPB = 0777556,  // PC11
     DEV_PC_PPS = 0777554,
     DEV_PC_PRB = 0777552,
     DEV_PC_PRS = 0777550,
 
-    DEV_LKS = 0777546,  // Line clock status
+    DEV_KW_LKS = 0777546,  // Line clock status
 
     DEV_LP_DATA = 0777516,    // LP11 Data out
     DEV_LP_STATUS = 0777514,  // LP11 Status
-    DEV_LP_RFU0 = 0777512,    // LP11 (not used)
-    DEV_LP_RFU1 = 0777510,    // LP11 (not used)
+    DEV_LP_NU0 = 0777512,     // LP11 (not used)
+    DEV_LP_NU1 = 0777510,     // LP11 (not used)
 
-    DEV_TA_RFU0 = 0777506,  // TA11 (not used)
-    DEV_TA_RFU1 = 0777504,  // TA11 (not used)
-    DEV_TA_DB = 0777502,    // TA11 Data Buffer
-    DEV_TA_CS = 0777500,    // TA11 Control Status
+    DEV_TA_NU0 = 0777506,  // TA11 (not used)
+    DEV_TA_NU1 = 0777504,  // TA11 (not used)
+    DEV_TA_DB = 0777502,   // TA11 Data Buffer
+    DEV_TA_CS = 0777500,   // TA11 Control Status
 
-    DEV_RF_ADS = 0777476,
+    DEV_RF_ADS = 0777476,  // RF11
     DEV_RF_MA = 0777474,
     DEV_RF_DBR = 0777472,
     DEV_RF_DAE = 0777470,
@@ -298,6 +298,24 @@ enum
     DEV_RF_WC = 0777462,
     DEV_RF_DCS = 0777460,
 
+    DEV_RC_DB = 0777456,  // RC11
+    DEV_RC_MN = 0777454,
+    DEV_RC_CA = 0777452,
+    DEV_RC_WC = 0777450,
+    DEV_RC_CS = 0777446,
+    DEV_RC_ER = 0777444,
+    DEV_RC_DA = 0777442,
+    DEV_RC_LA = 0777440,
+
+    DEV_DT_8 = 0777436,  // DT11
+    DEV_DT_7 = 0777434,
+    DEV_DT_6 = 0777432,
+    DEV_DT_5 = 0777430,
+    DEV_DT_4 = 0777426,
+    DEV_DT_3 = 0777424,
+    DEV_DT_2 = 0777422,
+    DEV_DT_1 = 0777420,
+
     DEV_RK_DB = 0777416,  // RK11 Data Buffer
     DEV_RK_DA = 0777412,  // RK11 Disk Address
     DEV_RK_BA = 0777410,  // RK11 Bus Address (current memory address)
@@ -305,6 +323,84 @@ enum
     DEV_RK_CS = 0777404,  // RK11 Control Status
     DEV_RK_ER = 0777402,  // RK11 Error
     DEV_RK_DS = 0777400,  // RK11 Drive Status
+
+    // 0777376 -> 0777360 = DT14-D
+
+    DEV_TC_NU0 = 0777356,
+    DEV_TC_NU1 = 0777354,
+    DEV_TC_NU2 = 0777352,
+    DEV_TC_DT = 0777350,  // TC11
+    DEV_TC_BA = 0777346,
+    DEV_TC_WC = 0777344,
+    DEV_TC_CM = 0777342,
+    DEV_TC_ST = 0777340,
+
+    DEV_KE_2_ASH = 0777336,  // KE11-A #2
+    DEV_KE_2_LSH = 0777334,
+    DEV_KE_2_NOR = 0777332,
+    DEV_KE_2_SR = 0777331,
+    DEV_KE_2_SC = 0777330,
+    DEV_KE_2_MUL = 0777326,
+    DEV_KE_2_MQ = 0777324,
+    DEV_KE_2_AC = 0777322,
+    DEV_KE_2_DIV = 0777320,
+
+    DEV_KE_1_ASH = 0777316,  // KE11-A #1
+    DEV_KE_1_LSH = 0777314,
+    DEV_KE_1_NOR = 0777312,
+    DEV_KE_1_SR = 0777311,
+    DEV_KE_1_SC = 0777310,
+    DEV_KE_1_MUL = 0777306,
+    DEV_KE_1_MQ = 0777304,
+    DEV_KE_1_AC = 0777302,
+    DEV_KE_1_DIV = 0777300,
+
+    // CM11, CR11, CD11 AT 0777166 TO 0777160
+
+    // AD01 A/D AT 0776776 TO 0776770
+
+    // AA11 AT 776766 TO 0776754
+
+    DEV_RP04_CS3 = 0776752,  // RP04 Control Status 3
+    DEV_RP04_BAE = 0776750,
+    DEV_RP04_EC2 = 0776746,
+    DEV_RP04_EC1 = 0776744,
+    DEV_RP04_ER3 = 0776742,  // RP04 Error 3
+    DEV_RP04_ER2 = 0776740,  // RP04 Error 2
+    DEV_RP04_CC = 0776736,
+    DEV_RP04_DC = 0776734,   // RP04 Drive Control
+    DEV_RP04_OF = 0776732,   // RP04 Offset
+    DEV_RP04_SN = 0776730,   // RP04 Serial Number
+    DEV_RP04_DT = 0776726,   // RP04 Drive Type
+    DEV_RP04_MR = 0776724,   // RP04
+    DEV_RP04_DB = 0776722,   // RP04
+    DEV_RP04_LA = 0776720,   // RP04 Look Ahead
+    DEV_RP04_AS = 0776716,   // RP04
+    DEV_RP04_ER1 = 0776714,  // RP04 Error 1
+    DEV_RP04_DS = 0776712,   // RP04 Disk Status
+    DEV_RP04_CS2 = 0776710,  // RP04 Control Status 2
+    DEV_RP04_DA = 0776706,   // RP04 Disk Address
+    DEV_RP04_BA = 0776704,   // RP04 Bus Address
+    DEV_RP04_WC = 0776702,   // RP04 Word Count
+    DEV_RP04_CS1 = 0776700,  // RP04 Control Status 1
+
+    // NOTE: the RP11 overlaps with the RP04, only one can be used at once
+    DEV_RP_SILO = 0776736,  // RP11 Silo Memory
+    DEV_RP_SUCA = 0776734,  // RP11 Select Unit Cylinder Address
+    DEV_RP_M3 = 0776732,    // RP11 Maintenance Register 3
+    DEV_RP_M2 = 0776730,    // RP11 Maintenance Reg 2
+    DEV_RP_M1 = 0776726,    // RP11 Maintenance Reg 1
+    DEV_RP_DA = 0776724,    // RP11 Disk Address
+    DEV_RP_CA = 0776722,    // RP11 Cylinder Address
+    DEV_RP_BA = 0776720,    // RP11 Bus Address
+    DEV_RP_WC = 0776716,    // RP11 Word Count
+    DEV_RP_CS = 0776714,    // RP11 Control Status
+    DEV_RP_ER = 0776712,    // RP11 Error Reg
+    DEV_RP_DS = 0776710,    // RP11 Device Status
+    DEV_RP_NU0 = 0776706,   // RP11 Not used (but responds)
+    DEV_RP_NU1 = 0776704,   // RP11 Not used (but responds)
+    DEV_RP_NU2 = 0776702,   // RP11 Not used (but responds)
+    DEV_RP_NU3 = 0776700,   // RP11 Not used (but responds)
 
     DEV_DL_16_OUT_DATA = 0776676,        // KL/DL TTY Interface #16 data out
     DEV_DL_16_TTY_OUT_STATUS = 0776674,  // KL/DL TTY Interface #16 status out
@@ -320,12 +416,27 @@ enum
     DEV_DL_1_TTY_IN_DATA = 0776502,     // KL/DL TTY Interface #1 data in
     DEV_DL_1_TTY_IN_STATUS = 0776500,   // KL/DL TTY Interface #1 status in
 
+    // LOAD OF D-something-11 comm devices
+
+    DEV_RL_BAE = 0774420,  // RL11 Bus Address Extension Register
+    DEV_RL_MP = 0774406,   // RL11 Multipurpose Register
+    DEV_RL_DA = 0774404,   // RL11 Disk Address
+    DEV_RL_BS = 0774402,   // RL11 Bus Address
+    DEV_RL_CS = 0774400,   // RL11 Control Status
+
     DEV_KWP = 0772546,       // KW11-P (XX)
     DEV_KWP_CNTR = 0772544,  // KW11-P Counter
     DEV_KWP_CSB = 0772542,   // KW11-P Count Set Register
     DEV_KWP_CSR = 0772540,   // KW11-P CSR
 
-    DEV_MMU_SR3 = 0772516,
+    DEV_TM_RD = 0772532,   // TM11 read lines
+    DEV_TM_D = 0772530,    // TM11 data
+    DEV_TM_CMA = 0772526,  // TM11 memory address
+    DEV_TM_BRC = 0772524,  // TM11 byte record counter
+    DEV_TM_C = 0772522,    // TM11 command
+    DEV_TM_S = 0772520,    // TM11 status
+
+    DEV_MMU_SR3 = 0772516,  // MMU System Status Register 3
 
     DEV_KER_DAT_PAR_R7 = 0772376,  // MMU Kernel Data PAR Register 7
     DEV_KER_DAT_PAR_R6 = 0772374,  // MMU Kernel Data PAR Register 6

@@ -149,7 +149,7 @@ void write16(uint32_t a, uint16_t v)
         kt11::SLR = v;  // probs wrong
         return;
 
-    case DEV_LKS:
+    case DEV_KW_LKS:
         kw11::LKS = v;
         return;
 
@@ -235,7 +235,7 @@ uint16_t read16(uint32_t a)
     case DEV_STACK_LIM:
         return kt11::SLR;  // probs wrong
 
-    case DEV_LKS:
+    case DEV_KW_LKS:
         return kw11::LKS;
 
     case DEV_MMU_SR0:

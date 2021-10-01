@@ -45,7 +45,7 @@ SOFTWARE.
 
 namespace rl11 {
 
-uint32_t RLBA, RLDA, RLMP, RLCS, RLWC;
+uint32_t RLBA, RLDA, RLMP, RLCS, RLBAE;
 uint32_t drive, status, sectors, tracks, cylinders, m_addr;
 
 SdFile rldata;
@@ -54,21 +54,16 @@ uint16_t read16(uint32_t a)
 {
     switch (a)
     {
-    case 0774400:  //DEV_RL_CS:  // Control Status
+    case DEV_RL_CS:  // Control Status
         return RLCS | (RLBA & 0x30000) >> 12;
-        // case DEV_RL_DS:  // Drive Status
-        //     return RLDS;
-        // case DEV_RL_ER:  // Error Reg
-        //     return RLER;
-
-    case 0774406:  //DEV_RL_MP:  // Multi Purpose
+    case DEV_RL_MP:  // Multi Purpose
         return RLMP;
-    case 0774402:  //DEV_RL_BA:  // Bus Address
+    case DEV_RL_BA:  // Bus Address
         return RLBA & 0xFFFF;
-    case 0774404:  //DEV_RL_DA:  // Disk Address
-        if(m_addr >= 0)
+    case DEV_RL_DA:  // Disk Address
+        if (m_addr >= 0)
             return m_addr;
-    // case DEV_RL_DB:  // Data Buffer
+    case DEV_RL_BAE:  // Bus address extension (11/70+ only)
     default:
         if (PRINTSIMLINES)
         {
@@ -115,7 +110,7 @@ again:
         return;
     case 1:  // write check
         return;
-    case 2:  //status
+    case 2:  //get status
         if (RLMP & 0x8)
             RLCS &= 0x3F;
         RLMP = status | m_addr & 0100;
@@ -134,11 +129,13 @@ again:
             m_addr = RLDA;
         }
         return;
-    case 5:  // write
+    case 4:  // read header
+        break;
+    case 5:  // write data
         w = true;
         break;
-    case 6:  // read
-    case 7:  // read no header
+    case 6:  // read data
+    case 7:  // read no header check
         w = false;
         break;
     default:
@@ -260,9 +257,7 @@ void write16(uint32_t a, uint16_t v)
     //printf("%% rlwrite: %06o\n",a);
     switch (a)
     {
-    case DEV_RL_DS:  // Drive Status
-        break;
-    case DEV_RL_ER:  // Error Reg
+    case DEV_RL_MP:  // Drive Status
         break;
     case DEV_RL_CS:  // Control Status
         RLBA = (RLBA & 0xFFFF) | ((v & 060) << 12);
@@ -290,9 +285,6 @@ void write16(uint32_t a, uint16_t v)
             }
         }
         break;
-    case DEV_RL_WC:  // Word Count
-        RLWC = v;
-        break;
     case DEV_RL_BA:  // Bus Address
         RLBA = (RLBA & 0x30000) | (v);
         break;
@@ -302,7 +294,7 @@ void write16(uint32_t a, uint16_t v)
         surface = (v >> 4) & 1;
         sector = v & 15;
         break;
-    case DEV_RL_DB:  // Data Buffer
+    case DEV_RL_BAE:  // Data Buffer
     default:
         if (PRINTSIMLINES)
         {
