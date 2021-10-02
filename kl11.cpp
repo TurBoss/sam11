@@ -106,18 +106,18 @@ uint16_t read16(uint32_t a)
 {
     switch (a)
     {
-    case 0777560:
+    case DEV_CONSOLE_TTY_IN_STATUS:
         return TKS;
-    case 0777562:
+    case DEV_CONSOLE_TTY_IN_DATA:
         if (TKS & 0x80)
         {
             TKS &= 0xff7e;
             return TKB;
         }
         return 0;
-    case 0777564:
+    case DEV_CONSOLE_TTY_OUT_STATUS:
         return TPS;
-    case 0777566:
+    case DEV_CONSOLE_TTY_OUT_DATA:
         return 0;
     default:
         if (PRINTSIMLINES)
@@ -133,7 +133,7 @@ void write16(uint32_t a, uint16_t v)
 {
     switch (a)
     {
-    case 0777560:
+    case DEV_CONSOLE_TTY_IN_STATUS:
         if (v & (1 << 6))
         {
             TKS |= 1 << 6;
@@ -143,7 +143,7 @@ void write16(uint32_t a, uint16_t v)
             TKS &= ~(1 << 6);
         }
         break;
-    case 0777564:
+    case DEV_CONSOLE_TTY_OUT_STATUS:
         if (v & (1 << 6))
         {
             TPS |= 1 << 6;
@@ -153,10 +153,12 @@ void write16(uint32_t a, uint16_t v)
             TPS &= ~(1 << 6);
         }
         break;
-    case 0777566:
+    case DEV_CONSOLE_TTY_OUT_DATA:
         TPB = v & 0xff;
         TPS &= 0xff7f;
         count = 0;
+        break;
+    case DEV_CONSOLE_TTY_IN_DATA:
         break;
     default:
         if (PRINTSIMLINES)

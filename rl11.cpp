@@ -25,7 +25,9 @@ SOFTWARE.
 // sam11 software emulation of DEC PDP-11/40 RL11 RL Disk Controller
 #include "rl11.h"
 
-#if false
+#include "pdp1140.h"
+
+#if RL_DRIVE
 
 #include "dd11.h"
 #include "kb11.h"  // 11/45
@@ -64,7 +66,7 @@ uint16_t read16(uint32_t a)
         return RLDA;
         if (m_addr >= 0)
             return m_addr;
-    case DEV_RL_BAE: 
+    case DEV_RL_BAE:
         return (RLBA & 0x70000) >> 16;
     default:
         if (PRINTSIMLINES)

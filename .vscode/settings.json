@@ -8,7 +8,11 @@
     "xutility": "cpp",
     "memory": "cpp",
     "optional": "cpp",
-    "queue": "cpp"
+    "queue": "cpp",
+    "__hash_table": "cpp",
+    "deque": "cpp",
+    "filesystem": "cpp",
+    "vector": "cpp"
   },
   "C_Cpp.errorSquiggles": "Enabled",
   "C_Cpp.intelliSenseEngine": "Tag Parser"

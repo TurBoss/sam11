@@ -115,9 +115,16 @@ SOFTWARE.
 #ifndef _H_PDP1140_
 #define _H_PDP1140_
 
-#define USE_11_45 false  // change this line to true to compile with an 11/45 processor (WIP)
-
 namespace pdp11 {
+
+// List of emulated hardware to enclude
+#define USE_11_45  false  // change this line to true to compile with an 11/45 processor (WIP)
+#define RL_DRIVE   false  // RL Disk drive
+#define RK_DRIVE   true   // }
+#define KY_PANEL   true   //  }__ These should always be included, and are just here for record, they don't change the code
+#define KL_CONSOLE true   //  }
+#define KW_LKS     true   // }
+#define DL_TTYS    false  //  DL11 TTY Console connectors
 
 struct intr {
     uint8_t vec;
@@ -401,16 +408,28 @@ enum
     DEV_RP_NU2 = 0776702,   // RP11 Not used (but responds)
     DEV_RP_NU3 = 0776700,   // RP11 Not used (but responds)
 
-    DEV_DL_16_OUT_DATA = 0776676,        // KL/DL TTY Interface #16 data out
+    DEV_DL_16_TTY_OUT_DATA = 0776676,    // KL/DL TTY Interface #16 data out
     DEV_DL_16_TTY_OUT_STATUS = 0776674,  // KL/DL TTY Interface #16 status out
     DEV_DL_16_TTY_IN_DATA = 0776672,     // KL/DL TTY Interface #16 data in
     DEV_DL_16_TTY_IN_STATUS = 0776670,   // KL/DL TTY Interface #16 status in
-    DEV_DL_15_OUT_DATA = 0776666,        // KL/DL TTY Interface #15 data out
+    DEV_DL_15_TTY_OUT_DATA = 0776666,    // KL/DL TTY Interface #15 data out
     DEV_DL_15_TTY_OUT_STATUS = 0776664,  // KL/DL TTY Interface #15 status out
     DEV_DL_15_TTY_IN_DATA = 0776662,     // KL/DL TTY Interface #15 data in
     DEV_DL_15_TTY_IN_STATUS = 0776660,   // KL/DL TTY Interface #15 status in
     // ... UNTIL
-    DEV_DL_1_OUT_DATA = 0776506,        // KL/DL TTY Interface #1 data out
+    DEV_DL_4_TTY_OUT_DATA = 0776536,    // KL/DL TTY Interface #1 data out
+    DEV_DL_4_TTY_OUT_STATUS = 0776534,  // KL/DL TTY Interface #1 status out
+    DEV_DL_4_TTY_IN_DATA = 0776532,     // KL/DL TTY Interface #1 data in
+    DEV_DL_4_TTY_IN_STATUS = 0776530,   // KL/DL TTY Interface #1 status in
+    DEV_DL_3_TTY_OUT_DATA = 0776526,    // KL/DL TTY Interface #1 data out
+    DEV_DL_3_TTY_OUT_STATUS = 0776524,  // KL/DL TTY Interface #1 status out
+    DEV_DL_3_TTY_IN_DATA = 0776522,     // KL/DL TTY Interface #1 data in
+    DEV_DL_3_TTY_IN_STATUS = 0776520,   // KL/DL TTY Interface #1 status in
+    DEV_DL_2_TTY_OUT_DATA = 0776516,    // KL/DL TTY Interface #1 data out
+    DEV_DL_2_TTY_OUT_STATUS = 0776514,  // KL/DL TTY Interface #1 status out
+    DEV_DL_2_TTY_IN_DATA = 0776512,     // KL/DL TTY Interface #1 data in
+    DEV_DL_2_TTY_IN_STATUS = 0776510,   // KL/DL TTY Interface #1 status in
+    DEV_DL_1_TTY_OUT_DATA = 0776506,    // KL/DL TTY Interface #1 data out
     DEV_DL_1_TTY_OUT_STATUS = 0776504,  // KL/DL TTY Interface #1 status out
     DEV_DL_1_TTY_IN_DATA = 0776502,     // KL/DL TTY Interface #1 data in
     DEV_DL_1_TTY_IN_STATUS = 0776500,   // KL/DL TTY Interface #1 status in
