@@ -260,6 +260,7 @@ uint16_t read16(uint32_t a)
     case DEV_RK_BA:
     case DEV_RK_DA:
     case DEV_RK_DB:
+    case DEV_RK_MR:
         return rk11::read16(a);
 
     case DEV_CONSOLE_TTY_OUT_DATA:

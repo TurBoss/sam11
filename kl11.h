@@ -36,7 +36,7 @@ enum
     BAUD_600 = 600,    // REV D
     BAUD_1200 = 1200,  // REV E
     BAUD_2400 = 2400,  // REV F
-    BAUD_DEFAULT = BAUD_1200,
+    BAUD_DEFAULT = BAUD_2400,
 };
 
 void write16(uint32_t a, uint16_t v);

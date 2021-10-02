@@ -195,9 +195,6 @@ enum
     DEV_SYS_SIZE_UP = 0777762,  // System Size Upper
     DEV_SYS_SIZE_LO = 0777760,  // System Size Lower
 
-    // 0777756 - NOT USED
-    // 0777754 - NOT USED
-
     DEV_HIT_MISS = 0777752,  // Hit/Miss Register
     DEV_MAINTAIN = 0777750,  // System Maintenance Register
 
@@ -272,10 +269,10 @@ enum
     DEV_CONSOLE_TTY_IN_DATA = 0777562,     // First KL/DL - data in
     DEV_CONSOLE_TTY_IN_STATUS = 0777560,   // First KL/DL - status in
 
-    DEV_PC_PPB = 0777556,  // PC11
-    DEV_PC_PPS = 0777554,
-    DEV_PC_PRB = 0777552,
-    DEV_PC_PRS = 0777550,
+    DEV_PC_PB = 0777556,  // PC11 Punch Buffer Register
+    DEV_PC_PS = 0777554,  // PC11 Punch Status Register
+    DEV_PC_RB = 0777552,  // PC11 Reader Buffer Reg
+    DEV_PC_RS = 0777550,  // PC11 Reader Status Register
 
     DEV_KW_LKS = 0777546,  // Line clock status
 
@@ -289,23 +286,23 @@ enum
     DEV_TA_DB = 0777502,   // TA11 Data Buffer
     DEV_TA_CS = 0777500,   // TA11 Control Status
 
-    DEV_RF_ADS = 0777476,  // RF11
-    DEV_RF_MA = 0777474,
-    DEV_RF_DBR = 0777472,
-    DEV_RF_DAE = 0777470,
-    DEV_RF_DAR = 0777466,
-    DEV_RF_CMA = 0777464,
-    DEV_RF_WC = 0777462,
-    DEV_RF_DCS = 0777460,
+    DEV_RF_ADS = 0777476,  // RF11 Address of Disk Segment
+    DEV_RF_MA = 0777474,   // RF11  Maintenance Reg
+    DEV_RF_DBR = 0777472,  // RF11 Data Buffer
+    DEV_RF_DAE = 0777470,  // RF11 Disk Address Extension Error
+    DEV_RF_DAR = 0777466,  // RF11 Disk Address Reg
+    DEV_RF_CMA = 0777464,  // RF11 Current Memory Address
+    DEV_RF_WC = 0777462,   // RF11 Word Count
+    DEV_RF_DCS = 0777460,  // RF11 Disk Control Status
 
-    DEV_RC_DB = 0777456,  // RC11
-    DEV_RC_MN = 0777454,
-    DEV_RC_CA = 0777452,
-    DEV_RC_WC = 0777450,
-    DEV_RC_CS = 0777446,
-    DEV_RC_ER = 0777444,
-    DEV_RC_DA = 0777442,
-    DEV_RC_LA = 0777440,
+    DEV_RC_DB = 0777456,  // RC11 Data Buffer
+    DEV_RC_MN = 0777454,  // RC11 Maintenance Reg
+    DEV_RC_CA = 0777452,  // RC11 Current Address
+    DEV_RC_WC = 0777450,  // RC11 Word Count
+    DEV_RC_CS = 0777446,  // RC11 Control and Status
+    DEV_RC_ER = 0777444,  // RC11 Error Status
+    DEV_RC_DA = 0777442,  // RC11 Disk Address
+    DEV_RC_LA = 0777440,  // RC11 Look Ahead
 
     DEV_DT_8 = 0777436,  // DT11
     DEV_DT_7 = 0777434,
@@ -317,6 +314,7 @@ enum
     DEV_DT_1 = 0777420,
 
     DEV_RK_DB = 0777416,  // RK11 Data Buffer
+    DEV_RK_MR = 0777414,  // RK11 Maintenance Register
     DEV_RK_DA = 0777412,  // RK11 Disk Address
     DEV_RK_BA = 0777410,  // RK11 Bus Address (current memory address)
     DEV_RK_WC = 0777406,  // RK11 Word Count
@@ -324,38 +322,39 @@ enum
     DEV_RK_ER = 0777402,  // RK11 Error
     DEV_RK_DS = 0777400,  // RK11 Drive Status
 
-    // 0777376 -> 0777360 = DT14-D
-
     DEV_TC_NU0 = 0777356,
     DEV_TC_NU1 = 0777354,
     DEV_TC_NU2 = 0777352,
-    DEV_TC_DT = 0777350,  // TC11
-    DEV_TC_BA = 0777346,
-    DEV_TC_WC = 0777344,
-    DEV_TC_CM = 0777342,
-    DEV_TC_ST = 0777340,
+    DEV_TC_DT = 0777350,  // TC11 Data
+    DEV_TC_BA = 0777346,  // TC11 Bus Address
+    DEV_TC_WC = 0777344,  // TC11 Word Count
+    DEV_TC_CM = 0777342,  // TC11 Command
+    DEV_TC_ST = 0777340,  // TC11 Control and Status
 
-    DEV_KE_2_ASH = 0777336,  // KE11-A #2
-    DEV_KE_2_LSH = 0777334,
-    DEV_KE_2_NOR = 0777332,
-    DEV_KE_2_SR = 0777331,
-    DEV_KE_2_SC = 0777330,
-    DEV_KE_2_MUL = 0777326,
-    DEV_KE_2_MQ = 0777324,
-    DEV_KE_2_AC = 0777322,
-    DEV_KE_2_DIV = 0777320,
+    DEV_KE_2_ASH = 0777336,  // KE11-A #2 Arithmetic Shift
+    DEV_KE_2_LSH = 0777334,  // KE11-A #2 Logical Shift
+    DEV_KE_2_NOR = 0777332,  // KE11-A #2 Normalise
+    DEV_KE_2_SR = 0777331,   // KE11-A #2 Status Register
+    DEV_KE_2_SC = 0777330,   // KE11-A #2 Step Counter
+    DEV_KE_2_MUL = 0777326,  // KE11-A #2 Multiply
+    DEV_KE_2_MQ = 0777324,   // KE11-A #2 Multiplier Quotient
+    DEV_KE_2_AC = 0777322,   // KE11-A #2 Accumilator
+    DEV_KE_2_DIV = 0777320,  // KE11-A #2 Divide
 
-    DEV_KE_1_ASH = 0777316,  // KE11-A #1
-    DEV_KE_1_LSH = 0777314,
-    DEV_KE_1_NOR = 0777312,
-    DEV_KE_1_SR = 0777311,
-    DEV_KE_1_SC = 0777310,
-    DEV_KE_1_MUL = 0777306,
-    DEV_KE_1_MQ = 0777304,
-    DEV_KE_1_AC = 0777302,
-    DEV_KE_1_DIV = 0777300,
+    DEV_KE_1_ASH = 0777316,  // KE11-A #1 Arithmetic Shift
+    DEV_KE_1_LSH = 0777314,  // KE11-A #1 Logical Shift
+    DEV_KE_1_NOR = 0777312,  // KE11-A #1 Normalise
+    DEV_KE_1_SR = 0777311,   // KE11-A #1 Status Register
+    DEV_KE_1_SC = 0777310,   // KE11-A #1 Step Counter
+    DEV_KE_1_MUL = 0777306,  // KE11-A #1 Multiply
+    DEV_KE_1_MQ = 0777304,   // KE11-A #1 Multiplier Quotient
+    DEV_KE_1_AC = 0777302,   // KE11-A #1 Accumilator
+    DEV_KE_1_DIV = 0777300,  // KE11-A #1 Divide
 
-    // CM11, CR11, CD11 AT 0777166 TO 0777160
+    DEV_CR_NU0 = 0777166,  // CR11/CM11 Not used
+    DEV_CR_B2 = 0777164,   // CR11/CM11 Encoded Buffer
+    DEV_CR_B1 = 0777162,   // CR11/CM11 Data Buffer
+    DEV_CR_S = 0777160,    // CR11/CM11 Status Register
 
     // AD01 A/D AT 0776776 TO 0776770
 

@@ -65,6 +65,7 @@ uint16_t read16(uint32_t a)
     case DEV_RK_DA:  // Disk Address
         return (sector) | (surface << 4) | (cylinder << 5) | (drive << 13);
     case DEV_RK_DB:  // Data Buffer
+    case DEV_RK_MR:
     default:
         if (PRINTSIMLINES)
         {
@@ -281,6 +282,7 @@ void write16(uint32_t a, uint16_t v)
         sector = v & 15;
         break;
     case DEV_RK_DB:  // Data Buffer
+    case DEV_RK_MR:
     default:
         if (PRINTSIMLINES)
         {

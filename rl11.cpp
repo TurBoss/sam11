@@ -54,16 +54,18 @@ uint16_t read16(uint32_t a)
 {
     switch (a)
     {
-    case DEV_RL_CS:  // Control Status
+    case DEV_RL_CS:  // Control Status (OR in the bus extension)
         return RLCS | (RLBA & 0x30000) >> 12;
     case DEV_RL_MP:  // Multi Purpose
         return RLMP;
     case DEV_RL_BA:  // Bus Address
         return RLBA & 0xFFFF;
     case DEV_RL_DA:  // Disk Address
+        return RLDA;
         if (m_addr >= 0)
             return m_addr;
-    case DEV_RL_BAE:  // Bus address extension (11/70+ only)
+    case DEV_RL_BAE: 
+        return (RLBA & 0x70000) >> 16;
     default:
         if (PRINTSIMLINES)
         {
@@ -281,7 +283,7 @@ void write16(uint32_t a, uint16_t v)
                 {
                     Serial.println(F("%% unimplemented RL05 operation"));  // %#o", ((r.RLCS & 017) >> 1)))
                 }
-                panic();
+                //panic();
             }
         }
         break;

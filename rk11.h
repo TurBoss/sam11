@@ -23,12 +23,28 @@ SOFTWARE.
  */
 
 // sam11 software emulation of DEC PDP-11/40 RK11 RK Disk Controller
+
+/*
+
+Device Registers:
+
+0777400: Drive Status Register (RKDS)
+
+.15.14.13.12.11.10.09.08.07.06.05.04.03.02.01
+ --------------------------------------------
+|        |  |  |  |  |  |  |  |  |  |        | 
+ --------------------------------------------
+
+Bits:
+
+
+*/
+
 #include "pdp1140.h"
 
 #include <SDFat.h>
 
 namespace rk11 {
-
 extern SdFile rkdata;
 
 void reset();
