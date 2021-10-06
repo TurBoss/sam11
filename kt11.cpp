@@ -41,7 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 
-#if USE_11_45
+#if USE_11_45 && !STRICT_11_40
 #define procNS kb11
 #else
 #define procNS kd11
@@ -175,6 +175,7 @@ uint32_t decode_instr(const uint16_t a, const bool w, const uint8_t user)
 
 uint32_t decode_data(const uint16_t a, const bool w, const uint8_t user)
 {
+#if !STRICT_11_40
     // if disabled in sr3, use instr decode
     if (user == 3)
     {
@@ -270,6 +271,9 @@ uint32_t decode_data(const uint16_t a, const bool w, const uint8_t user)
 #endif
 
     return aa;
+#else
+    return decode_instr(a, w, user);
+#endif
 }
 
 uint16_t read16(const uint32_t a)
@@ -291,6 +295,7 @@ uint16_t read16(const uint32_t a)
         return instr_pages[0][i].par;
     }
 
+#if !STRICT_11_40
     if ((a >= DEV_SUP_INS_PDR_R0) && (a <= DEV_SUP_INS_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
@@ -303,6 +308,7 @@ uint16_t read16(const uint32_t a)
             _printf("%%%% kt11: par read: page %i, user %i, instr area\r\n", i, 1);
         return instr_pages[1][i].par;
     }
+#endif
 
     if ((a >= DEV_USR_INS_PDR_R0) && (a <= DEV_USR_INS_PDR_R7))
     {
@@ -332,6 +338,7 @@ uint16_t read16(const uint32_t a)
         return data_pages[0][i].par;
     }
 
+#if !STRICT_11_40
     if ((a >= DEV_SUP_DAT_PDR_R0) && (a <= DEV_SUP_DAT_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
@@ -344,6 +351,7 @@ uint16_t read16(const uint32_t a)
             _printf("%%%% kt11: par read: page %i, user %i, data area\r\n", i, 1);
         return data_pages[1][i].par;
     }
+#endif
 
     if ((a >= DEV_USR_DAT_PDR_R0) && (a <= DEV_USR_DAT_PDR_R7))
     {
@@ -389,6 +397,7 @@ void write16(const uint32_t a, const uint16_t v)
         return;
     }
 
+#if !STRICT_11_40
     if ((a >= DEV_SUP_INS_PDR_R0) && (a <= DEV_SUP_INS_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
@@ -405,6 +414,7 @@ void write16(const uint32_t a, const uint16_t v)
         instr_pages[1][i].pdr &= ~(1 << 6);
         return;
     }
+#endif
 
     if ((a >= DEV_USR_INS_PDR_R0) && (a <= DEV_USR_INS_PDR_R7))
     {
@@ -442,6 +452,7 @@ void write16(const uint32_t a, const uint16_t v)
         return;
     }
 
+#if !STRICT_11_40
     if ((a >= DEV_SUP_DAT_PDR_R0) && (a <= DEV_SUP_DAT_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
@@ -458,6 +469,7 @@ void write16(const uint32_t a, const uint16_t v)
         data_pages[1][i].pdr &= ~(1 << 6);
         return;
     }
+#endif
 
     if ((a >= DEV_USR_DAT_PDR_R0) && (a <= DEV_USR_DAT_PDR_R7))
     {

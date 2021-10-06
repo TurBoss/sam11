@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "kd11.h"
 
-#if !USE_11_45
+#if !USE_11_45 || STRICT_11_40
 
 #include "bootrom.h"
 #include "dd11.h"
@@ -272,6 +272,11 @@ static void branch(int16_t o)
 
 void switchmode(uint8_t newm)
 {
+#if STRICT_11_40
+    if (newm)
+        newm = 3;
+#endif
+
     prevuser = curuser;
     curuser = newm;
     if (prevuser == 3)

@@ -36,7 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // this is all kinds of wrong
 #include "pdp1140.h"
 
-#if USE_11_45
+#if USE_11_45 && !STRICT_11_40
 
 #include <setjmp.h>
 

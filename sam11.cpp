@@ -47,7 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Arduino.h>
 #include <SdFat.h>
 
-#if USE_11_45
+#if USE_11_45 && !STRICT_11_40
 #define procNS kb11
 #else
 #define procNS kd11
@@ -213,7 +213,7 @@ void panic()  // aka what it does when halted
     digitalWrite(PIN_OUT_PROC_STEP, LED_OFF);
 #endif
 
-    rk11::rkdata.close();
+    rk11::rkdata.close();  // missing from original avr software... I corrupted a few UNIX disks working this one out!
     Serial.println("%% Processor halted.");
     if (PRINTSIMLINES)
     {

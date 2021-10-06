@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sam11.h"
 #include "xmem.h"
 
-#if USE_11_45
+#if USE_11_45 && !STRICT_11_40
 #define procNS kb11
 #else
 #define procNS kd11
@@ -115,9 +115,11 @@ void write16(uint32_t a, uint16_t v)
             case 0:
                 procNS::switchmode(0);  //Kernel
                 break;
+#if !STRICT_11_40
             case 1:
                 procNS::switchmode(1);  // Super
                 break;
+#endif
             case 3:
                 procNS::switchmode(3);  // User
                 break;
@@ -135,9 +137,11 @@ void write16(uint32_t a, uint16_t v)
             case 0:
                 procNS::prevuser = 0;  // Kernel
                 break;
+#if !STRICT_11_40
             case 1:
                 procNS::prevuser = 1;  // Super
                 break;
+#endif
             case 3:
                 procNS::prevuser = 3;  // User
                 break;
@@ -153,9 +157,11 @@ void write16(uint32_t a, uint16_t v)
             return;
         }
 
+#if !STRICT_11_40
     case DEV_STACK_LIM:
         kt11::SLR = v;  // probs wrong
         return;
+#endif
 
     case DEV_KW_LKS:
         kw11::LKS = v;
@@ -165,17 +171,21 @@ void write16(uint32_t a, uint16_t v)
         kt11::SR0 = v;
         return;
 
+#if !STRICT_11_40
     case DEV_MMU_SR1:
         kt11::SR1 = v;
         return;
+#endif
 
     case DEV_MMU_SR2:
         kt11::SR2 = v;
         return;
 
+#if !STRICT_11_40
     case DEV_MMU_SR3:
         kt11::SR3 = v;
         return;
+#endif
 
     case DEV_CONSOLE_DR:
         ky11::write16(a, v);
@@ -202,12 +212,21 @@ void write16(uint32_t a, uint16_t v)
         break;
     }
 
+#if !STRICT_11_40
     // don't use switch/case for this because there would be like 112 lines of "case DEV_USR_DAT_PAR_R7:"
     if (((a & 0777700) == DEV_SUP_INS_PDR_R0) || ((a & 0777700) == DEV_USR_INS_PDR_R0) || ((a & 0777700) == DEV_KER_INS_PDR_R0))
     {
         kt11::write16(a, v);
         return;
     }
+#else
+    // don't use switch/case for this because there would be like 112 lines of "case DEV_USR_DAT_PAR_R7:"
+    if (((a & 0777700) == DEV_KER_INS_PDR_R0) || ((a & 0777700) == DEV_USR_INS_PDR_R0))
+    {
+        kt11::write16(a, v);
+        return;
+    }
+#endif
 
     if (PRINTSIMLINES)
     {
@@ -240,8 +259,10 @@ uint16_t read16(uint32_t a)
     case DEV_CPU_STAT:
         return procNS::PS;
 
+#if !STRICT_11_40
     case DEV_STACK_LIM:
         return kt11::SLR;  // probs wrong
+#endif
 
     case DEV_KW_LKS:
         return kw11::LKS;
@@ -249,14 +270,18 @@ uint16_t read16(uint32_t a)
     case DEV_MMU_SR0:
         return kt11::SR0;
 
+#if !STRICT_11_40
     case DEV_MMU_SR1:
         return kt11::SR1;
+#endif
 
     case DEV_MMU_SR2:
         return kt11::SR2;
 
+#if !STRICT_11_40
     case DEV_MMU_SR3:
         return kt11::SR3;
+#endif
 
     case DEV_CONSOLE_SR:
         return ky11::read16(a);
@@ -281,11 +306,19 @@ uint16_t read16(uint32_t a)
         break;
     }
 
+#if !STRICT_11_40
     // don't use switch/case for this because there would be like 112 lines of "case DEV_USR_DAT_PAR_R7:"
     if (((a & 0777700) == DEV_SUP_INS_PDR_R0) || ((a & 0777700) == DEV_USR_INS_PDR_R0) || ((a & 0777700) == DEV_KER_INS_PDR_R0))
     {
         return kt11::read16(a);
     }
+#else
+    // don't use switch/case for this because there would be like 112 lines of "case DEV_USR_DAT_PAR_R7:"
+    if (((a & 0777700) == DEV_KER_INS_PDR_R0) || ((a & 0777700) == DEV_USR_INS_PDR_R0))
+    {
+        return kt11::read16(a);
+    }
+#endif
 
     if (PRINTSIMLINES)
     {

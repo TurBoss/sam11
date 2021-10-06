@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "kb11.h"
 
-#if USE_11_45
+#if USE_11_45 && !STRICT_11_40
 
 #include "bootrom.h"
 #include "dd11.h"

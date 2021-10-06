@@ -44,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 
-#if USE_11_45
+#if USE_11_45 && !STRICT_11_40
 #define procNS kb11
 #else
 #define procNS kd11
