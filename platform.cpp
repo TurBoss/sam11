@@ -41,14 +41,15 @@ namespace platform {
 // init the platform hardware
 void begin()
 {
+    // no SD control options
 #ifndef PIN_OUT_SD_CS
-#if !USE_SDIOS
+#if !USE_SDIO
 #error NO WAY TO USE SD CARD -> CANNOT COMPILE
 #endif
 #endif
 
-#ifdef PIN_OUT_SD_CS
-    pinMode(PIN_OUT_SD_CS, OUTPUT);  // SD card chip select
+#if defined(PIN_OUT_SD_CS) && !USE_SDIO  // If SPI SD, then init the CS line
+    pinMode(PIN_OUT_SD_CS, OUTPUT);      // SD card chip select
     digitalWrite(PIN_OUT_SD_CS, HIGH);
 #endif
 

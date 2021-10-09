@@ -53,6 +53,8 @@ void writeData(uint16_t data);
 void writeDispReg(uint16_t disp);
 uint16_t readSwitches();
 
+//-------------------------------------------------------------------------------------------------
+
 // Arduino Mega and similar
 #if defined(__AVR_ATmega2560__)
 
@@ -87,9 +89,7 @@ uint16_t readSwitches();
 
 #define _printf Serial.printf
 
-#define USE_SDIO false  // use an SDIO interface for cards
-
-#define ALLOW_DISASM    (false)  // allow disassembly (PDP-11) on crash/panic/state prints
+#define ALLOW_DISASM    (false)    // allow disassembly (PDP-11) on crash/panic/state prints
 #define MAX_RAM_ADDRESS (0760000)  // 248KB
 
 #define RAM_MODE RAM_INTERNAL  // use the chip's onboard SRAM
@@ -116,9 +116,7 @@ uint16_t readSwitches();
 
 #define _printf Serial.printf
 
-#define USE_SDIO false  // use an SDIO interface for cards
-
-#define ALLOW_DISASM    (false)  // allow disassembly (PDP-11) on crash/panic/state prints
+#define ALLOW_DISASM    (false)    // allow disassembly (PDP-11) on crash/panic/state prints
 #define MAX_RAM_ADDRESS (0760000)  // 248KB
 
 #define RAM_MODE RAM_SWAPFILE  // use a swapfile as ram
@@ -132,10 +130,29 @@ uint16_t readSwitches();
 #define PIN_OUT_DISK_ACT  (6)
 #define PIN_OUT_MEM_ACT   (1)
 #define PIN_OUT_PROC_STEP (8)
-//#define PIN_OUT_PROC_RUN  (13)
-//#define PIN_OUT_BUS_ACT   (13)
-//#define PIN_OUT_USER_MODE (13)
-#define DISABLE_PIN_10    (true)
+
+#define DISABLE_PIN_10 (true)
+
+//-------------------------------------------------------------------------------------------------
+
+// Teensy 4.1 and similar -> wayyy fast
+#elif defined(__IMXRT1062__)
+
+#define _printf Serial.printf
+
+#define USE_SDIO true  // use an SDIO interface for cards
+
+#define ALLOW_DISASM    (false)    // allow disassembly (PDP-11) on crash/panic/state prints
+#define MAX_RAM_ADDRESS (0760000)  // 248KB
+
+#define RAM_MODE RAM_INTERNAL  // use the chip's onboard SRAM
+
+#define LED_ON  (HIGH)
+#define LED_OFF (LOW)
+
+#define PIN_OUT_DISK_ACT (13)
+
+#define LKS_ACC LKS_HIGH_ACC
 
 //-------------------------------------------------------------------------------------------------
 

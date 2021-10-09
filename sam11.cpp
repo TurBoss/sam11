@@ -61,9 +61,9 @@ int serialWrite(char c, FILE* f)
 }
 #endif
 
-#if USE_SDIO
+#if USE_SDIO && !defined(__IMXRT1062__)  // If SDIO and not a Teensy 4/4.1
 SdFatSdio sd;
-#else
+#else  // SPI or Teensy
 SdFat sd;
 #endif
 
@@ -145,9 +145,18 @@ void setup(void)
         Serial.print(", ");
         Serial.println(disks[disk]);
     }
+
     // init the sd card
+#if !USE_SDIO && !defined(__IMXRT1062__)  // SPI
     if (!sd.begin(PIN_OUT_SD_CS, SD_SCK_MHZ(SD_SPEED_MHZ)))
         sd.initErrorHalt();
+#elif USE_SDIO && defined(__IMXRT1062__)  // SDIO and Teensy
+    if (!sd.begin(SdioConfig(FIFO_SDIO)))
+        sd.initErrorHalt();
+#else                                     // Normal SDIO
+    if (!sd.begin())
+        sd.initErrorHalt();
+#endif
 
     // Initialise the RAM
     ms11::begin();

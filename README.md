@@ -51,7 +51,7 @@ There is an option in kw11.cpp, of LKS_COMPROMISE. When set to non-0 (and < 1638
 
 ## Installation
 
-If you wish to use this as tested without defining a new board, you will need an Adafruit Grand Central M4, microSD card, and USB cable.
+If you wish to use this as tested without defining a new board, you will need an Adafruit Grand Central M4, microSD card, and USB cable; alternativley a Teensy 4.1 board will work.
 
 Put the .dsk images from the OS Images folder onto the root of your SD card, without renaming.
 Plug the board into your computer, and using the arduino IDE (or compatible, e.g. vscode) compile and upload the sam11.ino file. This should automatically include all the cpp files and headers necessary.
@@ -71,6 +71,8 @@ On a SAMD51P20A (PDP using Internal RAM, 200MHz Clock, Cache enabled) the emulat
 On a SAMD21G18A, using the swapfile as RAM, the emulated processor.... is too slow to be worth using, 5 seconds per character print slow... Still, I tried it, and the SAMD21G18A did successfully boot UNIX V6 and compile a program, it's just agonising to use.
 
 The AVR (ATmega2560) has NOT been tried, but the software should compile back to something close-to avr11 with similar performance; Dave Cheney reported a MIPS of ~0.1 on his AVR 2560 (or "10 times slower").
+
+A Teensy 4.1, on the stock 600MHz and regular optimisation, clocks in at a whopping 3.33 MIPS! But to be honest, doesn't feel that much faster. The more impressive thing is that disk access is so much faster due to the buffered SDIO mechanism. The biggest trade off is that the Teensy gets REAALLY hot. For curiousity I changed it to be fastest optimisation and the full 1GHz, and it only went up to 3.7 MIPS, so you could probably use the underclocks and get it to somewhere a bit more balanced.
 
 ## Recommended reading
 
