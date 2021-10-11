@@ -176,7 +176,7 @@ static void loop0()
 {
     while (1)
     {
-        // Check for interruptd
+        // Check for interrupts
         if ((itab[0].vec) && (itab[0].pri >= ((procNS::PS >> 5) & 7)))
         {
             procNS::handleinterrupt();

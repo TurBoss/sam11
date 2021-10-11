@@ -1,0 +1,24 @@
+#
+# Master author manifest for sam11
+#
+# This does not necessarily list everyone who has contributed code,
+# especially since many employees of one corporation may be contributing.
+# To see the full list of contributors, see the revision history in
+# source control.
+#
+# Any files appearing in the sam11 distribution not listed in this file
+# were created by Chloe Lunn.
+#
+# Filename	      Authors (first is original author)
+#
+# /JS Emulator/*  Aiju
+# /Nankervis/*    Paul Nankervis   
+# rk11.cpp        Aiju, Dave Cheney, Chloe Lunn
+# rk11.h          Aiju, Dave Cheney, Chloe Lunn
+# kd11.cpp        Aiju, Dave Cheney, Chloe Lunn
+# kd11.h          Aiju, Dave Cheney, Chloe Lunn
+# disasm.cpp      Aiju, Dave Cheney, Chloe Lunn
+# sam11.cpp       Dave Cheney, Chloe Lunn
+# sam11.h         Dave Cheney, Chloe Lunn
+# xmem.cpp        Andy Brown
+# xmem.h          Andy Brown

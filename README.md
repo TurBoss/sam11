@@ -1,5 +1,17 @@
 # PDP-11/40 Simulator: sam11
 
+My code is under a BSD 3-clause [License](LICENSE), other code in this repo, libraries, etc, may be under other licenses.
+
+To see where different licenses apply: [Authors](AUTHORS)
+
+![welcome]("./debug/welcome.png"?raw=true "Welcome")
+
+## Why sam11?
+
+The world's first ever PDP-11 simulator was written for the PDP-10 before the PDP-11 was ever built, it was called SIM11. Add that to this program was originally just going to be a fork of AVR11 for SAM boards... and well, the name was obvious!
+
+## General info
+
 The sam11 software is a cross-platform MCU implementation for software emulation of a PDP-11/40\* and some of the supporting hardware.
 
 \* = With some PDP-11/45 and other model stuff thrown in...
@@ -72,7 +84,7 @@ On a SAMD21G18A, using the swapfile as RAM, the emulated processor.... is too sl
 
 The AVR (ATmega2560) has NOT been tried, but the software should compile back to something close-to avr11 with similar performance; Dave Cheney reported a MIPS of ~0.1 on his AVR 2560 (or "10 times slower").
 
-A Teensy 4.1, on the stock 600MHz and regular optimisation, clocks in at a whopping 3.33 MIPS! But to be honest, doesn't feel that much faster. The more impressive thing is that disk access is so much faster due to the buffered SDIO mechanism. The biggest trade off is that the Teensy gets REAALLY hot. For curiousity I changed it to be fastest optimisation and the full 1GHz, and it only went up to 3.7 MIPS, so you could probably use the underclocks and get it to somewhere a bit more balanced.
+A Teensy 4.1, on the stock 600MHz and regular optimisation, clocks in at a whopping 3.33 MIPS! But to be honest, doesn't feel that much faster. The more impressive thing is that disk access is so much faster due to the buffered SDIO mechanism. The biggest trade off is that the Teensy gets REAALLY hot. For curiousity I changed it to be fastest optimisation and the full 1GHz, and it only went up to 3.7 MIPS, so you could probably use the underclocks and get it to somewhere a bit more balanced. At 150MHz and fastest optimisation you get 0.66 MIPS like the samd51 and it stays cooler; warm but not excessive.
 
 ## Recommended reading
 

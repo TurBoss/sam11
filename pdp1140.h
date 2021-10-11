@@ -127,12 +127,12 @@ namespace pdp11 {
 
 // List of emulated hardware to include
 #define USE_11_45    false  // change this line to true to compile with an 11/45 processor (WIP)
-#define STRICT_11_40 false  // When operating in 11/40 mode, restrict features to be 11/40 only and not hybrid 11/40 and 11/45 (needed for BSD), this overrides the USE_11_45 option
+#define STRICT_11_40 true   // When operating in 11/40 mode, restrict features to be 11/40 only and not hybrid 11/40 and 11/45 (needed for BSD), this overrides the USE_11_45 option
 #define RL_DRIVE     false  // RL Disk drive
-#define RK_DRIVE     true  // }
-#define KY_PANEL     true  //  }__ These should always be included, and are just here for record, they don't change the code
-#define KL_CONSOLE   true  //  }
-#define KW_LKS       true  // }
+#define RK_DRIVE     true   // }
+#define KY_PANEL     true   //  }__ These should always be included, and are just here for record, they don't change the code
+#define KL_CONSOLE   true   //  }
+#define KW_LKS       true   // }
 #define DL_TTYS      false  //  DL11 TTY Console connectors
 
 struct intr {
