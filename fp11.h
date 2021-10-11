@@ -30,73 +30,46 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// sam11 software emulation of DEC PDP-11/40 KD11-A processor
-// Mostly 11/40 KD11-A with KE11/KG11 extensions from 11/45 KB11-B
-
-// this is all kinds of wrong
+// sam11 software emulation of DEC PDP-11/40 KL11 Main TTY
 #include "pdp1140.h"
 
-#if USE_11_45 && !STRICT_11_40
+#if USE_FP
 
-#include <setjmp.h>
-
-extern jmp_buf trapbuf;
-
-#define ITABN 16
-
-extern pdp11::intr itab[ITABN];
-
-namespace kb11 {
+namespace fp11 {
 
 enum
 {
-    FLAGN = 8,
-    FLAGZ = 4,
-    FLAGV = 2,
-    FLAGC = 1
-};
-
-//R[2][8];
-extern volatile int32_t R[8];  // R6 = SP, R7 = PC
-
-extern volatile uint16_t curPC;    // R7
-extern volatile uint16_t PS;       // Processor Status
-extern volatile uint16_t USP;      // R6 (user)
-extern volatile uint16_t SSP;      // R6 (Super)
-extern volatile uint16_t KSP;      // R6 (kernel)
-extern volatile uint8_t curuser;   // 0: kernel, 1: supervisor, 2: illegal, 3: user
-extern volatile uint8_t prevuser;  // 0: kernel, 1: supervisor, 2: illegal, 3: user
-extern volatile bool trapped;
-
-bool isReg(const uint16_t a);
-void step();
-void reset(void);
-void switchmode(uint8_t newm);
-
-void trapat(uint16_t vec);
-void interrupt(uint8_t vec, uint8_t pri);
-void handleinterrupt();
-
-inline static bool N()
-{
-    return (uint8_t)PS & FLAGN;
+    ERRNOP = 002,    // No OP
+    ERROVER = 010,   // overflow
+    ERRUNDER = 012,  // underflow
 }
 
-inline static bool Z()
+enum
 {
-    return (uint8_t)PS & FLAGZ;
+    signmask = 0100000,
+    expbias = 0200,
+    expmask = 077600,
+    expshift = 07,
+    hiddenmask = 0200,
+    fractionmask = 0177,
+    wordcount = 04,
+    wordbase = 0200000,
+    wordmask = 0177777,
+    wordbits = 020,
 }
 
-inline static bool V()
-{
-    return (uint8_t)PS & FLAGV;
-}
+extern uint32_t PC;        // Program Counter
+extern uint16_t FEA;       // Error PC
+extern uint16_t FEC;       // Error code
+extern uint16_t FPS;       // Status/Error bits
+extern uint8_t modelen;    // Num words in instruction: 1 = immediate, 2 = real, 4 = double
+extern uint8_t precislen;  // Num words in number: 2 = real, 4 = double
+extern uint32_t res[8];    // Results/Working registers (actually 7)
+extern uint32_t SCR;       // Scratchpad -> 2x 16-bits to make a 32-bit number
+extern uint32_t AC[6];     // Accumilator Registers
 
-inline static bool C()
-{
-    return (uint8_t)PS & FLAGC;
-}
+int step(uint32_t instr);
 
-};  // namespace kb11
+};  // namespace fp11
 
 #endif

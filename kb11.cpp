@@ -1667,6 +1667,7 @@ void step()
         //     return;
     }
 
+#if USE_FIS
     // FIS -- need to add FP11
     if ((instr & 0177000) == 0170000)
     {
@@ -1682,6 +1683,8 @@ void step()
             return;
         }
     }
+#endif
+
     if (PRINTSIMLINES)
     {
         Serial.print("%% invalid instruction 0");

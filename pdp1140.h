@@ -134,6 +134,8 @@ namespace pdp11 {
 #define KL_CONSOLE   true   //  }
 #define KW_LKS       true   // }
 #define DL_TTYS      false  //  DL11 TTY Console connectors
+#define USE_FP       false  // enable the FP11 Floating point  }_ These are different ways of adding floating point, they have different formats and instructions
+#define USE_FIS      true   // enable the FIS Floating point   }
 
 struct intr {
     uint8_t vec;
@@ -148,6 +150,7 @@ enum
 {
     INTRFU = 0000,     // Reserved
     INTBUS = 0004,     // Bus timeout and generally other CPU/System faults
+    INTFPP = 0010,     // FPP Error
     INTINVAL = 0010,   // Reserved Intruction
     INTDEBUG = 0014,   // Debugging trap
     INTIOT = 0020,     // IOT Trap

@@ -1550,6 +1550,7 @@ void step()
         //     return;
     }
 
+#if USE_FIS
     // FIS
     if ((instr & 0177000) == 0170000)
     {
@@ -1565,6 +1566,8 @@ void step()
             return;
         }
     }
+#endif
+
     if (PRINTSIMLINES)
     {
         Serial.print("%% invalid instruction 0");
