@@ -4,7 +4,7 @@ My code is under a BSD 3-clause [License](LICENSE), other code in this repo, lib
 
 To see where different licenses apply: [Authors](AUTHORS)
 
-![welcome](<"./debug/welcome.png">)
+![welcome](<./debug/welcome.png>)
 
 ## Why sam11?
 
