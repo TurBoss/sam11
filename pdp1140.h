@@ -201,7 +201,7 @@ enum
     INST_UNIX_SINGLEUSER = 0173030,  // this boots Unix into single user mode and keeps it there
 };
 
-// Device/Register Addresses:
+// Device/Register Addresses (taken from my PDP-11 04/05/10/35/40/45 Processor Handbook, published 1975):
 enum
 {
     DEV_CPU_STAT = 0777776,       // CPU Status
