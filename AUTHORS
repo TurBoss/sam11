@@ -9,10 +9,11 @@
 # Any files appearing in the sam11 distribution not listed in this file
 # were created by Chloe Lunn.
 #
-# Filename	      Authors (first is original author)
+# Filename        Authors (first is original author)
 #
 # /JS Emulator/*  Aiju
-# /Nankervis/*    Paul Nankervis   
+# /Nankervis/*    Paul Nankervis
+# fp11.cpp        Paul Nankervis, Chloe Lunn
 # rk11.cpp        Aiju, Dave Cheney, Chloe Lunn
 # rk11.h          Aiju, Dave Cheney, Chloe Lunn
 # kd11.cpp        Aiju, Dave Cheney, Chloe Lunn
