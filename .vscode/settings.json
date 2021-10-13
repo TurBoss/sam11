@@ -12,7 +12,8 @@
     "__hash_table": "cpp",
     "deque": "cpp",
     "filesystem": "cpp",
-    "vector": "cpp"
+    "vector": "cpp",
+    "atomic": "cpp"
   },
   "C_Cpp.errorSquiggles": "Enabled",
   "C_Cpp.intelliSenseEngine": "Tag Parser"

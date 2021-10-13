@@ -59,7 +59,7 @@ void step()
     CSR = platform::readControlSwitches();
 
 #if KY_PANEL
-    if (CSR & load && !(prevCSR & load))
+    if (CSR & sw_load_addr && !(prevCSR & sw_load_addr))
     {
         // Load the address from switches, load the data from the bus
         workingADR = SR;
@@ -72,7 +72,7 @@ void step()
         return;
     }
 
-    if (CSR & load && !(prevCSR & load))
+    if (CSR & sw_load_addr && !(prevCSR & sw_load_addr))
     {
         workingADR = SR;
         prevCSR = CSR;
@@ -81,7 +81,7 @@ void step()
     }
 
     // If the deposit switch came on, push the working data into the bus
-    if (CSR & deposit && !(prevCSR & deposit))
+    if (CSR & sw_deposit && !(prevCSR & sw_deposit))
     {
         // simply write working data to the bus
         dd11::write16(workingADR, workingDTR);

@@ -37,17 +37,16 @@ namespace ky11 {
 
 enum
 {
-    deposit = 01,
-    start = 02,
-    halt = 04,
-    continue = 010,
-    examine = 020,
-    load = 040,
-    showDR = 0100,
+    sw_deposit = 01,
+    sw_start = 02,
+    sw_halt = 04,
+    sw_continue = 010,
+    sw_examine = 020,
+    sw_load_addr = 040,
+    sw_show_disp = 0100,
+};
 
-}
-
-extern uint16_t SR;
+extern uint32_t SR;
 extern uint16_t DR;
 extern uint16_t CSR;
 extern uint16_t SLR;
