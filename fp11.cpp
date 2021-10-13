@@ -32,8 +32,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // sam11 software emulation of DEC PDP-11/45 FP11 Floating Point Processor (FPP)
 
-// Based on fpp.js from the 11/45 JS Emulator by Paul Nankervis
-
 #include "fp11.h"
 
 #include "pdp1140.h"

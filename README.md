@@ -17,21 +17,11 @@ The world's first ever PDP-11 simulator was written for the PDP-10 before the PD
 The sam11 software is a cross-platform MCU implementation for software emulation of a PDP-11/40\* and some of the supporting hardware. \
 \* = With some PDP-11/45 and other model stuff thrown in...
 
-The initial code "skeleton", processor instruction functions, RK11, and mmu is based on a fork of Dave Cheney's avr11 simulator. Avr11 was a port of Aiju's JS PDP-11/40 emulator to AVR MCUs. However, the code was almost completely re-written from avr11 (where code was derived, see [AUTHORS](AUTHORS)) based on actual PDP physical structure, device names, and data paths from the PDP-11/40 processor handbook in order to be more useful for learning the system, though there is still work to do, especially around MMU and FIS/FP11 processing.
+The initial code "skeleton", processor instruction functions, RK11, and mmu is based on a fork of Dave Cheney's avr11 simulator. Avr11 was a port of Aiju's JS PDP-11/40 emulator to AVR MCUs. However, the code was almost completely re-written from avr11 (where code was derived, see [AUTHORS](AUTHORS)) based on actual PDP physical structure, device names, and data paths from the PDP-11/40 processor handbook in order to be more useful for learning the system, though there is still work to do, especially around MMU and FIS/FP11 processing. Sam11 is also inspired/informed by various other emulators such as Aiju's js emulator, simh, PiDP, and nankervis js emulator, but it does not derive any code from them. 
 
-The altered structure for hardware modules should allow implementing the missing hardware modules easier to allow use of operating systems and configurations that rely on currently unimplemented hardware features or devices.
+The altered structure for hardware modules should allow implementing the missing hardware modules easier to allow use of operating systems and configurations that rely on currently unimplemented hardware features or devices. See pdp1140.h for more information about file names/splits and pdp-11/40 device structure.
 
 The original avr11 software supported UNIXv6, and this does as well. UNIX V6 (of Lion's fame) runs, but some programs (e.g. bc and chess) fail to run correctly due to emulator bugs. Most things appear good. You can even compile c programs! As of 2021-09-17 some other OSes boot, but crash out for various reasons. The 2.9 BSD image accidentally ID's the processor as an 11/45 and crashes because of that... so either the strict 11/40 mode needs making stricter or we need to finish making it a full 11/45.
-
-See pdp1140.h for more information about file names/splits and pdp-11/40 device structure.
-
-It is also inspired/informed by various other emulators such as Aiju's js emulator, simh, PiDP, and nankervis js emulator, but it does not derive any code from them. The source for nankervis 11/45 is in a folder, but it is only because I used it as a reference for MIPS/running.
-
-The software is designed to be programmed to a device using the arduino IDE .ino file, or other compatible editors/IDEs.
-
-Because different boards all have different options for where the PDP ram lives, how much, and what pins for LEDs/CSs there is a file platform.h which is used to define these variables, along with a corresponding platform.cpp file which actuates some of these physical parts. You will need to add new information for chips not currently implemented.
-
-The RAM type is defined in platform.h, and depending the options different cpp files are inserted into ms11.cpp from the ram_opt folder cpp.h files.
 
 ## Modifications
 
@@ -62,6 +52,12 @@ If the LKS_ACC macro is not defined, it will revert to LKS_SHIFT_TICK
 There is an option in kw11.cpp, of LKS_COMPROMISE. When set to non-0 (and < 16384) this essentially offers a combined LKS_SHIFT_TICK and other options, allowing you to use a loop/step counter as the trigger to check whether it is time to send another interrupt. If 0, it is disabled
 
 ## Installation
+
+The software is designed to be programmed to a device using the arduino IDE .ino file, or other compatible editors/IDEs.
+
+Because different boards all have different options for where the PDP ram lives, how much, and what pins for LEDs/CSs there is a file platform.h which is used to define these variables, along with a corresponding platform.cpp file which actuates some of these physical parts. You will need to add new information for chips not currently implemented.
+
+The RAM type is defined in platform.h, and depending the options different cpp files are inserted into ms11.cpp from the ram_opt folder cpp.h files.
 
 If you wish to use this as tested without defining a new board, you will need an Adafruit Grand Central M4, microSD card, and USB cable; alternativley a Teensy 4.1 board will work.
 
