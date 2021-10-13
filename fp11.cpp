@@ -30,7 +30,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// sam11 software emulation of DEC PDP-11/40 KL11 Main TTY
+// sam11 software emulation of DEC PDP-11/45 FP11 Floating Point Processor (FPP)
 
 #include "fp11.h"
 
@@ -59,6 +59,11 @@ uint32_t res[8];    // Results/Working registers (actually 7)
 uint32_t SCR;       // Scratchpad -> 4x 16-bits to make a 64-bit number
 uint32_t AC[6];     // Accumilator Registers
 
+uint32_t incV(uint32_t v)
+{
+    return ((v & 0200000) | ((v + 2) & 0177777));
+}
+
 void zero(uint32_t* number)
 {
     if (precislen == 2)
@@ -69,7 +74,7 @@ void zero(uint32_t* number)
 
 void test(uint32_t* number)
 {
-    FPS &= 0xfff0;
+    FPS &= 0177760;
     if (!(*number & (expmask << 16)))
     {
         FPS |= 4;  // Z bit
@@ -82,10 +87,10 @@ void test(uint32_t* number)
 
 void trap(int err)
 {
-    FPS |= 0x8000;  // Set FER - floating point error
+    FPS |= 0100000;  // Set FER - floating point error
     FEC = err;
-    FEA = (PC - 2) & 0xffff;
-    if (!(FPS & 0x4000))  // check interrupt enable
+    FEA = (PC - 2) & 0177777;
+    if (!(FPS & 040000))  // check interrupt enable
     {
         longjmp(trapbuf, INTFPP);  // call interrupt
     }
@@ -98,7 +103,7 @@ void copy(uint32_t* number, uint32_t* operand)
 
 void testI(uint32_t* number)
 {
-    FPS &= 0xfff0;  //   8 - N,  4 - Z,  2 - V,  1 - C
+    FPS &= 0177760;  //   8 - N,  4 - Z,  2 - V,  1 - C
     if (*number < 0)
         FPS |= 8;  // N Bit
     if (*number == 0)
@@ -110,8 +115,8 @@ void pack(uint32_t* number, uint32_t exponent, uint8_t sign)
     int condition = 0;  //   8 - N,  4 - Z,  2 - V,  1 - C
     if (exponent <= 0)
     {
-        exponent &= 0xff;
-        if (FPS & 0x400)
+        exponent &= 0377;
+        if (FPS & 02000)
         {                    // FIU - Floating interrupt on underflow
             trap(ERRUNDER);  // 10 Floating underflow
             if (!exponent)
@@ -127,10 +132,10 @@ void pack(uint32_t* number, uint32_t exponent, uint8_t sign)
     }
     else
     {
-        if (exponent >= 0x100)
+        if (exponent >= 0400)
         {
-            exponent &= 0xff;  //0200;
-            if (FPS & 0x200)
+            exponent &= 0377;  //0200;
+            if (FPS & 01000)
             {                   // FIV - Floating interrupt on overflow
                 trap(ERROVER);  // 8 Floating overflow
                 if (!exponent)
@@ -151,10 +156,68 @@ void pack(uint32_t* number, uint32_t exponent, uint8_t sign)
     {
         condition |= 8;  // N bit
     }
-    FPS = (FPS & 0xfff0) | condition;
+    FPS = (FPS & 0177760) | condition;
 }
 
-int step(uint32_t instr)
+void LDEXP(uint32_t* number, uint32_t exponent)
+{
+    uint8_t sign;
+    sign = !!(*number & (signmask << 16));
+    *number = (*number & (fractionmask << 16)) | hiddenmask;
+    if (exponent & 0100000)
+    {
+        exponent = exponent - 0200000;
+    }
+    exponent += expbias;
+    pack(number, exponent, sign);
+}
+
+void CMPF(uint32_t src1, uint32_t src2)
+{
+    uint32_t result = 0;
+    FPS &= 0177760;
+    if ((src1 | src2) & (expmask << 16))  // If both exponents zero then finished!
+    {
+        if ((src1 ^ src2) & (signmask << 16))  // For different signs + is larger
+        {
+            result = 1;
+        }
+        else
+        {                                                                            // For same sign and both not zero then need to compare fractions
+            result = (src1 & ~(FPPsignMask << 16)) - (src2 & ~(FPPsignMask << 16));  // Difference exponent and initial fraction
+            if (!result)
+            {  // If zero compare rest
+                for (int i = 1; i < precislen; i++)
+                {
+                    result = src1[i] - src2[i];
+                    if (result)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    if (!result)
+    {
+        FPS |= 4;  // Zero flag
+    }
+    else
+    {
+        if (src1 & (signmask << 16))
+        {
+            result = -result;
+        }
+        if (result < 0)
+        {
+            FPS |= 8;  // Negative flag
+        }
+    }
+}
+
+void CMP()
+
+  int step(uint32_t instr)
 {
     uint32_t tAC, res, v;
     PC = procNS::curPC;
@@ -167,7 +230,7 @@ int step(uint32_t instr)
             {
             case 0:  // group 0
                 {
-                    switch (instruction & 0x3f)
+                    switch (instruction & 077)
                     {
                     case 0:  // 000 CFCC Copy Floating Condition Codes
                         flags();

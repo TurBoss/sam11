@@ -75,8 +75,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * KW11     *   Line Time Clock (P revision is also RTC - not implemented)
  * KY11-D   +   Developer/Diagnostics Console (front panel)
  * 
- * KE11-F   P*  Floating Point Instructions Extension
- * FP11     P*  Floating Point Coprocessor
+ * KE11-F   P*+ Floating Point Instructions Extension
+ * FP11     P*+ Floating Point Coprocessor
  *  
  * Coms/Bus:
  *
@@ -99,13 +99,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  * KF11-A       Processor Core Memory (ignored if external memory exists)
  * MM11         Ferrite Core Memory
- * MS11     Y+  Silicon Memory
+ * MS11     Y   Silicon Memory
  * 
  * Storage:
  *  
  * RK11     Y+  RK Hard Disk Controller (RK05) (only supports 1 disk currently)
  * RF11         RS Disk Controller
- * RL11         RL Disk Controller
+ * RL11     +   RL Disk Controller
  * RP11         RP Disk Pack Controller
  * RC11         RS Disk Controller
  * PC11         PC Punch Tape Controller
@@ -130,12 +130,12 @@ namespace pdp11 {
 #define STRICT_11_40 true   // When operating in 11/40 mode, restrict features to be 11/40 only and not hybrid 11/40 and 11/45 (needed for BSD), this overrides the USE_11_45 option
 #define RL_DRIVE     false  // RL Disk drive
 #define RK_DRIVE     true   // }
-#define KY_PANEL     true   //  }__ These should always be included, and are just here for record, they don't change the code
-#define KL_CONSOLE   true   //  }
+#define KL_CONSOLE   true   //  }- These should always be included, and are just here for record, they don't change the code
 #define KW_LKS       true   // }
-#define DL_TTYS      false  //  DL11 TTY Console connectors
+#define KY_PANEL     false  // The ky11 front panel will still work without this, but with it changes it to run all bus functions into it, which slows down bus r/w access
+#define DL_TTYS      false  // DL11 TTY Console connectors
 #define USE_FP       false  // enable the FP11 Floating point  }_ These are different ways of adding floating point, they have different formats and instructions
-#define USE_FIS      true   // enable the FIS Floating point   }
+#define USE_FIS      true   // enable the FIS Floating point   }  FIS is not actually implemented, it just disables NOP traps
 
 struct intr {
     uint8_t vec;

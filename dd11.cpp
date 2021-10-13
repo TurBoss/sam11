@@ -51,16 +51,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define procNS kd11
 #endif
 
+#if KY_PANEL
+#define readReturn res =
+#else
+#define readReturn return
+#endif
+
 #include <SdFat.h>
 
 namespace dd11 {
 
 uint16_t read8(const uint32_t a)
 {
+#if !KY_PANEL
+    // If the KY_PANEL is enabled, route everything as words
     if (a < MAX_RAM_ADDRESS)
     {
         return ms11::read8(a);
     }
+#endif
     if (a % 2 != 0)
     {
         return read16(a & ~1) >> 8;
@@ -70,11 +79,14 @@ uint16_t read8(const uint32_t a)
 
 void write8(const uint32_t a, const uint16_t v)
 {
+#if !KY_PANEL
+    // If the KY_PANEL is enabled, route everything as words
     if (a < MAX_RAM_ADDRESS)
     {
         ms11::write8(a, v);
         return;
     }
+#endif
     if (a % 2 != 0)
     {
         write16(a & ~1, (read16(a) & 0xFF) | (v & 0xFF) << 8);
@@ -98,6 +110,10 @@ void write16(uint32_t a, uint16_t v)
         }
         longjmp(trapbuf, INTBUS);
     }
+
+#if KY_PANEL
+    ky11::write16(a, v);
+#endif
 
     if (a < MAX_RAM_ADDRESS)
     {
@@ -187,9 +203,12 @@ void write16(uint32_t a, uint16_t v)
         return;
 #endif
 
+#if !KY_PANEL
+        // If the KY_PANEL is enabled, then it already got this info, so don't sent it again
     case DEV_CONSOLE_DR:
         ky11::write16(a, v);
         return;
+#endif
 
     case DEV_RK_DS:
     case DEV_RK_ER:
@@ -249,42 +268,46 @@ uint16_t read16(uint32_t a)
         longjmp(trapbuf, INTBUS);
     }
 
+#if KY_PANEL
+    int res = 0;
+#endif
+
     if (a < MAX_RAM_ADDRESS)  // if lower than the device memory, then this is just RAM
     {
-        return ms11::read16(a);
+        readReturn ms11::read16(a);
     }
 
     switch (a)  // Switch by address, and read from virtual device as appropriate
     {
     case DEV_CPU_STAT:
-        return procNS::PS;
+        readReturn procNS::PS;
 
 #if !STRICT_11_40
     case DEV_STACK_LIM:
-        return kt11::SLR;  // probs wrong
+        readReturn kt11::SLR;  // probs wrong
 #endif
 
     case DEV_KW_LKS:
-        return kw11::LKS;
+        readReturn kw11::LKS;
 
     case DEV_MMU_SR0:
-        return kt11::SR0;
+        readReturn kt11::SR0;
 
 #if !STRICT_11_40
     case DEV_MMU_SR1:
-        return kt11::SR1;
+        readReturn kt11::SR1;
 #endif
 
     case DEV_MMU_SR2:
-        return kt11::SR2;
+        readReturn kt11::SR2;
 
 #if !STRICT_11_40
     case DEV_MMU_SR3:
-        return kt11::SR3;
+        readReturn kt11::SR3;
 #endif
 
     case DEV_CONSOLE_SR:
-        return ky11::read16(a);
+        readReturn ky11::read16(a);
 
     case DEV_RK_DS:
     case DEV_RK_ER:
@@ -294,13 +317,13 @@ uint16_t read16(uint32_t a)
     case DEV_RK_DA:
     case DEV_RK_DB:
     case DEV_RK_MR:
-        return rk11::read16(a);
+        readReturn rk11::read16(a);
 
     case DEV_CONSOLE_TTY_OUT_DATA:
     case DEV_CONSOLE_TTY_OUT_STATUS:
     case DEV_CONSOLE_TTY_IN_DATA:
     case DEV_CONSOLE_TTY_IN_STATUS:
-        return kl11::read16(a);
+        readReturn kl11::read16(a);
 
     default:
         break;
@@ -310,14 +333,23 @@ uint16_t read16(uint32_t a)
     // don't use switch/case for this because there would be like 112 lines of "case DEV_USR_DAT_PAR_R7:"
     if (((a & 0777700) == DEV_SUP_INS_PDR_R0) || ((a & 0777700) == DEV_USR_INS_PDR_R0) || ((a & 0777700) == DEV_KER_INS_PDR_R0))
     {
-        return kt11::read16(a);
+        readReturn kt11::read16(a);
     }
 #else
     // don't use switch/case for this because there would be like 112 lines of "case DEV_USR_DAT_PAR_R7:"
     if (((a & 0777700) == DEV_KER_INS_PDR_R0) || ((a & 0777700) == DEV_USR_INS_PDR_R0))
     {
-        return kt11::read16(a);
+        readReturn kt11::read16(a);
     }
+#endif
+
+#if KY_PANEL
+    // If the panel is enabled, bus access gets written to the front panel, EXCEPT the switch registers, because that would be weird, instead we just do the address there
+    if (a != DEV_CONSOLE_SR)
+        ky11::write16(a, res);
+    else
+        ky11::write16(a, 0);
+    return res;
 #endif
 
     if (PRINTSIMLINES)

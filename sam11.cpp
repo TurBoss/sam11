@@ -183,6 +183,10 @@ static void loop0()
             return;  // reset the loop to reset interrupt
         }
 
+#if KY_PANEL
+        ky11::step();
+#endif
+
 #ifdef PIN_OUT_PROC_STEP
         digitalWrite(PIN_OUT_PROC_STEP, LED_ON);
 #endif

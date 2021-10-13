@@ -41,9 +41,55 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace ky11 {
 
-uint16_t SR;   // data switches (not address or option switches!)
-uint16_t DR;   // display register (separate to address/data displays)
+uint32_t SR;  // data switches (not address or option switches!)
+uint16_t DR;  // display register (separate to address/data displays)
+
 uint16_t SLR;  // Register of status LEDs separate to addr/data/display
+uint16_t CSR;  // Resgister of control switches separate to addr/data switches
+
+uint16_t prevCSR;
+uint32_t workingADR;
+uint16_t workingDTR;
+
+bool showDR = false;
+
+void step()
+{
+    SR = platform::readSwitches();
+    CSR = platform::readControlSwitches();
+
+#if KY_PANEL
+    if (CSR & load && !(prevCSR & load))
+    {
+        // Load the address from switches, load the data from the bus
+        workingADR = SR;
+        workingDTR = dd11::read16(workingADR);
+
+        // write to front panel
+        platform::writeAddr(workingADR);
+        platform::writeData(workingDTR);
+        prevCSR = CSR;
+        return;
+    }
+
+    if (CSR & load && !(prevCSR & load))
+    {
+        workingADR = SR;
+        prevCSR = CSR;
+        platform::writeAddr(workingADR);
+        return;
+    }
+
+    // If the deposit switch came on, push the working data into the bus
+    if (CSR & deposit && !(prevCSR & deposit))
+    {
+        // simply write working data to the bus
+        dd11::write16(workingADR, workingDTR);
+        prevCSR = CSR;
+        return;
+    }
+#endif
+}
 
 void reset()
 {
@@ -51,12 +97,13 @@ void reset()
     DR = 0000000;
 
     SR = platform::readSwitches();
+    CSR = platform::readControlSwitches();
 }
 
 uint16_t read16(uint32_t addr)
 {
     // read front panel switches here
-    SR = platform::readSwitches();
+    //SR = platform::readSwitches();
 
     if (addr == DEV_CONSOLE_SR)
         return SR;  //SR;
@@ -64,12 +111,14 @@ uint16_t read16(uint32_t addr)
 }
 void write16(uint32_t a, uint16_t v)
 {
-    if (a == DEV_CONSOLE_DR)
+    if (a == DEV_CONSOLE_DR)  // if it is the display register, copy it into the display register
         DR = v;
 
     // write to a front panel LEDs here
     platform::writeAddr(a);
-    platform::writeData(v);
-    platform::writeDispReg(DR);
+    if (!showDR)
+        platform::writeData(v);
+    if (showDR)
+        platform::writeDispReg(DR);
 }
 };  // namespace ky11

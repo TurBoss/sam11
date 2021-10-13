@@ -30,7 +30,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// sam11 software emulation of DEC PDP-11/40 KL11 Main TTY
+// sam11 software emulation of DEC PDP-11/45 FP11 Floating Point Processor (FPP)
+
 #include "pdp1140.h"
 
 #if USE_FP
@@ -67,6 +68,23 @@ extern uint8_t precislen;  // Num words in number: 2 = real, 4 = double
 extern uint32_t res[8];    // Results/Working registers (actually 7)
 extern uint32_t SCR;       // Scratchpad -> 2x 16-bits to make a 32-bit number
 extern uint32_t AC[6];     // Accumilator Registers
+
+void zero(uint32_t* number);
+void test(uint32_t* number);
+void trap(int err);
+void copy(uint32_t* number, uint32_t* operand);
+void testI(uint32_t* number);
+void pack(uint32_t* number, uint32_t exponent, uint8_t sign);
+
+uint32_t aget(uint32_t instr, uint8_t l);
+
+int modF(uint32_t* number);
+
+int writeF(uint32_t a, uint32_t v);
+uint32_t readF(uint32_t a, uint32_t v);
+
+int write16(uint32_t a, uint16_t v);
+uint16_t read16(uint32_t a);
 
 int step(uint32_t instr);
 

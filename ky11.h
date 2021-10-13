@@ -34,9 +34,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "pdp1140.h"
 
 namespace ky11 {
+
+enum
+{
+    deposit = 01,
+    start = 02,
+    halt = 04,
+    continue = 010,
+    examine = 020,
+    load = 040,
+    showDR = 0100,
+
+}
+
 extern uint16_t SR;
 extern uint16_t DR;
+extern uint16_t CSR;
 extern uint16_t SLR;
+void step();
 void reset();
 uint16_t read16(uint32_t addr);
 void write16(uint32_t a, uint16_t v);

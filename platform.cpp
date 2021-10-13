@@ -89,8 +89,13 @@ void begin()
 void writeAddr(uint32_t addr) { }     // write to address pins
 void writeData(uint16_t data) { }     // write to data pins
 void writeDispReg(uint16_t disp) { }  // write display register
-uint16_t readSwitches()               // read processor front switches
+uint32_t readSwitches()               // read processor front switches
 {
     return 0;  //INST_UNIX_SINGLEUSER;
 }
+uint16_t readControlSwitches()
+{
+    return 0;
+}
+
 };  // namespace platform

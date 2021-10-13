@@ -51,7 +51,8 @@ void begin();
 void writeAddr(uint32_t addr);
 void writeData(uint16_t data);
 void writeDispReg(uint16_t disp);
-uint16_t readSwitches();
+uint32_t readSwitches();
+uint16_t readControlSwitches();
 
 //-------------------------------------------------------------------------------------------------
 
