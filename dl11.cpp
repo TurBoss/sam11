@@ -85,14 +85,14 @@ static void addchar(char c, uint8_t t)
 {
     switch (c)
     {
-    case 42:
-        TKB[t] = 4;
-        break;
-    case 19:
-        TKB[t] = 034;
-        break;
-        //case 46:
-        //	TKB = 127;
+    // case 42:
+    //     TKB[t] = 4;
+    //     break;
+    // case 19:
+    //     TKB[t] = 034;
+    //     break;
+    //case 46:
+    //	TKB = 127;
     default:
         TKB[t] = c;
         break;

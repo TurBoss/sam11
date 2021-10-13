@@ -82,6 +82,8 @@ The AVR (ATmega2560) has NOT been tried, but the software should compile back to
 
 A Teensy 4.1, on the stock 600MHz and regular optimisation, clocks in at a whopping 3.33 MIPS! But to be honest, doesn't feel that much faster. The more impressive thing is that disk access is so much faster due to the buffered SDIO mechanism. The biggest trade off is that the Teensy gets REAALLY hot. For curiousity I changed it to be fastest optimisation and the full 1GHz, and it only went up to 3.7 MIPS, so you could probably use the underclocks and get it to somewhere a bit more balanced. At 150MHz and fastest optimisation you get 0.66 MIPS like the samd51 and it stays cooler; warm but not excessive.
 
+For comparison, simh running my modified unix on an RPi 3B+ clocks in at 2 MIPS with the timing throttle turned off.
+
 ## Recommended reading
 
 - PDP-11/40 processor handbook: <https://pdos.csail.mit.edu/6.828/2005/readings/pdp11-40.pdf>

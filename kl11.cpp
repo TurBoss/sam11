@@ -65,14 +65,14 @@ static void addchar(char c)
 {
     switch (c)
     {
-    case 42:
-        TKB = 4;
-        break;
-    case 19:
-        TKB = 034;
-        break;
-        //case 46:
-        //	TKB = 127;
+    // case 42:
+    //     TKB = 4;
+    //     break;
+    // case 19:
+    //     TKB = 034;
+    //     break;
+    //case 46:
+    //	TKB = 127;
     default:
         TKB = c;
         break;
