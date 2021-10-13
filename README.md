@@ -10,25 +10,22 @@ To see where different licenses apply: [Authors](AUTHORS)
 
 ## Why sam11?
 
-The world's first ever PDP-11 simulator was written for the PDP-10 before the PDP-11 was ever built, it was called SIM11. Add that to this program was originally just going to be a fork of AVR11 for SAM boards... and well, the name was obvious!
+The world's first ever PDP-11 simulator was written for the PDP-10 before the PDP-11 was ever built, it was called SIM11. Add that to this program was originally just going to be a fork of AVR11 for SAM boards (it became way more)... and well, the name was obvious!
 
 ## General info
 
-The sam11 software is a cross-platform MCU implementation for software emulation of a PDP-11/40\* and some of the supporting hardware.
-
+The sam11 software is a cross-platform MCU implementation for software emulation of a PDP-11/40\* and some of the supporting hardware. \
 \* = With some PDP-11/45 and other model stuff thrown in...
 
-The code "skeleton", processor instruction functions, RK11, and mmu is based on a fork of Dave Cheney's avr11 simulator. The JS Emulator folder contains the source for the JS PDP-11/40 emulator by Aiju that avr11 was based on.
+The initial code "skeleton", processor instruction functions, RK11, and mmu is based on a fork of Dave Cheney's avr11 simulator. Avr11 was a port of Aiju's JS PDP-11/40 emulator to AVR MCUs. However, the code was almost completely re-written from avr11 (where code was derived, see [AUTHORS](AUTHORS)) based on actual PDP physical structure, device names, and data paths from the PDP-11/40 processor handbook in order to be more useful for learning the system, though there is still work to do, especially around MMU and FIS/FP11 processing.
 
-The original avr11 software supported UNIXv6, and this should to. As of 2021-09-17 some OSes boot, but crash out for various reasons. UNIXv6 runs, but some programs (e.g. bc and chess) fail to run correctly. Most things appear good. You can even compile c programs!
+The altered structure for hardware modules should allow implementing the missing hardware modules easier to allow use of operating systems and configurations that rely on currently unimplemented hardware features or devices.
 
-The structure was re-written from avr11 based on actual PDP physical structure, device names, and data paths from the PDP-11/40 processor handbook in order to be more useful for learning the system, though there is still work to do, especially around MMU and FIS/FP11 processing.
-
-The extended hardware modules and new structure should allow implementing the missing hardware modules easier to allow use of operating systems and configurations that rely on currently unimplemented hardware features or devices.
+The original avr11 software supported UNIXv6, and this does as well. UNIX V6 (of Lion's fame) runs, but some programs (e.g. bc and chess) fail to run correctly due to emulator bugs. Most things appear good. You can even compile c programs! As of 2021-09-17 some other OSes boot, but crash out for various reasons. The 2.9 BSD image accidentally ID's the processor as an 11/45 and crashes because of that... so either the strict 11/40 mode needs making stricter or we need to finish making it a full 11/45.
 
 See pdp1140.h for more information about file names/splits and pdp-11/40 device structure.
 
-It is also inspired/informed by various other emulators such as simh, and nankervis js emulator, but it does not derive any code from them at all. The source for nankervis 11/45 is in a folder, but it is only a reference.
+It is also inspired/informed by various other emulators such as Aiju's js emulator, simh, PiDP, and nankervis js emulator, but it does not derive any code from them. The source for nankervis 11/45 is in a folder, but it is only because I used it as a reference for MIPS/running.
 
 The software is designed to be programmed to a device using the arduino IDE .ino file, or other compatible editors/IDEs.
 
@@ -38,12 +35,13 @@ The RAM type is defined in platform.h, and depending the options different cpp f
 
 ## Modifications
 
-The 11/40 functionality is ever so slightly Modded:
+The 11/40 functionality is ever so slightly Modded over a standard 11/40:
 
 1. FIS instructions were added, but only to suppress the no-op trap, otherwise they don't do anything
 2. The HALT instruction is modified to allow user and supervisor operation, this was so that a simple shutdown command could be added to OSes without that functionality
-3. The KW11 line clock when in LKS_SHIFT_TICK mode simply assumes 1 Op/Step = 1ms, which is highly inaccurate on most system (there are options for better accuracy)
+3. The KW11 line clock when in LKS_SHIFT_TICK mode simply assumes 1 Op/Step = 1us, which is highly inaccurate on most system (there are options for better accuracy)
 4. A simple break, step, continue debugger is implemented, but requires you to enable it in sam11.h and enable PRINTSIMLINES
+
 
 ## Line Clock Options:
 
