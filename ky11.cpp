@@ -59,7 +59,7 @@ void step()
     CSR = platform::readControlSwitches();
 
 #if KY_PANEL
-    if (CSR & load && !(prevCSR & load))
+    if (CSR & sw_load && !(prevCSR & sw_load))
     {
         // Load the address from switches, load the data from the bus
         workingADR = SR;
@@ -72,7 +72,7 @@ void step()
         return;
     }
 
-    if (CSR & load && !(prevCSR & load))
+    if (CSR & sw_load && !(prevCSR & sw_load))
     {
         workingADR = SR;
         prevCSR = CSR;

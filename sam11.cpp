@@ -153,7 +153,7 @@ void setup(void)
 #elif USE_SDIO && defined(__IMXRT1062__)  // SDIO and Teensy
     if (!sd.begin(SdioConfig(FIFO_SDIO)))
         sd.initErrorHalt();
-#else                                     // Normal SDIO
+#else  // Normal SDIO
     if (!sd.begin())
         sd.initErrorHalt();
 #endif
@@ -161,11 +161,37 @@ void setup(void)
     // Initialise the RAM
     ms11::begin();
 
+#if NUM_RK_DRIVES >= 1
     // Load RK05 Disk 0 as Read/Write
-    if (!rk11::rkdata.open(disks[disk], O_RDWR))
+    if (!rk11::rkdata[0].open(disks[disk], O_RDWR))
     {
-        sd.errorHalt("%% opening disk for write failed");
+        sd.errorHalt("%% opening RK disk 0 for write failed");
     }
+#endif
+
+#if NUM_RK_DRIVES >= 2
+    // Load RK05 Disk 1 as Read/Write
+    if (!rk11::rkdata[1].open("rk1.dsk", O_RDWR))
+    {
+        sd.errorHalt("%% opening RK disk 1 for write failed");
+    }
+#endif
+
+#if NUM_RK_DRIVES >= 3
+    // Load RK05 Disk 2 as Read/Write
+    if (!rk11::rkdata[2].open("rk2.dsk", O_RDWR))
+    {
+        sd.errorHalt("%% opening RK disk 2 for write failed");
+    }
+#endif
+
+#if NUM_RK_DRIVES >= 4
+    // Load RK05 Disk 3 as Read/Write
+    if (!rk11::rkdata[3].open("rk3.dsk", O_RDWR))
+    {
+        sd.errorHalt("%% opening RK disk 3 for write failed");
+    }
+#endif
 
     ky11::reset();    // reset the front panel - sets the switches to INST_UNIX_SINGLEUSER (0173030)
     procNS::reset();  // reset the processor
@@ -226,7 +252,9 @@ void panic()  // aka what it does when halted
     digitalWrite(PIN_OUT_PROC_STEP, LED_OFF);
 #endif
 
-    rk11::rkdata.close();  // missing from original avr software... I corrupted a few UNIX disks working this one out!
+    for (int i = 0; i < NUM_RK_DRIVES; i++)
+        rk11::rkdata[i].close();  // missing from original avr software... I corrupted a few UNIX disks working this one out!
+
     Serial.println("%% Processor halted.");
     if (PRINTSIMLINES)
     {
