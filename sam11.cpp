@@ -166,31 +166,46 @@ void setup(void)
     if (!rk11::rkdata[0].open(disks[disk], O_RDWR))
     {
         sd.errorHalt("%% opening RK disk 0 for write failed");
+        rk11::attached_drives[0] = false;
     }
+    else
+        rk11::attached_drives[0] = true;
 #endif
 
 #if NUM_RK_DRIVES >= 2
     // Load RK05 Disk 1 as Read/Write
     if (!rk11::rkdata[1].open("rk1.dsk", O_RDWR))
     {
-        sd.errorHalt("%% opening RK disk 1 for write failed");
+        if (PRINTSIMLINES)
+            Serial.println("%% opening RK disk 1 for write failed");
+        rk11::attached_drives[1] = false;
     }
+    else
+        rk11::attached_drives[1] = true;
 #endif
 
 #if NUM_RK_DRIVES >= 3
     // Load RK05 Disk 2 as Read/Write
     if (!rk11::rkdata[2].open("rk2.dsk", O_RDWR))
     {
-        sd.errorHalt("%% opening RK disk 2 for write failed");
+        if (PRINTSIMLINES)
+            Serial.println("%% opening RK disk 2 for write failed");
+        rk11::attached_drives[2] = false;
     }
+    else
+        rk11::attached_drives[2] = true;
 #endif
 
 #if NUM_RK_DRIVES >= 4
     // Load RK05 Disk 3 as Read/Write
-    if (!rk11::rkdata[3].open("rk3.dsk", O_RDWR))
+    if (!rk11::rkdata[3].open("csd.dsk", O_RDWR))
     {
-        sd.errorHalt("%% opening RK disk 3 for write failed");
+        if (PRINTSIMLINES)
+            Serial.println("%% opening RK disk 3 (csd) for write failed");
+        rk11::attached_drives[3] = false;
     }
+    else
+        rk11::attached_drives[3] = true;
 #endif
 
     ky11::reset();    // reset the front panel - sets the switches to INST_UNIX_SINGLEUSER (0173030)
@@ -253,7 +268,12 @@ void panic()  // aka what it does when halted
 #endif
 
     for (int i = 0; i < NUM_RK_DRIVES; i++)
-        rk11::rkdata[i].close();  // missing from original avr software... I corrupted a few UNIX disks working this one out!
+        if (rk11::attached_drives[i])
+            rk11::rkdata[i].close();  // I corrupted a few UNIX disks working this one out! Whoops!
+
+#ifdef PIN_OUT_DISK_ACT
+    digitalWrite(PIN_OUT_DISK_ACT, LED_OFF);
+#endif
 
     Serial.println("%% Processor halted.");
     if (PRINTSIMLINES)

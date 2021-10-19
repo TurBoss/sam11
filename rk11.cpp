@@ -54,6 +54,7 @@ namespace rk11 {
 uint32_t RKBA, RKDS, RKER, RKCS, RKWC;
 uint32_t drive, sector, surface, cylinder;
 
+bool attached_drives[NUM_RK_DRIVES];
 SdFile rkdata[NUM_RK_DRIVES];
 
 uint16_t read16(uint32_t a)
@@ -104,11 +105,13 @@ static void rkready()
 
 void rkerror(uint16_t e)
 {
+    RKER |= e;
 }
 
 static void step()
 {
 again:
+    RKER = 0;  // clear errors
     bool w;
     switch ((RKCS & 017) >> 1)
     {
@@ -151,7 +154,7 @@ again:
         }
     }
 
-    if (drive > NUM_RK_DRIVES - 1)
+    if (drive > (NUM_RK_DRIVES - 1) || !attached_drives[drive])
     {
         rkerror(RKNXD);
     }

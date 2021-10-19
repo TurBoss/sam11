@@ -54,7 +54,8 @@ Bits:
 
 namespace rk11 {
 
-#define NUM_RK_DRIVES 3
+#define NUM_RK_DRIVES (4)
+extern bool attached_drives[NUM_RK_DRIVES];
 
 extern SdFile rkdata[NUM_RK_DRIVES];
 
