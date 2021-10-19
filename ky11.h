@@ -42,8 +42,8 @@ enum
     sw_halt = 04,
     sw_continue = 010,
     sw_examine = 020,
-    sw_load_addr = 040,
-    sw_show_disp = 0100,
+    sw_load = 040,
+    sw_showDR = 0100,
 };
 
 extern uint32_t SR;

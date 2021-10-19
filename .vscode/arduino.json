@@ -2,6 +2,6 @@
     "board": "adafruit:samd:adafruit_grandcentral_m4",
     "sketch": "sam11.ino",
     "programmer": "AVR ISP",
-    "port": "/dev/cu.usbmodem101",
+    "port": "COM81",
     "configuration": "cache=on,speed=200,opt=dragons,maxqspi=50,usbstack=arduino,debug=off"
 }

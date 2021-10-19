@@ -13,6 +13,8 @@
     "deque": "cpp",
     "filesystem": "cpp",
     "vector": "cpp",
+    "ostream": "cpp",
+    "istream": "cpp",
     "atomic": "cpp"
   },
   "C_Cpp.errorSquiggles": "Enabled",

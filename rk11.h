@@ -53,7 +53,10 @@ Bits:
 #include <SDFat.h>
 
 namespace rk11 {
-extern SdFile rkdata;
+
+#define NUM_RK_DRIVES 3
+
+extern SdFile rkdata[NUM_RK_DRIVES];
 
 void reset();
 void write16(uint32_t a, uint16_t v);

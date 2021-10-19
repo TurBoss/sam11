@@ -54,7 +54,7 @@ namespace rk11 {
 uint32_t RKBA, RKDS, RKER, RKCS, RKWC;
 uint32_t drive, sector, surface, cylinder;
 
-SdFile rkdata;
+SdFile rkdata[NUM_RK_DRIVES];
 
 uint16_t read16(uint32_t a)
 {
@@ -151,7 +151,7 @@ again:
         }
     }
 
-    if (drive != 0)
+    if (drive > NUM_RK_DRIVES - 1)
     {
         rkerror(RKNXD);
     }
@@ -165,7 +165,7 @@ again:
     }
 
     int32_t pos = (cylinder * 24 + surface * 12 + sector) * 512;
-    if (!rkdata.seekSet(pos))
+    if (!rkdata[drive].seekSet(pos))
     {
         if (PRINTSIMLINES)
         {
@@ -181,12 +181,12 @@ again:
         if (w)
         {
             val = dd11::read16(RKBA);
-            rkdata.write(val & 0xFF);
-            rkdata.write((val >> 8) & 0xFF);
+            rkdata[drive].write(val & 0xFF);
+            rkdata[drive].write((val >> 8) & 0xFF);
         }
         else
         {
-            int t = rkdata.read();
+            int t = rkdata[drive].read();
             if (t == -1)
             {
                 if (PRINTSIMLINES)
@@ -197,7 +197,7 @@ again:
             }
             val = t & 0xFF;
 
-            t = rkdata.read();
+            t = rkdata[drive].read();
             if (t == -1)
             {
                 if (PRINTSIMLINES)
