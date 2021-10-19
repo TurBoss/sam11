@@ -269,8 +269,6 @@ void write16(uint32_t a, uint16_t v)
     //printf("%% rlwrite: %06o\n",a);
     switch (a)
     {
-    case DEV_RL_MP:  // Drive Status
-        break;
     case DEV_RL_CS:  // Control Status
         RLBA = (RLBA & 0xFFFF) | ((v & 060) << 12);
         v &= 017517;  // writable bits
@@ -301,10 +299,14 @@ void write16(uint32_t a, uint16_t v)
         RLBA = (RLBA & 0x30000) | (v);
         break;
     case DEV_RL_DA:  // Disk Address
+        RLDA = v;
         drive = v >> 13;
         cylinder = (v >> 5) & 0377;
         surface = (v >> 4) & 1;
         sector = v & 15;
+        break;
+    case DEV_RL_MP:  // Drive Status
+        RLMP = v;
         break;
     case DEV_RL_BAE:  // Data Buffer
     default:
