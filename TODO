@@ -1,0 +1,37 @@
+# Ultimate goals
+
+  * Be able to boot BSD 2.11
+  * Run DEC's XXDP Diagnostics without errors on the implemented modules...
+
+# Long Term
+
+  * Get 11/45 emulation working properly (even just on UNIX V6)
+  * Add support for more disk drives, e.g. RP
+  * Add support for magenetic tape drives
+  * Add support for pushing the UNIBUS requests into IO to allow co-processsor emulation of various hardware (and maybe real cards...?)
+  * Add networking via DELUA or DEUNA (needs BSDs)
+
+# Short Term
+
+  * Finish adding KY11 IO and stuff to get a front panel
+  * Finish adding DL11 TTY/Serials -> and route via platform.cpp for options
+  * Finish work on adding RL drive
+  * Finish adding FP11
+  * Add CPU registers and FIS, EIS to the UNIBUS
+
+# Bug/Feature Fixes
+
+## KD11/KB11
+
+  * Add Yellow/Red Traps
+  * Get stack limit register so it actually does *something*
+  * Fix instruction faults/bugs -> e.g. Unix V6 "BC" program
+  * Fix interrupts -> how many in list? DOS 11 runs out somehow
+
+## RK11
+
+  * Finish adding as-yet-unimplemented features
+
+## KT11
+
+  * Finish off KT11's registers so back steps work on traps
