@@ -116,25 +116,42 @@ again:
     switch ((RKCS & 017) >> 1)
     {
     case 0:  // Controller reset
-        //reset();
+        reset();
         return;
+
     case 1:  // write
         w = true;
         break;
+
     case 2:  // read
         w = false;
         break;
-    case 3:  // check
-    case 4:  // seek
-    case 5:  // read check
+
+    case 4:  // Seek
+      // RKCS &= ~020000;
+      // RKCS |= 0200;
+      // procNS::interrupt(INTRK, 5);
+      // return;
+
     case 6:  // Drive reset
+      // RKER = 0;
+      // RKDA &= 0160000;
+      // RKCS &= ~020000;
+      // RKCS |= 0200;
+      // procNS::interrupt(INTRK, 5);
+      // return;
+
+    case 3:  // check
+    case 5:  // read check
     case 7:  // write lock
     default:
         if (PRINTSIMLINES)
         {
             Serial.println(F("%% unimplemented RK05 operation"));  //  %#o", ((r.RKCS & 017) >> 1)))
         }
-        panic();
+        //panic();
+        procNS::interrupt(INTRK, 5);
+        return;
     }
 
     if (DEBUG_RK05)
@@ -154,6 +171,7 @@ again:
         }
     }
 
+    drive = (RKDA >> 13);
     if (drive > (NUM_RK_DRIVES - 1) || !attached_drives[drive])
     {
         rkerror(RKNXD);
