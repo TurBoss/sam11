@@ -170,12 +170,45 @@ void write16(uint32_t a, uint16_t v)
                 panic();
             }
             procNS::PS = v;
-            return;
         }
+        return;
+
+    case DEV_CPU_KER_PC:
+        procNS::curPC;
+        return;
+
+#if !STRICT_11_40
+    case DEV_CPU_SUP_SP:
+        {
+            if (procNS::curuser == 1)
+                procNS::R[6] = v;
+            else
+                procNS::SSP = v;
+        }
+        return;
+#endif
+
+    case DEV_CPU_KER_SP:
+        {
+            if (procNS::curuser == 0)
+                procNS::R[6] = v;
+            else
+                procNS::KSP = v;
+        }
+        return;
+
+    case DEV_CPU_USR_SP:
+        {
+            if (procNS::curuser == 3)
+                procNS::R[6] = v;
+            else
+                procNS::USP = v;
+        }
+        return;
 
 #if !STRICT_11_40
     case DEV_STACK_LIM:
-        kt11::SLR = v;  // probs wrong
+        kt11::SLR = v | 0377;  // probs wrong
         return;
 #endif
 
@@ -217,6 +250,7 @@ void write16(uint32_t a, uint16_t v)
     case DEV_RK_BA:
     case DEV_RK_DA:
     case DEV_RK_DB:
+    case DEV_RK_MR:
         rk11::write16(a, v);
         return;
 
@@ -281,33 +315,74 @@ uint16_t read16(uint32_t a)
     {
     case DEV_CPU_STAT:
         readReturn procNS::PS;
+        break;
+
+    case DEV_CPU_KER_PC:
+        readReturn procNS::curPC;
+        break;
+
+#if !STRICT_11_40
+    case DEV_CPU_SUP_SP:
+        {
+            if (procNS::curuser == 1)
+                readReturn procNS::R[6];
+            else
+                readReturn procNS::SSP;
+        }
+        break;
+#endif
+
+    case DEV_CPU_KER_SP:
+        {
+            if (procNS::curuser == 0)
+                readReturn procNS::R[6];
+            else
+                readReturn procNS::KSP;
+        }
+        break;
+
+    case DEV_CPU_USR_SP:
+        {
+            if (procNS::curuser == 3)
+                readReturn procNS::R[6];
+            else
+                readReturn procNS::USP;
+        }
+        break;
 
 #if !STRICT_11_40
     case DEV_STACK_LIM:
-        readReturn kt11::SLR;  // probs wrong
+        readReturn kt11::SLR & 0177400;  // probs wrong
+        break;
 #endif
 
     case DEV_KW_LKS:
         readReturn kw11::LKS;
+        break;
 
     case DEV_MMU_SR0:
         readReturn kt11::SR0;
+        break;
 
 #if !STRICT_11_40
     case DEV_MMU_SR1:
         readReturn kt11::SR1;
+        break;
 #endif
 
     case DEV_MMU_SR2:
         readReturn kt11::SR2;
+        break;
 
 #if !STRICT_11_40
     case DEV_MMU_SR3:
         readReturn kt11::SR3;
+        break;
 #endif
 
     case DEV_CONSOLE_SR:
         readReturn ky11::read16(a);
+        break;
 
     case DEV_RK_DS:
     case DEV_RK_ER:
@@ -318,12 +393,14 @@ uint16_t read16(uint32_t a)
     case DEV_RK_DB:
     case DEV_RK_MR:
         readReturn rk11::read16(a);
+        break;
 
     case DEV_CONSOLE_TTY_OUT_DATA:
     case DEV_CONSOLE_TTY_OUT_STATUS:
     case DEV_CONSOLE_TTY_IN_DATA:
     case DEV_CONSOLE_TTY_IN_STATUS:
         readReturn kl11::read16(a);
+        break;
 
     default:
         break;
