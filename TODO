@@ -1,23 +1,26 @@
 # Ultimate goals
 
-  * Be able to boot BSD 2.11
-  * Run DEC's XXDP Diagnostics without errors on the implemented modules...
+  * Be able to boot and run BSD 2.11 without any issues
+  * Run DEC's XXDP Diagnostics without errors on the implemented/enabled modules...
 
 # Long Term
 
   * Get 11/45 emulation working properly (even just on UNIX V6)
-  * Add support for more disk drives, e.g. RP
+  * Add support for more storage/interfaces
   * Add support for magenetic tape drives
   * Add support for pushing the UNIBUS requests into IO to allow co-processsor emulation of various hardware (and maybe real cards...?)
   * Add networking via DELUA or DEUNA (needs BSDs)
+  * Add some sort of simh-like boot.ini and setup/mount for drives, interfaces, etc.
 
 # Short Term
 
   * Finish adding KY11 IO and stuff to get a front panel
   * Finish adding DL11 TTY/Serials -> and route via platform.cpp for options
-  * Finish work on adding RL drive
+  * ~~Finish work on adding RL drive~~ Not worth it? you can run an RL disk in an RP drive (apparently)
+  * Add RP disk drive -> RL disks can be driven as RP disks 0-4, but will ID as small-size RP disks in OSes
   * Finish adding FP11
   * Add CPU registers and FIS, EIS to the UNIBUS
+  * Get BSD 2.9 RK05 image running
 
 # Bug/Feature Fixes
 
@@ -30,7 +33,7 @@
 
 ## RK11
 
-  * Finish adding as-yet-unimplemented features
+  * Finish adding as-yet-unimplemented features, errors, etc.
 
 ## KT11
 
