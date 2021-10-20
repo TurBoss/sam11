@@ -19,10 +19,13 @@
   * ~~Finish work on adding RL drive~~ Not worth it? you can run an RL disk in an RP drive (apparently)
   * Add RP disk drive -> RL disks can be driven as RP disks 0-4, but will ID as small-size RP disks in OSes
   * Finish adding FP11
-  * Add CPU registers and FIS, EIS to the UNIBUS
   * Get BSD 2.9 RK05 image running
 
 # Bug/Feature Fixes
+
+## DD11
+
+  * Add CPU registers and FIS, EIS to the UNIBUS
 
 ## KD11/KB11
 
