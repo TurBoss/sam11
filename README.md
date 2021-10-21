@@ -52,10 +52,17 @@ The RK11 currently supports up to 4 disks, but can be altered to include more or
 
 In theory, UNIX uses the unallocated free blocks at the end of a drive as swap space, and not allowing this could cause programs or the system to crash.
 
-Luckily, being just SD card images, we don't have to worry about problems like this! Just keep your fingers clean ;)
+##### RK05 surface
+
 ![rk05 surface](./media/rk05_surface.png)
+Luckily, being just SD card images, we don't have to worry about the problems real RK05s had, like this! Just keep your fingers clean ;)
 
 ### As optional modules the emulator also supports
+
+1. LP11 Line Printer
+   a. This requires defining a printable object in platform.h like so:
+   `#define LP_PRINTER Serial2`
+   b. The module still works without this, but simply won't actually print out anywhere
 
 ### The following modules are WIP, but will be supported
 

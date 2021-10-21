@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "kt11.h"
 #include "kw11.h"
 #include "ky11.h"
+#include "lp11.h"
 #include "ms11.h"
 #include "rk11.h"
 #include "sam11.h"
@@ -243,6 +244,13 @@ void write16(uint32_t a, uint16_t v)
         return;
 #endif
 
+#if USE_LP
+    case DEV_LP_DATA:
+    case DEV_LP_STATUS:
+        lp11::write16(a, v);
+        return;
+#endif
+
     case DEV_RK_DS:
     case DEV_RK_ER:
     case DEV_RK_CS:
@@ -383,6 +391,13 @@ uint16_t read16(uint32_t a)
     case DEV_CONSOLE_SR:
         readReturn ky11::read16(a);
         break;
+
+#if USE_LP
+    case DEV_LP_DATA:
+    case DEV_LP_STATUS:
+        readReturn lp11::read16(a, v);
+        break;
+#endif
 
     case DEV_RK_DS:
     case DEV_RK_ER:

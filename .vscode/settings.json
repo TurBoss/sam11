@@ -15,7 +15,19 @@
     "vector": "cpp",
     "ostream": "cpp",
     "istream": "cpp",
-    "atomic": "cpp"
+    "atomic": "cpp",
+    "fstream": "cpp",
+    "iterator": "cpp",
+    "list": "cpp",
+    "streambuf": "cpp",
+    "system_error": "cpp",
+    "xfacet": "cpp",
+    "xhash": "cpp",
+    "xiosbase": "cpp",
+    "xlocale": "cpp",
+    "xlocnum": "cpp",
+    "bit": "cpp",
+    "limits": "cpp"
   },
   "C_Cpp.errorSquiggles": "Enabled",
   "C_Cpp.intelliSenseEngine": "Tag Parser"

@@ -38,6 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "kl11.h"
 #include "kw11.h"
 #include "ky11.h"
+#include "lp11.h"
 #include "ms11.h"
 #include "pdp1140.h"
 #include "platform.h"
@@ -226,6 +227,10 @@ static void loop0()
 
 #if KY_PANEL
         ky11::step();
+#endif
+
+#if USE_LP
+        lp11::poll();
 #endif
 
 #ifdef PIN_OUT_PROC_STEP
