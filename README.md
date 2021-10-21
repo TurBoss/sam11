@@ -12,6 +12,8 @@ To see where different licenses apply: [Authors](AUTHORS)
 
 The world's first ever PDP-11 simulator was written for the PDP-10 before the PDP-11 was ever built, it was called SIM11. Add that to this program was originally just going to be a fork of AVR11 for SAM boards (it became way more)... and well, the name was obvious!
 
+Not to be confused with the MIMIC PDP-10 assembly simulators of PDP-8s and PDP-11s that the SimH simulator is based on (yes, simh is a port of code from the 70s!)
+
 ## General info
 
 [Todo list](TODO)
