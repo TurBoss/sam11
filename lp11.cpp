@@ -39,6 +39,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "platform.h"
 #include "sam11.h"
 
+#include <Arduino.h>
+
 #if USE_LP
 
 #if USE_11_45 && !STRICT_11_40
@@ -121,6 +123,7 @@ uint16_t read16(uint32_t a)
             //panic();
         }
     }
+    return 0;
 }
 
 void reset()

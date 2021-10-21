@@ -136,7 +136,7 @@ namespace pdp11 {
 #define DL_TTYS      false  // DL11 TTY Console connectors
 #define USE_FP       false  // enable the FP11 Floating point  }_ These are different ways of adding floating point, they have different formats and instructions
 #define USE_FIS      true  // enable the FIS Floating point   }  FIS is not actually implemented, it just disables NOP traps
-#define USE_LP       false  // enable the line printer
+#define USE_LP       true  // enable the line printer
 
 struct intr {
     uint8_t vec;

@@ -395,7 +395,7 @@ uint16_t read16(uint32_t a)
 #if USE_LP
     case DEV_LP_DATA:
     case DEV_LP_STATUS:
-        readReturn lp11::read16(a, v);
+        readReturn lp11::read16(a);
         break;
 #endif
 

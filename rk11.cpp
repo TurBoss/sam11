@@ -51,7 +51,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace rk11 {
 
-uint32_t RKBA, RKDS, RKER, RKCS, RKWC;
+uint32_t RKBA, RKDS, RKER, RKCS, RKWC, RKDA;
 uint32_t drive, sector, surface, cylinder;
 
 bool attached_drives[NUM_RK_DRIVES];
@@ -72,7 +72,8 @@ uint16_t read16(uint32_t a)
     case DEV_RK_BA:  // Bus Address
         return RKBA & 0xFFFF;
     case DEV_RK_DA:  // Disk Address
-        return (sector) | (surface << 4) | (cylinder << 5) | (drive << 13);
+        RKDA = (sector) | (surface << 4) | (cylinder << 5) | (drive << 13);
+        return RKDA;
     case DEV_RK_DB:  // Data Buffer
     case DEV_RK_MR:
     default:
@@ -128,18 +129,18 @@ again:
         break;
 
     case 4:  // Seek
-      // RKCS &= ~020000;
-      // RKCS |= 0200;
-      // procNS::interrupt(INTRK, 5);
-      // return;
+             // RKCS &= ~020000;
+             // RKCS |= 0200;
+             // procNS::interrupt(INTRK, 5);
+             // return;
 
     case 6:  // Drive reset
-      // RKER = 0;
-      // RKDA &= 0160000;
-      // RKCS &= ~020000;
-      // RKCS |= 0200;
-      // procNS::interrupt(INTRK, 5);
-      // return;
+             // RKER = 0;
+             // RKDA &= 0160000;
+             // RKCS &= ~020000;
+             // RKCS |= 0200;
+             // procNS::interrupt(INTRK, 5);
+             // return;
 
     case 3:  // check
     case 5:  // read check
@@ -305,6 +306,7 @@ void write16(uint32_t a, uint16_t v)
         RKBA = (RKBA & 0x30000) | (v);
         break;
     case DEV_RK_DA:  // Disk Address
+        RKDA = v;
         drive = v >> 13;
         cylinder = (v >> 5) & 0377;
         surface = (v >> 4) & 1;
@@ -328,6 +330,7 @@ void reset()
     RKCS = 1 << 7;
     RKWC = 0;
     RKBA = 0;
+    RKDA = 0;
 }
 
 };  // namespace rk11
