@@ -1,4 +1,4 @@
-#if true
+#if false
 
 #include "tm11.h"
 
@@ -13,7 +13,7 @@ enum
     TM_CRDY = 0200,
     TM_IE = 0100,
     TM_CE = 0100000,
-}
+};
 
 enum
 {
@@ -25,7 +25,7 @@ enum
     TMEOT = 02000,
     TMEOF = 040000,
     TMILC = 0100000,
-}
+};
 
 uint16_t TMER;
 uint16_t TMCS;

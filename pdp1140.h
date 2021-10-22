@@ -106,7 +106,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * RK11     Y   RK Hard Disk Controller (RK05)
  * RF11         RS Disk Controller
  * RL11     +   RL Disk Controller
- * RP11         RP Disk Pack Controller
+ * RP11     +   RP Disk Pack Controller RP03, RP02
+ * RH11     *+  RP Disk Pack Controller RP04, RP05, RP06, RP07, RP08
  * RC11         RS Disk Controller
  * PC11     +   PC Punch Tape Controller
  * TC11         TU DECtape Controller (TU56)
@@ -381,30 +382,30 @@ enum
 
     // AA11 AT 776766 TO 0776754
 
-    DEV_RP04_CS3 = 0776752,  // RP04 Control Status 3
-    DEV_RP04_BAE = 0776750,
-    DEV_RP04_EC2 = 0776746,
-    DEV_RP04_EC1 = 0776744,
-    DEV_RP04_ER3 = 0776742,  // RP04 Error 3
-    DEV_RP04_ER2 = 0776740,  // RP04 Error 2
-    DEV_RP04_CC = 0776736,
-    DEV_RP04_DC = 0776734,   // RP04 Drive Control
-    DEV_RP04_OF = 0776732,   // RP04 Offset
-    DEV_RP04_SN = 0776730,   // RP04 Serial Number
-    DEV_RP04_DT = 0776726,   // RP04 Drive Type
-    DEV_RP04_MR = 0776724,   // RP04
-    DEV_RP04_DB = 0776722,   // RP04
-    DEV_RP04_LA = 0776720,   // RP04 Look Ahead
-    DEV_RP04_AS = 0776716,   // RP04
-    DEV_RP04_ER1 = 0776714,  // RP04 Error 1
-    DEV_RP04_DS = 0776712,   // RP04 Disk Status
-    DEV_RP04_CS2 = 0776710,  // RP04 Control Status 2
-    DEV_RP04_DA = 0776706,   // RP04 Disk Address
-    DEV_RP04_BA = 0776704,   // RP04 Bus Address
-    DEV_RP04_WC = 0776702,   // RP04 Word Count
-    DEV_RP04_CS1 = 0776700,  // RP04 Control Status 1
+    DEV_RH_CS3 = 0776752,  // RH11 Control Status 3
+    DEV_RH_BAE = 0776750,
+    DEV_RH_EC2 = 0776746,
+    DEV_RH_EC1 = 0776744,
+    DEV_RH_ER3 = 0776742,  // RH11 Error 3
+    DEV_RH_ER2 = 0776740,  // RH11 Error 2
+    DEV_RH_CC = 0776736,
+    DEV_RH_DC = 0776734,   // RH11 Drive Control
+    DEV_RH_OF = 0776732,   // RH11 Offset
+    DEV_RH_SN = 0776730,   // RH11 Serial Number
+    DEV_RH_DT = 0776726,   // RH11 Drive Type
+    DEV_RH_MR = 0776724,   // RH11
+    DEV_RH_DB = 0776722,   // RH11
+    DEV_RH_LA = 0776720,   // RH11 Look Ahead
+    DEV_RH_AS = 0776716,   // RH11
+    DEV_RH_ER1 = 0776714,  // RH11 Error 1
+    DEV_RH_DS = 0776712,   // RH11 Disk Status
+    DEV_RH_CS2 = 0776710,  // RH11 Control Status 2
+    DEV_RH_DA = 0776706,   // RH11 Disk Address
+    DEV_RH_BA = 0776704,   // RH11 Bus Address
+    DEV_RH_WC = 0776702,   // RH11 Word Count
+    DEV_RH_CS1 = 0776700,  // RH11 Control Status 1
 
-    // NOTE: the RP11 overlaps with the RP04, only one can be used at once
+    // NOTE: the RP11 overlaps with the RH11, only one can be used at once (except we fudge it baby ;) )
     DEV_RP_SILO = 0776736,  // RP11 Silo Memory
     DEV_RP_SUCA = 0776734,  // RP11 Select Unit Cylinder Address
     DEV_RP_M3 = 0776732,    // RP11 Maintenance Register 3
