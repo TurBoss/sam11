@@ -108,9 +108,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * RL11     +   RL Disk Controller
  * RP11         RP Disk Pack Controller
  * RC11         RS Disk Controller
- * PC11         PC Punch Tape Controller
+ * PC11     +   PC Punch Tape Controller
  * TC11         TU DECtape Controller (TU56)
- * TM11         TU/TE Magnetic Tape Controller (TU10)
+ * TM11     +   TU/TE Magnetic Tape Controller (TU10)
  * CR11         CR/CM Card Controller
  * RX211        RX Floppy Disk Controller 
  * 
@@ -137,6 +137,7 @@ namespace pdp11 {
 #define USE_FP       false  // enable the FP11 Floating point  }_ These are different ways of adding floating point, they have different formats and instructions
 #define USE_FIS      true  // enable the FIS Floating point   }  FIS is not actually implemented, it just disables NOP traps
 #define USE_LP       true  // enable the line printer
+#define USE_PC       false  // enable the punch card/tape read/write
 
 struct intr {
     uint8_t vec;
@@ -460,12 +461,12 @@ enum
     DEV_KWP_CSB = 0772542,   // KW11-P Count Set Register
     DEV_KWP_CSR = 0772540,   // KW11-P CSR
 
-    DEV_TM_RD = 0772532,   // TM11 read lines
-    DEV_TM_D = 0772530,    // TM11 data
-    DEV_TM_CMA = 0772526,  // TM11 memory address
-    DEV_TM_BRC = 0772524,  // TM11 byte record counter
-    DEV_TM_C = 0772522,    // TM11 command
-    DEV_TM_S = 0772520,    // TM11 status
+    DEV_TM_RD = 0772532,  // TM11 read lines
+    DEV_TM_DB = 0772530,  // TM11 data buffer
+    DEV_TM_BA = 0772526,  // TM11 memory/buffer address
+    DEV_TM_BC = 0772524,  // TM11 byte record counter
+    DEV_TM_CS = 0772522,  // TM11 command
+    DEV_TM_ER = 0772520,  // TM11 status/error
 
     DEV_MMU_SR3 = 0772516,  // MMU System Status Register 3
 

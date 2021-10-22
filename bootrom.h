@@ -126,6 +126,17 @@ static const uint16_t bootrom_rp0[] = {
   0005007                    /* clr PC */
 };
 
+static const uint16_t bootrom_tm[] = {
+  0012700, 0172526, /* mov #172526,r0 */
+  0010040,          /* mov r0,-(r0) */
+  0012740, 0060003, /* mov #60003,-(r0) */
+  0012700, 0172522, /* mov #172522,r0 */
+  0105710,          /* tstb (r0) */
+  0100376,          /* bpl -1 */
+  0005000,          /* clr r0 */
+  0000110           /* jmp (r0) */
+};
+
 // #define BOOT_START 001000
 // #define BOOT_LEN   9
 

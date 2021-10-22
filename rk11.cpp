@@ -79,7 +79,7 @@ uint16_t read16(uint32_t a)
     default:
         if (PRINTSIMLINES)
         {
-            Serial.println(F("%% rk11::read16 invalid read"));
+            Serial.println(F("%% rk11 read16 invalid read"));
         }
         //panic();
         return 0;
@@ -191,7 +191,7 @@ again:
     {
         if (PRINTSIMLINES)
         {
-            Serial.println(F("%% rkstep: failed to seek"));
+            Serial.println(F("%% rk11 step: failed to seek"));
         }
         panic();
     }
@@ -213,7 +213,7 @@ again:
             {
                 if (PRINTSIMLINES)
                 {
-                    Serial.println(F("%% rkstep: failed to read (low)"));
+                    Serial.println(F("%% rk11 step: failed to read (low)"));
                 }
                 panic();
             }
@@ -224,7 +224,7 @@ again:
             {
                 if (PRINTSIMLINES)
                 {
-                    Serial.println(F("%% rkstep: failed to read (high)"));
+                    Serial.println(F("%% rk11 step: failed to read (high)"));
                 }
                 panic();
             }
@@ -317,7 +317,7 @@ void write16(uint32_t a, uint16_t v)
     default:
         if (PRINTSIMLINES)
         {
-            Serial.println(F("%% rkwrite16: invalid write"));
+            Serial.println(F("%% rk11 write16: invalid write"));
         }
         //panic();
     }
