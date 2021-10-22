@@ -97,6 +97,7 @@ int reset()
         if (i < 4)
             RPDS = 0x11C0;
 
+        // init the drive info based on the declaired type
         switch (attached_drives[i])
         {
         case RP02:
