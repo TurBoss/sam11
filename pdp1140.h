@@ -117,7 +117,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  * Printers:
  * 
- * LP11         Line Printer
+ * LP11     Y   Line Printer
  * 
 */
 
@@ -128,17 +128,23 @@ namespace pdp11 {
 
 // List of emulated hardware to include
 #define USE_11_45    false  // change this line to true to compile with an 11/45 processor (WIP)
-#define STRICT_11_40 true  // When operating in 11/40 mode, restrict features to be 11/40 only and not hybrid 11/40 and 11/45 (needed for BSD), this overrides the USE_11_45 option
-#define RL_DRIVE     false  // RL Disk drive
-#define RK_DRIVE     true  // }
-#define KL_CONSOLE   true  //  }- These should always be included, and are just here for record, they don't change the code
-#define KW_LKS       true  // }
-#define KY_PANEL     false  // The ky11 front panel will still work without this, but with it changes it to run all bus functions into it, which slows down bus r/w access
-#define DL_TTYS      false  // DL11 TTY Console connectors
-#define USE_FP       false  // enable the FP11 Floating point  }_ These are different ways of adding floating point, they have different formats and instructions
-#define USE_FIS      true  // enable the FIS Floating point   }  FIS is not actually implemented, it just disables NOP traps
-#define USE_LP       true  // enable the line printer
-#define USE_PC       false  // enable the punch card/tape read/write
+#define STRICT_11_40 true   // When operating in 11/40 mode, restrict features to be 11/40 only and not hybrid 11/40 and 11/45 (needed for BSD), this overrides the USE_11_45 option
+
+#define USE_RK     true  // }
+#define KL_CONSOLE true  //  }- These should always be included, and are just here for record, they don't change the code
+#define KW_LKS     true  // }
+
+#define KY_PANEL false  // The ky11 front panel will still work without this, but with it changes it to run all bus functions into it, which slows down bus r/w access
+#define DL_TTYS  false  // DL11 TTY Console connectors
+
+#define USE_FP  false  // enable the FP11 Floating point  }_ These are different ways of adding floating point, they have different formats and instructions
+#define USE_FIS true   // enable the FIS Floating point   }  FIS is not actually implemented, it just disables NOP traps
+
+#define USE_LP true   // enable the line printer
+#define USE_PC false  // enable the punch card/tape read/write
+#define USE_RP false  // enable RH11 and RP11 disk drives (e.g. RP06)
+#define USE_RL false  // enable RL11 disk drives (e.g. RL02)
+#define USE_TM false  // enable TM11 mag tape drives (e.g. TU10)
 
 struct intr {
     uint8_t vec;
@@ -383,12 +389,12 @@ enum
     // AA11 AT 776766 TO 0776754
 
     DEV_RH_CS3 = 0776752,  // RH11 Control Status 3
-    DEV_RH_BAE = 0776750,
-    DEV_RH_EC2 = 0776746,
-    DEV_RH_EC1 = 0776744,
+    DEV_RH_BAE = 0776750,  // RH11 Bus Address Extensions
+    DEV_RH_EC2 = 0776746,  // RH11 Error Correct 2
+    DEV_RH_EC1 = 0776744,  // RH11 Error Correct 1
     DEV_RH_ER3 = 0776742,  // RH11 Error 3
     DEV_RH_ER2 = 0776740,  // RH11 Error 2
-    DEV_RH_CC = 0776736,
+    DEV_RH_CC = 0776736,   // RH11
     DEV_RH_DC = 0776734,   // RH11 Drive Control
     DEV_RH_OF = 0776732,   // RH11 Offset
     DEV_RH_SN = 0776730,   // RH11 Serial Number
@@ -405,7 +411,7 @@ enum
     DEV_RH_WC = 0776702,   // RH11 Word Count
     DEV_RH_CS1 = 0776700,  // RH11 Control Status 1
 
-    // NOTE: the RP11 overlaps with the RH11, only one can be used at once (except we fudge it baby ;) )
+    // NOTE: the RP11 overlaps with the RH11, only one can be used at once... except we fudge it baby ;)
     DEV_RP_SILO = 0776736,  // RP11 Silo Memory
     DEV_RP_SUCA = 0776734,  // RP11 Select Unit Cylinder Address
     DEV_RP_M3 = 0776732,    // RP11 Maintenance Register 3

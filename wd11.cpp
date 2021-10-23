@@ -1,6 +1,6 @@
 #if false
 
-/// WINCHESTER DISKS????
+/// WINCHESTER DISKS???? RD51?
 
 #define WD      0764000 /* should be moved */
 #define WD_SIZE 10

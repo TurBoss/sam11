@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BOOT_START 002000
 #define BOOT_LEN   (sizeof(bootrom_rk0) / sizeof(uint16_t))
 
-// this ROM is a "boot from RK0"
+#define BOOT_RK_UNIT_IDX (4)  // if we want to change to boot from RK1+ then change the value in this index to the unit number
 static const uint16_t bootrom_rk0[] = {
   0042113,                   /* "KD" */
   0012706, BOOT_START,       /* MOV #boot_start, SP */
@@ -60,6 +60,7 @@ static const uint16_t bootrom_rk0[] = {
   0005007,                   /* CLR PC */
 };
 
+#define BOOT_RL_UNIT_IDX (4)
 static const uint16_t bootrom_rl0[] = {
   0042114,                   /* "LD" */
   0012706, BOOT_START,       /* MOV #boot_start, SP */
@@ -102,6 +103,7 @@ static const uint16_t bootrom_rl0[] = {
   0005007                    /* CLR PC */
 };
 
+#define BOOT_RP_UNIT_IDX (4)
 static const uint16_t bootrom_rp0[] = {
   0042102,                   /* "BD" */
   0012706, BOOT_START,       /* mov #boot_start, sp */
@@ -126,7 +128,7 @@ static const uint16_t bootrom_rp0[] = {
   0005007                    /* clr PC */
 };
 
-static const uint16_t bootrom_tm[] = {
+static const uint16_t bootrom_tm0[] = {
   0012700, 0172526, /* mov #172526,r0 */
   0010040,          /* mov r0,-(r0) */
   0012740, 0060003, /* mov #60003,-(r0) */

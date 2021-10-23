@@ -31,11 +31,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 // sam11 software emulation of DEC PDP-11/40 RL11 RL Disk Controller
+
 #include "rl11.h"
 
 #include "pdp1140.h"
 
-#if RL_DRIVE
+#if USE_RL
 
 #include "dd11.h"
 #include "kb11.h"  // 11/45
