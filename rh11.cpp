@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define RM_CTRL_ID    (1)       // Controlling RM drives
 #define MAX_XFER      (1 << 6)  // max transfer
 
-// Other than for the RP03, the RP disk interface was actually called RH11
+// Other than for the RP03, the RP disk interface was actually called RH11, the UNIX driver is HP for these drives, and RP for those on the actual RP11 controller
 namespace rh11 {
 
 uint16_t RPCS1, RPWC, RPBA, RPCS2, RPDB, RPCS3;

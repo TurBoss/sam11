@@ -102,23 +102,31 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * MS11     Y   Silicon Memory
  * 
  * Storage:
- *  
- * RK11     Y   RK Hard Disk Controller (RK05)
- * RF11         RS Disk Controller
- * RL11     +   RL Disk Controller
- * RP11     +   RP Disk Pack Controller RP03, RP02
- * RH11     *+  RP Disk Pack Controller RP04, RP05, RP06, RP07, RP08
- * RC11         RS Disk Controller
- * PC11     +   PC Punch Tape Controller
- * TC11         TU DECtape Controller (TU56)
- * TM11     +   TU/TE Magnetic Tape Controller (TU10)
- * CR11         CR/CM Card Controller
- * RX211        RX Floppy Disk Controller 
+ *                                                     UNIX:
+ * RK11     Y   RK Hard Disk Controller (RK05)          RK
+ * RK611        RK Hard Disk Controller (RK06, RK07)    HK
+ * RF11         RS Disk Controller (RS11)                    
+ * RL11     +   RL Disk Controller (RL02)               RL
+ * RP11     *+  RP Disk Pack Controller (RP03, RP02)    RP
+ * RH11     +   RS,RP,RM Disk Pack Controller (RP06)    HP
+ * RC11         RS Disk Controller  (RS64)
+ * PC11     +   PC Punch Tape Controller (PC05)         PC
+ * TC11         TU DECtape Controller (TU56)            
+ * TM11     +   TU/TE Magnetic Tape Controller (TU10)   MT
+ * CR11         CR/CM Card Controller (aka CM11)
+ * RX11         RX Floppy Disk Controller (RX01)
+ * RX211        RX Floppy Disk Controller (RX01, RX02)  RX
+ * TA11         TA Cassette Tape Controller (TU60)
  * 
  * Printers:
  * 
- * LP11     Y   Line Printer
+ * LP11     Y   Line Printer                            LP
  * 
+ * Networking/Ethernet:
+ * 
+ * DEUNA       DEC's Ethernet Interface
+ * DELUA       DEC's Second Ethernet Interface
+ * NI1010A     Ethernet Interface by Interlan 
 */
 
 #ifndef _H_PDP1140_
@@ -331,6 +339,10 @@ enum
     DEV_RC_ER = 0777444,  // RC11 Error Status
     DEV_RC_DA = 0777442,  // RC11 Disk Address
     DEV_RC_LA = 0777440,  // RC11 Look Ahead
+
+    // RK611 Overlaps with RC11 and RF11
+    DEV_RK6_MR3 = 0777476,  // RK611 Maint Reg 3
+    DEV_RK6_CS1 = 0777440,  // RK611 Control Status 1
 
     DEV_DT_8 = 0777436,  // DT11
     DEV_DT_7 = 0777434,
