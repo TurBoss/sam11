@@ -1,6 +1,40 @@
 #if false
 
-/// WINCHESTER DISKS???? RD51?
+// THE MYSTERY OF THE UNDOCUMENTED CODE
+// ====================================
+//
+// WINCHESTER DISKS???? WESTERN DIGITAL WD100X????
+//
+// I found this code linked through google after a deep dive into 
+// random PDP-11 emulator stuff.
+// But I can't seem to find what kind of disk it is actually for.
+// It's clearly *old* c code that someone has modernised a bit.
+// 
+// But, the PDP address (0764000) doesn't line up with any of the
+// officially supported disks, but is in the user-assigned range.
+// 
+// WD11 doesn't line up with any actual part names, either.
+// Could it be a hack to add a modern disk to a PDP-11?
+// WD for winchester or for western digital?
+//
+// WD on BSD refers to WD100x Western Digital disks, could this be
+// and emulator for one of those?
+// 
+// If you have any idea what it is for, could you let me know?
+// It looks interesting and should support some nice big images.
+//
+// Update: 2021-10-27:
+// -------------------
+// The Western Digital WD100x (e.g. WD1000) *is* a winchester disk!
+// It's a nice big 10GB drive, came out in 1983 (when the PDP 11 was
+// still in use) and was supported in BSD. Looks promising...
+//
+// *But.....* the Cylinders, tracks, sectors don't match... bum.
+
+
+typedef uint8_t d_byte
+typedef uint16_t d_word
+typedef uint32_t c_addr
 
 #define WD      0764000 /* should be moved */
 #define WD_SIZE 10

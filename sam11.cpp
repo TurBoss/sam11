@@ -154,7 +154,7 @@ void setup(void)
 #elif USE_SDIO && defined(__IMXRT1062__)  // SDIO and Teensy
     if (!sd.begin(SdioConfig(FIFO_SDIO)))
         sd.initErrorHalt();
-#else  // Normal SDIO
+#else                                     // Normal SDIO
     if (!sd.begin())
         sd.initErrorHalt();
 #endif
@@ -212,6 +212,7 @@ void setup(void)
     ky11::reset();    // reset the front panel - sets the switches to INST_UNIX_SINGLEUSER (0173030)
     procNS::reset();  // reset the processor
     Serial.println(F("%% Ready\r\n"));
+    Serial.write(7);  // write out a bell.
 }
 
 static void loop0()
@@ -285,6 +286,7 @@ void panic()  // aka what it does when halted
     {
         printstate();
     }
+    Serial.write(7);  // write out a bell
     Serial.flush();
     while (1)
         delay(1);

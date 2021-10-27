@@ -400,13 +400,10 @@ int read16(uint32_t a)
                 break;
             case DEV_RH_SN:  // RPSN  Serial number read only - lie and return drive + 1
                 result = (idx + 1) + (1 << 4) + (((uint8_t)(idx + 10)) << 8);
-                break;
+                return;
             case DEV_RH_OF:  // RPOF  Offset register
-                result = insertData(RPOF[idx], physicalAddress, data, byteFlag);
-                if (result >= 0)
-                    RPOF[idx] = result;
-                //result = 0x1000;
-                break;
+                RPOF[idx] = v;
+                return;
             case DEV_RH_DC:  // RPDC  Desired cylinder
                 result = insertData(RPDC[idx], physicalAddress, data, byteFlag);
                 if (result >= 0)

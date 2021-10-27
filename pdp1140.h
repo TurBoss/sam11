@@ -124,9 +124,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  * Networking/Ethernet:
  * 
- * DEUNA       DEC's Ethernet Interface
- * DELUA       DEC's Second Ethernet Interface
- * NI1010A     Ethernet Interface by Interlan 
+ * DEUNA        DEC's Ethernet Interface
+ * DELUA        DEC's Second Ethernet Interface
+ * NI1010A      Ethernet Interface by Interlan 
 */
 
 #ifndef _H_PDP1140_
@@ -142,17 +142,17 @@ namespace pdp11 {
 #define KL_CONSOLE true  //  }- These should always be included, and are just here for record, they don't change the code
 #define KW_LKS     true  // }
 
-#define KY_PANEL false  // The ky11 front panel will still work without this, but with it changes it to run all bus functions into it, which slows down bus r/w access
+#define KY_PANEL false  // The ky11 front panel will still kinda work without this, but with it changes it to run all bus functions into it, which slows down bus r/w access
 #define DL_TTYS  false  // DL11 TTY Console connectors
 
-#define USE_FP  false  // enable the FP11 Floating point  }_ These are different ways of adding floating point, they have different formats and instructions
-#define USE_FIS true   // enable the FIS Floating point   }  FIS is not actually implemented, it just disables NOP traps
+#define USE_FP  false  // WIP - enable the FP11 Floating point  }_ These are different ways of adding floating point, they have different formats and instructions
+#define USE_FIS true   // WIP - enable the FIS Floating point   }  FIS is not actually implemented, it just disables NOP traps
 
 #define USE_LP true   // enable the line printer
-#define USE_PC false  // enable the punch card/tape read/write
-#define USE_RP false  // enable RH11 and RP11 disk drives (e.g. RP06)
-#define USE_RL false  // enable RL11 disk drives (e.g. RL02)
-#define USE_TM false  // enable TM11 mag tape drives (e.g. TU10)
+#define USE_PC false  // WIP - enable the punch card/tape read/write
+#define USE_RP false  // WIP - enable RH11 and RP11 disk drives (e.g. RP06)
+#define USE_RL false  // WIP - enable RL11 disk drives (e.g. RL02)
+#define USE_TM false  // WIP - enable TM11 mag tape drives (e.g. TU10)
 
 struct intr {
     uint8_t vec;
