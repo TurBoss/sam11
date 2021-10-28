@@ -29,7 +29,8 @@
 // It's a nice big 10GB drive, came out in 1983 (when the PDP 11 was
 // still in use) and was supported in BSD. Looks promising...
 //
-// *But.....* the Cylinders, tracks, sectors don't match... bum.
+// The space even matches, the 20808 blocks is 10GB...
+// *But.....* the cylinders, tracks, sectors don't match... bum.
 
 
 typedef uint8_t d_byte

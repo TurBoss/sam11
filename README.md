@@ -4,9 +4,7 @@ My code is under a BSD 3-clause [License](LICENSE), other code in this repo, lib
 
 To see where different licenses apply: [Authors](AUTHORS)
 
-![welcome](./media/welcome.png)
-
-(Image taken via unix screen tool in Cool-Retro-Term)
+![welcome](./media/welcome_vt100.png)
 
 ## Why sam11?
 
@@ -35,6 +33,7 @@ The 11/40 functionality is ever so slightly Modded over a standard 11/40:
 2. The HALT instruction is modified to allow user and supervisor operation, this was so that a simple shutdown command could be added to OSes without that functionality
 3. The KW11 line clock when in LKS_SHIFT_TICK mode simply assumes 1 Op/Step = 1us, which is highly inaccurate on most system (there are options for better accuracy)
 4. A simple break, step, continue debugger is implemented, but requires you to enable it in sam11.h and enable PRINTSIMLINES
+5. The file [termopts.h](termopts.h) includes settings for remapping some keyboard things to make it more comfortable with modern systems
 
 ## Supported virtual hardware
 
@@ -62,7 +61,7 @@ Luckily, being just SD card images, we don't have to worry about the problems re
 ### As optional modules the emulator also supports
 
 1. LP11 Line Printer
-   a. This requires defining a printable object in platform.h like so:
+   a. This requires defining a print object in platform.h like so:
    `#define LP_PRINTER Serial2`
    b. The module still works without this, but simply won't actually print out anywhere
 
@@ -74,11 +73,13 @@ Luckily, being just SD card images, we don't have to worry about the problems re
 3. KY11 front panel console
 4. DL11 16-channel serial interface (to expand number of TTYs)
 5. KJ11 stack limit register
+6. RH11 (RP11) disk drive interface for RP02->RP07 and all the other sorts it supported
+7. TM11 Tape Drive interface
+8. PC11 Punch tape/card interface
 
 ### Currently planned modules to be added
 
-1. RP11 and RP04 interfaces for at least RP04 and RP06 disks
-2. DELUA or DEUNA ethernet network interface
+1. DELUA or DEUNA ethernet network interface
 
 ## Line Clock Options
 

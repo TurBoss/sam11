@@ -55,9 +55,9 @@ uint16_t RPER1[NUM_RP_DRIVES];  // Error status 1
 uint16_t RPLA[NUM_RP_DRIVES];   // Look ahead
 uint16_t RPMR1[NUM_RP_DRIVES];  // Maintenance Reg 1
 uint16_t RPMR2[NUM_RP_DRIVES];  // Maintenance Reg 2
-uint16_t RPDT[NUM_RP_DRIVES];   //
-uint16_t RPSN[NUM_RP_DRIVES];   //
-uint16_t RPOF[NUM_RP_DRIVES];   //
+uint16_t RPDT[NUM_RP_DRIVES];   // Drive Type
+uint16_t RPSN[NUM_RP_DRIVES];   // Serial Number
+uint16_t RPOF[NUM_RP_DRIVES];   // Offset
 uint16_t RPDC[NUM_RP_DRIVES];   // Cylinder
 uint16_t RPCC[NUM_RP_DRIVES];   //
 uint16_t RPER2[NUM_RP_DRIVES];  // Error Status 2

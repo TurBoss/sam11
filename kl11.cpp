@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "kb11.h"  // 11/45
 #include "kd11.h"  // 11/40
 #include "sam11.h"
+#include "termopts.h"
 
 #include <Arduino.h>
 
@@ -63,12 +64,26 @@ void clearterminal()
 
 static void addchar(char c)
 {
-    switch (c)
-    {
-    default:
-        TKB = c;
-        break;
-    }
+#if BS_TO_DEL && !DEL_TO_BS
+    // If enabled, change backspaces into deletes
+    if (c == _BS)
+        c = _DEL;
+#endif
+
+#if !BS_TO_DEL && DEL_TO_BS
+    // If enabled, change deletes into backspaces
+    if (c == _DEL)
+        c = _BS;
+#endif
+
+#if REMAP_WITH_TABLE
+    // If enabled, use the keymap array to change the character
+    TKB = ascii_chart[c & 0x7F] & 0x7F;
+#else
+    // If not then just pass the character forward as is
+    TKB = c & 0x7F;
+#endif
+
     TKS |= 0x80;
     if (TKS & (1 << 6))
     {
@@ -85,7 +100,27 @@ void poll()
         char c = Serial.read();
         if (FIRST_LF_BREAKS && (c == '\n' || c == '\r'))
             procNS::trapped = true;
-        addchar(c & 0x7F);
+
+#if ANSI_TO_ASCII
+        if (c == 0x1B)  // ESC
+        {
+            char b = Serial.read();
+            if (b == '[')
+            {
+                char c = Serial.read();
+                if (c == '3')
+                {
+                    char d = Serial.read();
+                    if (d == '~')
+                    {
+                        addchar(0x7F);
+                    }
+                }
+            }
+        }
+        else
+#endif
+            addchar(c & 0x7F);
     }
 
     if ((TPS & 0x80) == 0)

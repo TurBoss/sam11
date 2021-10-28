@@ -136,7 +136,7 @@ namespace pdp11 {
 
 // List of emulated hardware to include
 #define USE_11_45    false  // change this line to true to compile with an 11/45 processor (WIP)
-#define STRICT_11_40 true   // When operating in 11/40 mode, restrict features to be 11/40 only and not hybrid 11/40 and 11/45 (needed for BSD), this overrides the USE_11_45 option
+#define STRICT_11_40 true  // When operating in 11/40 mode, restrict features to be 11/40 only and not hybrid 11/40 and 11/45 (needed for BSD), this overrides the USE_11_45 option
 
 #define USE_RK     true  // }
 #define KL_CONSOLE true  //  }- These should always be included, and are just here for record, they don't change the code
@@ -146,9 +146,9 @@ namespace pdp11 {
 #define DL_TTYS  false  // DL11 TTY Console connectors
 
 #define USE_FP  false  // WIP - enable the FP11 Floating point  }_ These are different ways of adding floating point, they have different formats and instructions
-#define USE_FIS true   // WIP - enable the FIS Floating point   }  FIS is not actually implemented, it just disables NOP traps
+#define USE_FIS true  // WIP - enable the FIS Floating point   }  FIS is not actually implemented, it just disables NOP traps
 
-#define USE_LP true   // enable the line printer
+#define USE_LP true  // enable the line printer
 #define USE_PC false  // WIP - enable the punch card/tape read/write
 #define USE_RP false  // WIP - enable RH11 and RP11 disk drives (e.g. RP06)
 #define USE_RL false  // WIP - enable RL11 disk drives (e.g. RL02)
