@@ -1,12 +1,16 @@
 #ifndef H_TERMOPTS
 #define H_TERMOPTS
 
+#define FLUSH_SERIAL_AT_READY true  // clear the serial in and out buffers once the processor is ready
+
 #define ANSI_TO_ASCII true  // convert ansi codes for things like delete ("\e[3~") into their ascii equivalent (0x7F) when passing messages from Serial to PDP \
                             // Note that this completely disables ESC, and does not passthrough ANY unhandled ANSI escapes.
 
 // Only really works if just one of these is enabled at a time
 #define BS_TO_DEL true   // convert any CTRL+H, ASCII BS characters into ASCII DEL 0x7F characters
 #define DEL_TO_BS false  // convert any 0x7F, ASCII DEL characters into ASCII BS 0x08 characters
+#define CR_TO_LF  false  // convert any CR from the keyboard into an LF
+#define LF_TO_CR  false  // convert any LF from the keyboard into an CR
 
 #define REMAP_WITH_TABLE false  // use the table at the bottom of this header to do look up of ascii characters by value instead of passing value straight through
 

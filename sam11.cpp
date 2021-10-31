@@ -43,6 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "pdp1140.h"
 #include "platform.h"
 #include "rk11.h"
+#include "termopts.h"
 #include "xmem.h"
 
 #include <Arduino.h>
@@ -213,6 +214,16 @@ void setup(void)
     procNS::reset();  // reset the processor
     Serial.println(F("%% Ready\r\n"));
     Serial.write(7);  // write out a bell.
+
+#if FLUSH_SERIAL_AT_READY
+    delay(100);
+    Serial.flush();
+    delay(100);
+    while (Serial.available())
+    {
+        char dump = Serial.read();
+    }
+#endif
 }
 
 static void loop0()

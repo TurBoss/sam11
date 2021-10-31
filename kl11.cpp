@@ -64,6 +64,16 @@ void clearterminal()
 
 static void addchar(char c)
 {
+#if CR_TO_LF && !LF_TO_CR
+    if (c == _CR)
+        c = _LF;
+#endif
+
+#if !CR_TO_LF && LF_TO_CR
+    if (c == _LF)
+        c = _CR;
+#endif
+
 #if BS_TO_DEL && !DEL_TO_BS
     // If enabled, change backspaces into deletes
     if (c == _BS)
@@ -98,7 +108,7 @@ void poll()
     if (Serial.available())
     {
         char c = Serial.read();
-        if (FIRST_LF_BREAKS && (c == '\n' || c == '\r'))
+        if (FIRST_LF_BREAKS && (c == _LF))
             procNS::trapped = true;
 
 #if ANSI_TO_ASCII
