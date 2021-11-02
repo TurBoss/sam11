@@ -29,9 +29,38 @@
 // It's a nice big 10GB drive, came out in 1983 (when the PDP 11 was
 // still in use) and was supported in BSD. Looks promising...
 //
-// The space even matches, the 20808 blocks is 10GB...
+// The space possibly even matches, 20808 blocks is ~10GB...
 // *But.....* the cylinders, tracks, sectors don't match... bum.
-
+//
+// Update 2021-10-29:
+// ------------------
+// Okay so scratch that, I'm an idiot. the WD1000/WD100x is NOT a disk
+// itself, even though there are Western Digital 3.5" drives with that
+// number. NO! It is infact the name of a PC to HDD interface!
+// This interface drove many different disks, but the one to note is 
+// the Seagate ST506/ST412 which came out in 1980, used the WD1006, and
+// fairly quickly released a ST225 model with 20MB... could that be where 
+// our 20808 comes from? It would certainly line up with WD being added 
+// to BSD in 1983...
+//
+// Almost ALL drives from about 1980 were based on the ST506 and ST412
+// interface because IBM endorsed them. They were the de-facto standard
+// Until the early 90s, even.
+// 
+// These were 5.25" drives, they were Winchester (because it's a synonym
+// for Hard), and it's not inconceviable that this was a hack to add one
+// to a simulation of a PDP-11.
+// 
+// This code was almost certainly written for BSD, could it have been that
+// the file pointer actually linked to the special file for the actual drive?
+// That it's not so much of an emulator, but a way to get the real drive to
+// talk to the emulated system?
+//
+// In fact, the ST225 was a 20MB HALF-height 5.25" disk, there were 10GB 
+// FULL-height 5.25" disks that had the same interface... 
+// 
+// Curiouser and  curiouser...
+//
 
 typedef uint8_t d_byte
 typedef uint16_t d_word
@@ -103,7 +132,7 @@ d_word wd_dbuf[256];
  */
 
 int wd_init()
-{
+{d
     if (wd.info[0].fp != NULL)
         fclose(wd.info[0].fp);
     wd.info[0].fp = fopen("./WD.0", "r+");
