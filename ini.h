@@ -30,44 +30,20 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// sam11 software emulation of DEC PDP-11/40 RK11 RK Disk Controller
-
-/*
-
-Device Registers:
-
-0777400: Drive Status Register (RKDS)
-
-.15.14.13.12.11.10.09.08.07.06.05.04.03.02.01
- --------------------------------------------
-|        |  |  |  |  |  |  |  |  |  |        | 
- --------------------------------------------
-
-Bits:
-
-
-*/
-
 #include "pdp1140.h"
+#include "platform.h"
 
-#include <SdFat.h>
+#if !H_INI
+#define H_INI 1
 
-namespace rk11 {
-
-#define NUM_RK_DRIVES (4)
-extern bool attached_drives[NUM_RK_DRIVES];
-
-extern SdFile rkdata[NUM_RK_DRIVES];
-
-void reset();
-void write16(uint32_t a, uint16_t v);
-uint16_t read16(uint32_t a);
-};  // namespace rk11
-
-enum
-{
-    RKOVR = (1 << 14),
-    RKNXD = (1 << 7),
-    RKNXC = (1 << 6),
-    RKNXS = (1 << 5)
-};
+#if BOOT_SCRIPT
+namespace ini {
+/* Attach a file to a device */
+int _att(int argc, char** argv);
+/* Split a line by a delimeter character sp */
+int strsplit(char sp, char* str, int* argc, char** argv, int len);
+/* Setup from a line */
+int setup_fr_line(char* line);
+};  // namespace ini
+#endif
+#endif

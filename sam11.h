@@ -35,6 +35,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef H_SAM11
 #define H_SAM11
 
+#include <SdFat.h>
+
+#if USE_SDIO && !defined(__IMXRT1062__)  // If SDIO and not a Teensy 4/4.1
+extern SdFatSdio sd;
+#else  // SPI or Teensy
+extern SdFat sd;
+#endif
+
 enum
 {
     PRINTINSTR = false,

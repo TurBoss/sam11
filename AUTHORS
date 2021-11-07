@@ -11,11 +11,11 @@
 #
 # Filename        Authors (first is original author)
 #
-# rk11.cpp        Aiju, Dave Cheney, Chloe Lunn
-# rk11.h          Aiju, Dave Cheney, Chloe Lunn
-# kd11.cpp        Aiju, Dave Cheney, Chloe Lunn
-# kd11.h          Aiju, Dave Cheney, Chloe Lunn
-# disasm.cpp      Aiju, Dave Cheney, Chloe Lunn
+# rk11.cpp        Emily Schmidt, Dave Cheney, Chloe Lunn
+# rk11.h          Emily Schmidt, Dave Cheney, Chloe Lunn
+# kd11.cpp        Emily Schmidt, Dave Cheney, Chloe Lunn
+# kd11.h          Emily Schmidt, Dave Cheney, Chloe Lunn
+# disasm.cpp      Emily Schmidt, Dave Cheney, Chloe Lunn
 # sam11.cpp       Dave Cheney, Chloe Lunn
 # sam11.h         Dave Cheney, Chloe Lunn
 # xmem.cpp        Andy Brown
