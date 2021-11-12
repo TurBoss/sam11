@@ -54,7 +54,7 @@ uint16_t TKB;
 uint16_t TPS;
 uint16_t TPB;
 
-void clearterminal()
+void reset()
 {
     TKS = 0;
     TPS = 1 << 7;
