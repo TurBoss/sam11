@@ -52,10 +52,7 @@ void trapat(uint16_t vec)
 
         if (DEBUG_TRAP)
         {
-            _printf("%%%% R0 0%06o R1 0%06o R2 0%06o R3 0%06o\r\n",
-              uint16_t(R[0]), uint16_t(R[1]), uint16_t(R[2]), uint16_t(R[3]));
-            _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
-              uint16_t(R[4]), uint16_t(R[5]), uint16_t(R[6]), uint16_t(R[7]));
+            printstate();
         }
     }
     /*var prev uint16

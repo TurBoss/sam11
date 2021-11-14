@@ -82,6 +82,30 @@ const char* disks[] =
     "dos-11.dsk",
 };
 
+#if USE_11_45 && !STRICT_11_40
+const char* users_str[4] = {
+  "kernel",
+  "superviser",
+  "illegal",
+  "user"};
+const char users_char[4] = {
+  'K',
+  'S',
+  'X',
+  'U'};
+#else
+const char* users_str[4] = {
+  "kernel",
+  "illegal",
+  "illegal",
+  "user"};
+const char users_char[4] = {
+  'K',
+  'X',
+  'X',
+  'U'};
+#endif
+
 void setup(void)
 {
     // init the board/platform
@@ -200,7 +224,6 @@ void setup(void)
         boot_script.close();
     }
 
-// If this is the AVR build, don't add the boot script, too much ram...
 #else
 
 #if NUM_RK_DRIVES >= 1

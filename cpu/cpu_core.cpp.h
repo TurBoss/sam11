@@ -61,27 +61,27 @@ static void branch(int16_t o)
     R[7] += o;
 }
 
-static bool N()
+bool N()
 {
     return (uint8_t)PS & FLAGN;
 }
 
-static bool Z()
+bool Z()
 {
     return (uint8_t)PS & FLAGZ;
 }
 
-static bool V()
+bool V()
 {
     return (uint8_t)PS & FLAGV;
 }
 
-static bool C()
+bool C()
 {
     return (uint8_t)PS & FLAGC;
 }
 
-static void setZ(bool b)
+void setZ(bool b)
 {
     if (b)
         PS |= FLAGZ;
@@ -94,19 +94,21 @@ static void setZ(bool b)
 // any addresses here, so we can safely do this.
 static uint16_t aget(uint8_t v, uint8_t l)
 {
-    uint16_t addr = 0;
+    uint32_t addr = 0;  // 32-bit so that when we trim it to 16 we lose the overflow
+
     if (((v & 7) >= 6) || (v & 010))
     {
         l = 2;
     }
     if ((v & 070) == 000)
     {
-        return 0170000 | (v & 7);
+        return 0170000 | (v & 07);
     }
+
     switch (v & 060)
     {
     case 000:
-        v &= 07;
+        v &= 007;
         addr = R[v & 07];
         break;
     case 020:
@@ -122,11 +124,14 @@ static uint16_t aget(uint8_t v, uint8_t l)
         addr += R[v & 07];
         break;
     }
-    //addr &= 0xFFFF;  // ?
+    addr &= 0xFFFF;
+
     if (v & 010)
     {
         addr = read16(addr);
+        return addr;
     }
+
     return addr;
 }
 

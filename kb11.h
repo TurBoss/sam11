@@ -66,7 +66,7 @@ extern volatile uint16_t SSP;      // R6 (Super)
 extern volatile uint16_t KSP;      // R6 (kernel)
 extern volatile uint8_t curuser;   // 0: kernel, 1: supervisor, 2: illegal, 3: user
 extern volatile uint8_t prevuser;  // 0: kernel, 1: supervisor, 2: illegal, 3: user
-extern volatile bool trapped;
+extern bool trapped;
 
 bool isReg(const uint16_t a);
 void step();
@@ -77,10 +77,10 @@ void trapat(uint16_t vec);
 void interrupt(uint8_t vec, uint8_t pri);
 void handleinterrupt();
 
-static bool N();
-static bool Z();
-static bool V();
-static bool C();
+bool N();
+bool Z();
+bool V();
+bool C();
 
 };  // namespace kb11
 

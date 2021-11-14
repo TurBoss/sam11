@@ -33,15 +33,39 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !H_CPU_INSTR
 #define H_CPU_INSTR 1
 
+// Undefined Operation
+static void UNOP(uint16_t instr)
+{
+    if (PRINTSIMLINES)
+    {
+        Serial.print("%% invalid instruction 0");
+        Serial.println(instr, OCT);
+    }
+    longjmp(trapbuf, INTINVAL);
+}
+
+// No Operation
+static void _NOP(uint16_t instr)
+{
+    // does nothing, but does not cause trap
+}
+
+// Set priority level -- Not implemented
+static void SPL(uint16_t instr)
+{
+    UNOP(instr);
+}
+
+// Compare
 static void CMP(uint16_t instr)
 {
     const uint8_t d = instr & 077;
     const uint8_t s = (instr & 07700) >> 6;
     const uint8_t l = 2 - (instr >> 15);
-    const uint16_t msb = l == 2 ? 0x8000 : 0x80;
-    const uint16_t max = l == 2 ? 0xFFFF : 0xff;
+    uint16_t msb = l == 2 ? 0x8000 : 0x80;
+    uint16_t max = l == 2 ? 0xFFFF : 0xff;
     uint16_t val1 = memread(aget(s, l), l);
-    const uint16_t da = aget(d, l);
+    uint16_t da = aget(d, l);
     uint16_t val2 = memread(da, l);
     const int32_t sval = (val1 - val2) & max;
     PS &= 0xFFF0;
@@ -59,16 +83,156 @@ static void CMP(uint16_t instr)
         PS |= FLAGC;
     }
 }
+
+// Branch (always)
+static void BR(uint16_t instr)
+{
+    branch(instr & 0xFF);
+}
+
+// Branch if not equal to 0
+static void BNE(uint16_t instr)
+{
+    if (!Z())
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if equal to 0
+static void BEQ(uint16_t instr)
+{
+    if (Z())
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if greater or equal to 0
+static void BGE(uint16_t instr)
+{
+    if (!(N() xor V()))
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if less than 0
+static void BLT(uint16_t instr)
+{
+    if (N() xor V())
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if greater than 0
+static void BGT(uint16_t instr)
+{
+    if ((!(N() xor V())) && (!Z()))
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if less or equal to 0
+static void BLE(uint16_t instr)
+{
+    if ((N() xor V()) || Z())
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if plus (positive)
+static void BPL(uint16_t instr)
+{
+    if (!N())
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if minus (negative)
+static void BMI(uint16_t instr)
+{
+    if (N())
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if higher
+static void BHI(uint16_t instr)
+{
+    if ((!C()) && (!Z()))
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if lower or same
+static void BLOS(uint16_t instr)
+{
+    if (C() || Z())
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if overflow is clear
+static void BVC(uint16_t instr)
+{
+    if (!V())
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if overflow is set
+static void BVS(uint16_t instr)
+{
+    if (V())
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if carry is clear
+static void BCC(uint16_t instr)
+{
+    if (!C())
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if higher or same
+#define BHIS(x) BCC(x)
+
+// Branch if carry is set
+static void BCS(uint16_t instr)
+{
+    if (C())
+    {
+        branch(instr & 0xFF);
+    }
+}
+
+// Branch if lower
+#define BLO(x) BCS(x)
+
+// Bit test (AND)
 static void BIT(uint16_t instr)
 {
     const uint8_t d = instr & 077;
     const uint8_t s = (instr & 07700) >> 6;
     const uint8_t l = 2 - (instr >> 15);
-    const uint16_t msb = l == 2 ? 0x8000 : 0x80;
-    const uint16_t val1 = memread(aget(s, l), l);
-    const uint16_t da = aget(d, l);
-    const uint16_t val2 = memread(da, l);
-    const uint16_t uval = val1 & val2;
+    uint16_t msb = l == 2 ? 0x8000 : 0x80;
+    uint16_t val1 = memread(aget(s, l), l);
+    uint16_t da = aget(d, l);
+    uint16_t val2 = memread(da, l);
+    uint16_t uval = val1 & val2;
     PS &= 0xFFF1;
     setZ(uval == 0);
     if (uval & msb)
@@ -77,17 +241,18 @@ static void BIT(uint16_t instr)
     }
 }
 
+// Bit clear
 static void BIC(uint16_t instr)
 {
     const uint8_t d = instr & 077;
     const uint8_t s = (instr & 07700) >> 6;
     const uint8_t l = 2 - (instr >> 15);
-    const uint16_t msb = l == 2 ? 0x8000 : 0x80;
-    const uint16_t max = l == 2 ? 0xFFFF : 0xff;
-    const uint16_t val1 = memread(aget(s, l), l);
-    const uint16_t da = aget(d, l);
-    const uint16_t val2 = memread(da, l);
-    const uint16_t uval = (max ^ val1) & val2;
+    uint16_t msb = l == 2 ? 0x8000 : 0x80;
+    uint16_t max = l == 2 ? 0xFFFF : 0xff;
+    uint16_t val1 = memread(aget(s, l), l);
+    uint16_t da = aget(d, l);
+    uint16_t val2 = memread(da, l);
+    uint16_t uval = (max ^ val1) & val2;
     PS &= 0xFFF1;
     setZ(uval == 0);
     if (uval & msb)
@@ -97,6 +262,7 @@ static void BIC(uint16_t instr)
     memwrite(da, l, uval);
 }
 
+// Bit set (OR)
 static void BIS(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -116,6 +282,7 @@ static void BIS(uint16_t instr)
     memwrite(da, l, uval);
 }
 
+// Add
 static void ADD(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -143,6 +310,7 @@ static void ADD(uint16_t instr)
     memwrite16(da, uval);
 }
 
+// Subtract
 static void SUB(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -170,6 +338,7 @@ static void SUB(uint16_t instr)
     memwrite16(da, uval);
 }
 
+// Jump to Sub Routine
 static void JSR(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -189,7 +358,8 @@ static void JSR(uint16_t instr)
     R[7] = uval;
 }
 
-static void MUL(const uint16_t instr)
+// Multiply
+static void MUL(uint16_t instr)
 {
     uint8_t d = instr & 077;
     uint8_t s = (instr & 07700) >> 6;
@@ -220,6 +390,7 @@ static void MUL(const uint16_t instr)
     }
 }
 
+// Divide
 static void DIV(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -252,6 +423,7 @@ static void DIV(uint16_t instr)
     }
 }
 
+// Shift arithmetically
 static void ASH(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -298,6 +470,7 @@ static void ASH(uint16_t instr)
     }
 }
 
+// Arith shift combined
 static void ASHC(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -345,14 +518,15 @@ static void ASHC(uint16_t instr)
     }
 }
 
+// Exclusive OR
 static void XOR(uint16_t instr)
 {
     const uint8_t d = instr & 077;
     const uint8_t s = (instr & 07700) >> 6;
-    const uint16_t val1 = R[s & 7];
-    const uint16_t da = aget(d, 2);
-    const uint16_t val2 = memread16(da);
-    const uint16_t uval = val1 ^ val2;
+    uint16_t val1 = R[s & 7];
+    uint16_t da = aget(d, 2);
+    uint16_t val2 = memread16(da);
+    uint16_t uval = val1 ^ val2;
     PS &= 0xFFF1;
     setZ(uval == 0);
     if (uval & 0x8000)
@@ -362,7 +536,8 @@ static void XOR(uint16_t instr)
     memwrite16(da, uval);
 }
 
-static void SOB(const uint16_t instr)
+// Subtract 1 and branch if !- 0
+static void SOB(uint16_t instr)
 {
     // 0077Roo
 
@@ -378,6 +553,7 @@ static void SOB(const uint16_t instr)
     }
 }
 
+// Clear
 static void CLR(uint16_t instr)
 {
     // 0c050DD where c is 0/1 depending on if register
@@ -394,6 +570,7 @@ static void CLR(uint16_t instr)
     memwrite(da, l, 0);
 }
 
+// 1s Compliment
 static void COM(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -413,14 +590,15 @@ static void COM(uint16_t instr)
     memwrite(da, l, uval);
 }
 
-static void INC(const uint16_t instr)
+// Increment
+static void INC(uint16_t instr)
 {
     const uint8_t d = instr & 077;
     const uint8_t l = 2 - (instr >> 15);
-    const uint16_t msb = l == 2 ? 0x8000 : 0x80;
-    const uint16_t max = l == 2 ? 0xFFFF : 0xff;
-    const uint16_t da = aget(d, l);
-    const uint16_t uval = (memread(da, l) + 1) & max;
+    uint16_t msb = l == 2 ? 0x8000 : 0x80;
+    uint16_t max = l == 2 ? 0xFFFF : 0xff;
+    uint16_t da = aget(d, l);
+    uint16_t uval = (memread(da, l) + 1) & max;
     PS &= 0xFFF1;
     if (uval & msb)
     {
@@ -430,6 +608,7 @@ static void INC(const uint16_t instr)
     memwrite(da, l, uval);
 }
 
+// Decrement
 static void _DEC(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -452,6 +631,7 @@ static void _DEC(uint16_t instr)
     memwrite(da, l, uval);
 }
 
+// 2s Compliment
 static void NEG(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -480,6 +660,7 @@ static void NEG(uint16_t instr)
     memwrite(da, l, sval);
 }
 
+// Add with carry
 static void _ADC(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -517,6 +698,7 @@ static void _ADC(uint16_t instr)
     }
 }
 
+// Subtract with carry
 static void SBC(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -559,6 +741,7 @@ static void SBC(uint16_t instr)
     }
 }
 
+// Test
 static void TST(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -573,6 +756,7 @@ static void TST(uint16_t instr)
     setZ(uval == 0);
 }
 
+// Rotate right
 static void ROR(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -603,6 +787,7 @@ static void ROR(uint16_t instr)
     memwrite(da, l, sval);
 }
 
+// Rotate left
 static void ROL(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -633,6 +818,7 @@ static void ROL(uint16_t instr)
     memwrite(da, l, sval);
 }
 
+// Arith shift right
 static void ASR(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -658,6 +844,7 @@ static void ASR(uint16_t instr)
     memwrite(da, l, uval);
 }
 
+// Arith shift left
 static void ASL(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -685,6 +872,7 @@ static void ASL(uint16_t instr)
     memwrite(da, l, sval);
 }
 
+// Sign extend
 static void SXT(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -702,6 +890,7 @@ static void SXT(uint16_t instr)
     }
 }
 
+// Jump
 static void JMP(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -717,6 +906,7 @@ static void JMP(uint16_t instr)
     R[7] = uval;
 }
 
+// Swap bytes
 static void SWAB(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -733,6 +923,7 @@ static void SWAB(uint16_t instr)
     memwrite(da, l, uval);
 }
 
+// Mark
 static void MARK(uint16_t instr)
 {
     R[6] = R[7] + ((instr & 077) << 1);
@@ -740,6 +931,7 @@ static void MARK(uint16_t instr)
     R[5] = pop();
 }
 
+// Return from subroutine
 static void RTS(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -747,6 +939,7 @@ static void RTS(uint16_t instr)
     R[d & 7] = pop();
 }
 
+// Trap (regular, emulator, breakpoint, and IO)
 static void EMTX(uint16_t instr)
 {
     uint16_t uval;
@@ -776,6 +969,7 @@ static void EMTX(uint16_t instr)
     PS |= (prevuser << 12);
 }
 
+// Return from interrupt
 static void RTT(uint16_t instr)
 {
     R[7] = pop();
@@ -788,6 +982,7 @@ static void RTT(uint16_t instr)
     dd11::write16(0777776, uval);
 }
 
+// Reset processor
 static void RESET(uint16_t instr)
 {
     if (curuser)
@@ -798,15 +993,16 @@ static void RESET(uint16_t instr)
     rk11::reset();
 }
 
-static void MOV(const uint16_t instr)
+// Move
+static void MOV(uint16_t instr)
 {
     const uint8_t d = instr & 077;
     const uint8_t s = (instr & 07700) >> 6;
     uint8_t l = 2 - (instr >> 15);
-    const uint16_t msb = l == 2 ? 0x8000 : 0x80;
-    const uint16_t sa = aget(s, l);
+    uint16_t msb = l == 2 ? 0x8000 : 0x80;
+    uint16_t sa = aget(s, l);
     uint16_t uval = memread(sa, l);
-    const uint16_t da = aget(d, l);
+    uint16_t da = aget(d, l);
 
     PS &= 0xFFF1;
     if (uval & msb)
@@ -829,25 +1025,35 @@ static void MOV(const uint16_t instr)
     memwrite(da, l, uval);
 }
 
-static bool _HALT()
+// Halt processor
+static void _HALT(uint16_t instr)
 {
     // if (curuser)  // modded, usually a HALT in user mode fails with a trap
     // {
-    //     return true;
+    //     if (PRINTSIMLINES)
+    //     {
+    //         Serial.print("%% invalid instruction 0");
+    //         Serial.println(instr, OCT);
+    //     }
+    //     longjmp(trapbuf, INTINVAL);
     // }
     //Serial.println(F("%% HALT"));
     panic();
-    return false;
 }
 
-static bool _WAIT()
+// Wait for interrupt
+static void _WAIT(uint16_t instr)
 {
     if (curuser)
     {
-        return true;
+        if (PRINTSIMLINES)
+        {
+            Serial.print("%% invalid instruction 0");
+            Serial.println(instr, OCT);
+        }
+        longjmp(trapbuf, INTINVAL);
     }
     waiting = true;
-    return false;
 }
 
 #endif

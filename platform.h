@@ -92,7 +92,7 @@ uint16_t readControlSwitches();
 
 #define _printf Serial.printf
 
-#define ALLOW_DISASM    (false)    // allow disassembly (PDP-11) on crash/panic/state prints
+#define ALLOW_DISASM    (true)     // allow disassembly (PDP-11) on crash/panic/state prints
 #define MAX_RAM_ADDRESS (0760000)  // 248KB
 
 #define RAM_MODE RAM_INTERNAL  // use the chip's onboard SRAM

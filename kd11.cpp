@@ -62,12 +62,12 @@ volatile uint16_t curPC;  // R7, address of current instruction
 volatile uint16_t KSP;    // R6 (kernel), stack pointer
 volatile uint16_t USP;    // R6 (user), stack pointer
 
-volatile uint8_t curuser;   // (true = user)
-volatile uint8_t prevuser;  // (true = user)
+volatile uint8_t curuser;   // 0: kernel, 1: illegal, 2: illegal, 3: user
+volatile uint8_t prevuser;  // 0: kernel, 1: illegal, 2: illegal, 3: user
 
-volatile bool trapped = false;
-volatile bool cont_with = false;
-volatile bool waiting = false;
+bool trapped = false;
+bool cont_with = false;
+bool waiting = false;
 
 #include "./cpu/cpu_bus.cpp.h"
 
@@ -153,13 +153,14 @@ void switchmode(uint8_t newm)
         R[6] = KSP;
     }
     PS &= 0007777;
-    PS |= (curuser << 14);
-    PS |= (prevuser << 12);
+    PS |= ((curuser & 03) << 14);
+    PS |= ((prevuser & 03) << 12);
 }
 
-#include "./cpu/cpu_debug.cpp.h"
-#include "./cpu/cpu_instr.cpp.h"
+#include "./cpu/cpu_debug.cpp.h"  // includes debug functions
+#include "./cpu/cpu_instr.cpp.h"  // includes the actual instruction functions
 
+// Move from previous instr
 static void MFPI(uint16_t instr)
 {
     uint8_t d = instr & 077;
@@ -177,10 +178,6 @@ static void MFPI(uint16_t instr)
             {
                 uval = USP;
             }
-            // else if (prevuser == 1)
-            // {
-            //     uval = SSP;
-            // }
             else
             {
                 uval = KSP;
@@ -209,6 +206,7 @@ static void MFPI(uint16_t instr)
     }
 }
 
+// Move to previous instr
 static void MTPI(uint16_t instr)
 {
     uint32_t sa = 0;
@@ -225,10 +223,6 @@ static void MTPI(uint16_t instr)
         {
             USP = uval;
         }
-        // else if (prevuser == 1)
-        // {
-        //     USP = uval;
-        // }
         else
         {
             KSP = uval;
@@ -257,6 +251,18 @@ static void MTPI(uint16_t instr)
     return;
 }
 
+// Move from previous data (UNOP)
+static void MFPD(uint16_t instr)
+{
+    UNOP(instr);
+}
+
+// Move to previous data (UNOP)
+static void MTPD(uint16_t instr)
+{
+    UNOP(instr);
+}
+
 void step()
 {
     if (waiting)
@@ -271,276 +277,8 @@ void step()
 
     debug_print();
 
-    switch ((instr >> 12) & 007)
-    {
-    case 001:  // MOV
-        MOV(instr);
-        return;
-    case 002:  // CMP
-        CMP(instr);
-        return;
-    case 003:  // BIT
-        BIT(instr);
-        return;
-    case 004:  // BIC
-        BIC(instr);
-        return;
-    case 005:  // BIS
-        BIS(instr);
-        return;
-    }
-    switch ((instr >> 12) & 017)
-    {
-    case 006:  // ADD
-        ADD(instr);
-        return;
-    case 016:  // SUB
-        SUB(instr);
-        return;
-    }
-    switch ((instr >> 9) & 0177)
-    {
-    case 0004:  // JSR
-        JSR(instr);
-        return;
-    case 0070:  // MUL
-        MUL(instr);
-        return;
-    case 0071:  // DIV
-        DIV(instr);
-        return;
-    case 0072:  // ASH
-        ASH(instr);
-        return;
-    case 0073:  // ASHC
-        ASHC(instr);
-        return;
-    case 0074:  // XOR
-        XOR(instr);
-        return;
-    case 0077:  // SOB
-        SOB(instr);
-        return;
-    }
-    switch ((instr >> 6) & 00777)
-    {
-    case 00050:  // CLR
-        CLR(instr);
-        return;
-    case 00051:  // COM
-        COM(instr);
-        return;
-    case 00052:  // INC
-        INC(instr);
-        return;
-    case 00053:  // DEC
-        _DEC(instr);
-        return;
-    case 00054:  // NEG
-        NEG(instr);
-        return;
-    case 00055:  // ADC
-        _ADC(instr);
-        return;
-    case 00056:  // SBC
-        SBC(instr);
-        return;
-    case 00057:  // TST
-        TST(instr);
-        return;
-    case 00060:  // ROR
-        ROR(instr);
-        return;
-    case 00061:  // ROL
-        ROL(instr);
-        return;
-    case 00062:  // ASR
-        ASR(instr);
-        return;
-    case 00063:  // ASL
-        ASL(instr);
-        return;
-    case 00067:  // SXT
-        SXT(instr);
-        return;
-    }
-    switch (instr & 0177700)
-    {
-    case 0000100:  // JMP
-        JMP(instr);
-        return;
-    case 0000300:  // SWAB
-        SWAB(instr);
-        return;
-    case 0006400:  // MARK
-        MARK(instr);
-        break;
-    case 0006500:  // MFPI
-        MFPI(instr);
-        return;
-    case 0006600:  // MTPI
-        MTPI(instr);
-        return;
-        // case 0106500:  // MFPD
-        //     MFPD(instr);
-        //     return;
-        // case 0106600:  // MTPD
-        //     MTPD(instr);
-        //     return;
-    }
-    if ((instr & 0177770) == 0000200)
-    {  // RTS
-        RTS(instr);
-        return;
-    }
-
-    switch (instr & 0177400)
-    {
-    case 0000400:
-        branch(instr & 0xFF);
-        return;
-    case 0001000:
-        if (!Z())
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0001400:
-        if (Z())
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0002000:
-        if (!(N() xor V()))
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0002400:
-        if (N() xor V())
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0003000:
-        if ((!(N() xor V())) && (!Z()))
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0003400:
-        if ((N() xor V()) || Z())
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0100000:
-        if (!N())
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0100400:
-        if (N())
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0101000:
-        if ((!C()) && (!Z()))
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0101400:
-        if (C() || Z())
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0102000:
-        if (!V())
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0102400:
-        if (V())
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0103000:
-        if (!C())
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    case 0103400:
-        if (C())
-        {
-            branch(instr & 0xFF);
-        }
-        return;
-    }
-    if (((instr & 0177000) == 0104000) || (instr == 3) || (instr == 4))
-    {  // EMT TRAP IOT BPT
-        EMTX(instr);
-        return;
-    }
-    if ((instr & 0177740) == 0240)
-    {  // CL?, SE?
-        if (instr & 020)
-        {
-            PS |= instr & 017;
-        }
-        else
-        {
-            PS &= ~instr & 017;
-        }
-        return;
-    }
-    switch (instr & 7)
-    {
-    case 00:  // HALT
-        if (_HALT())
-            break;
-        return;
-    case 01:  // WAIT
-        if (_WAIT())
-            break;
-        return;
-    case 03:  // BPT
-    case 04:  // IOT
-        EMTX(instr);
-        return;
-    case 02:  // RTI
-    case 06:  // RTT
-        RTT(instr);
-        return;
-    case 05:  // RESET
-        RESET(instr);
-        return;
-    }
-
-#if USE_FIS
-    // FIS
-    if ((instr & 0177000) == 0170000)
-    {
-        switch (instr)
-        {
-        case 0170001:  // SETF; Set floating mode
-            return;
-        case 0170002:  // SETI; Set integer mode
-            return;
-        case 0170011:  // SETD; Set double mode; not needed by UNIX, but used; therefore ignored
-            return;
-        case 0170012:  // SETL; Set long mode
-            return;
-        }
-    }
-#endif
+// this is  a set of switch cases which jump to the functions required
+#include "./cpu/cpu_jmp_tab.cpp.h"
 
     if (PRINTSIMLINES)
     {

@@ -82,15 +82,20 @@ D disamtable[] = {
   {0177777, 0006400, "MARK", 0, false},
   {0177000, 0077000, "SOB", RR | O, false},
   {0177777, 0000005, "RESET", 0, false},
-  {0177700, 0006500, "MFPI", DD, false},
-  {0177700, 0006600, "MTPI", DD, false},
+  {0777700, 0106500, "MFPD (11/45)", DD, false},
+  {0777700, 0106600, "MTPD (11/45)", DD, false},
+  {0777700, 0006500, "MFPI", DD, false},
+  {0777700, 0006600, "MTPI", DD, false},
   {0177777, 0000001, "WAIT", 0, false},
+  {0177777, 0000007, "MFPT (11/44)", 0, false},
+  {0177777, 0000000, "HALT", 0, false},
   {0177777, 0000002, "RTI", 0, false},
   {0177777, 0000006, "RTT", 0, false},
   {0177400, 0104000, "EMT", N, false},
   {0177400, 0104400, "TRAP", N, false},
   {0177777, 0000003, "BPT", 0, false},
   {0177777, 0000004, "IOT", 0, false},
+  {0777777, 0000000, "??? Unknown", 0, false},
   {0, 0, "", 0, false},
 };
 
@@ -218,13 +223,17 @@ void printstate()
       uint16_t(procNS::R[0]), uint16_t(procNS::R[1]), uint16_t(procNS::R[2]), uint16_t(procNS::R[3]));
     _printf("%%%% R4 0%06o R5 0%06o R6 0%06o R7 0%06o\r\n",
       uint16_t(procNS::R[4]), uint16_t(procNS::R[5]), uint16_t(procNS::R[6]), procNS::curPC);  // uint16_t(procNS::R[7]));
-    _printf("%%%% [%i%i%s%s%s%s]\r\n",
-      procNS::prevuser,
-      procNS::curuser,
+    _printf("%%%% [%c%c%s%s%s%s]\r\n",
+      tolower(users_char[procNS::prevuser]),
+      users_char[procNS::curuser],
       procNS::N() ? "N" : " ",
       procNS::Z() ? "Z" : " ",
       procNS::V() ? "V" : " ",
       procNS::C() ? "C" : " ");
+    _printf("%%%% mmu inst decode     %s\r\n", !(kt11::SR0 & 1) ? "disabled" : "enabled");
+    _printf("%%%% mmu data decode [U] %s\r\n", !(kt11::SR3 & 1) ? "disabled" : "enabled");
+    _printf("%%%% mmu data decode [K] %s\r\n", !(kt11::SR3 & 4) ? "disabled" : "enabled");
+    _printf("%%%% mmu data decode [S] %s\r\n", !(kt11::SR3 & 2) ? "disabled" : "enabled");
     _printf("%%%% instr 0%06o: 0%06o\t", procNS::curPC, dd11::read16(kt11::decode_instr(procNS::curPC, false, procNS::curuser)));
 #if ALLOW_DISASM
     disasm(kt11::decode_instr(procNS::curPC, false, procNS::curuser));
