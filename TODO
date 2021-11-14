@@ -9,6 +9,7 @@
   * Add support for more storage/interfaces
   * Add support for magenetic tape drives
   * Add support for pushing the UNIBUS requests into IO to allow co-processsor emulation of various hardware (and maybe real cards...?)
+      * Look into QBUS64 as a possible pinout.
   * Add networking via DELUA or DEUNA (needs BSDs), possibly NI1010A instead as it's simpler and actually documented...
   * Add some sort of simh-like boot.ini and setup/mount for drives, interfaces, etc.
 
@@ -26,12 +27,14 @@
 ## DD11
 
   * Add CPU registers and FIS, EIS to the UNIBUS
+      * This is to allow it to support software which acceses them that way
 
 ## KD11/KB11
 
   * Add Yellow/Red Traps
   * Get stack limit register so it actually does *something*
   * Fix instruction faults/bugs -> e.g. Unix V6 "BC" program
+      * This seems to be a fault with Unix... maybe. The BC program sometimes calls up an invalid instruction 007600, this isn't even part of the CIS or DIS.
   * Fix interrupts -> how many in list? DOS 11 runs out somehow (possbily because the RK05 interrupts instantly and they expect a few instructions between disk activity and an interrupt)
 
 ## RK11
