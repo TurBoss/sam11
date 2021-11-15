@@ -53,10 +53,10 @@ enum
     expshift = 07,
     hiddenmask = 0200,
     fractionmask = 0177,
-    wordcount = 04,
+    wordcount = 4,
     wordbase = 0200000,
     wordmask = 0177777,
-    wordbits = 020,
+    wordbits = 16,
 }
 
 extern uint32_t PC;        // Program Counter
