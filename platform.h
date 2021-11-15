@@ -88,9 +88,11 @@ uint16_t readControlSwitches();
 // Adafruit Grand Central M4 and similar
 #elif defined(__SAMD51P20A__)
 
+//#define BOOT_SCRIPT (true)  // Enable using the boot script to setup drives/etc.
+
 #define _printf Serial.printf
 
-#define ALLOW_DISASM    (false)    // allow disassembly (PDP-11) on crash/panic/state prints
+#define ALLOW_DISASM    (true)     // allow disassembly (PDP-11) on crash/panic/state prints
 #define MAX_RAM_ADDRESS (0760000)  // 248KB
 
 #define RAM_MODE RAM_INTERNAL  // use the chip's onboard SRAM

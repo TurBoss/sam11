@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sam11.h"
 
 #include "dd11.h"
+#include "ini.h"
 #include "kb11.h"  // 11/45
 #include "kd11.h"  // 11/40
 #include "kl11.h"
@@ -80,6 +81,30 @@ const char* disks[] =
     "rt11v5.dsk",
     "dos-11.dsk",
 };
+
+#if USE_11_45 && !STRICT_11_40
+const char* users_str[4] = {
+  "kernel",
+  "superviser",
+  "illegal",
+  "user"};
+const char users_char[4] = {
+  'K',
+  'S',
+  'X',
+  'U'};
+#else
+const char* users_str[4] = {
+  "kernel",
+  "illegal",
+  "illegal",
+  "user"};
+const char users_char[4] = {
+  'K',
+  'X',
+  'X',
+  'U'};
+#endif
 
 void setup(void)
 {
@@ -163,6 +188,44 @@ void setup(void)
     // Initialise the RAM
     ms11::begin();
 
+#if BOOT_SCRIPT
+    // Try to open the boot script, and execute if you can
+    File boot_script;
+    if (boot_script.open("boot.ini", O_READ))
+    {
+        //char line[50];  // max 50 chars per line
+        //int ln = 1;
+        //int n = 0;
+        // while ((n = boot_script.fgets(line, 50)) > 0)
+        // {
+        //     // Echo the setup script line
+        //     Serial.print("%% ");
+        //     Serial.print(line);
+        //     // if there isn't the newline, print it.
+        //     if (line[n - 1] != '\n')
+        //     {
+        //         Serial.println();
+        //     }
+        //     if (line[n - 2] != '\r')
+        //     {
+        //         Serial.print('\r');
+        //
+        //}
+        String line;
+        int l = 0;
+        while (boot_script.available())
+        {
+            line = boot_script.readStringUntil('\n');
+            Serial.print("%%> ");
+            Serial.println(line);
+            ini::setup_fr_line((char*)line.c_str());
+            _printf("%%%% Parsed line %i\r\n", l++);
+        }
+        boot_script.close();
+    }
+
+#else
+
 #if NUM_RK_DRIVES >= 1
     // Load RK05 Disk 0 as Read/Write
     if (!rk11::rkdata[0].open(disks[disk], O_RDWR))
@@ -208,6 +271,8 @@ void setup(void)
     }
     else
         rk11::attached_drives[3] = true;
+#endif
+
 #endif
 
     ky11::reset();    // reset the front panel - sets the switches to INST_UNIX_SINGLEUSER (0173030)

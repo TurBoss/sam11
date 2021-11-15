@@ -35,18 +35,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef H_SAM11
 #define H_SAM11
 
+#include <SdFat.h>
+
+#if USE_SDIO && !defined(__IMXRT1062__)  // If SDIO and not a Teensy 4/4.1
+extern SdFatSdio sd;
+#else  // SPI or Teensy
+extern SdFat sd;
+#endif
+
 enum
 {
-    PRINTINSTR = false,
-    PRINTSTATE = false,
+    PRINTINSTR = false,  // print instructions as they happen
+    PRINTSTATE = false,  // print full state each processor step
     DEBUG_INTER = false,
     DEBUG_TRAP = false,
     DEBUG_RK05 = false,
     DEBUG_MMU = false,
-    BREAK_ON_TRAP = false,
-    FIRST_LF_BREAKS = false,
-    PRINTSIMLINES = false,
+    BREAK_ON_TRAP = false,  // Break when trap
+    VTRAP_ON_NL = false,    // trigger a virtual trap on a CR or LF
+    PRINTSIMLINES = false,  // print simulator lines as well as pdp11 console
 };
+
+extern const char* users_str[];
+extern const char users_char[];
 
 void printstate();
 void panic();

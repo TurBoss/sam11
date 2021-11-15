@@ -27,7 +27,8 @@
     "xlocale": "cpp",
     "xlocnum": "cpp",
     "bit": "cpp",
-    "limits": "cpp"
+    "limits": "cpp",
+    "stack": "cpp"
   },
   "C_Cpp.errorSquiggles": "Enabled",
   "C_Cpp.intelliSenseEngine": "Tag Parser"

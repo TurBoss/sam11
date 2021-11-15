@@ -41,7 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Arduino.h>
 
-#if USE_11_45 && !STRICT_11_40
+#if USE_11_45
 #define procNS kb11
 #else
 #define procNS kd11
@@ -54,7 +54,7 @@ uint16_t TKB;
 uint16_t TPS;
 uint16_t TPB;
 
-void clearterminal()
+void reset()
 {
     TKS = 0;
     TPS = 1 << 7;
@@ -105,11 +105,19 @@ uint8_t count;
 
 void poll()
 {
+    // Read
     if (Serial.available())
     {
         char c = Serial.read();
-        if (FIRST_LF_BREAKS && (c == _LF))
-            procNS::trapped = true;
+
+        if ((c == '\n' || c == '\r'))
+        {
+            procNS::trapped |= VTRAP_ON_NL;
+            if (PRINTSIMLINES && procNS::trapped)
+            {
+                Serial.println("\r\n%% Virtual Trap.");
+            }
+        }
 
 #if ANSI_TO_ASCII
         if (c == 0x1B)  // ESC
@@ -117,15 +125,33 @@ void poll()
             char b = Serial.read();
             if (b == '[')
             {
-                char c = Serial.read();
-                if (c == '3')
+                char d = Serial.read();
+                if (d == '3')
                 {
-                    char d = Serial.read();
-                    if (d == '~')
+                    char e = Serial.read();
+                    if (e == '~')
                     {
                         addchar(0x7F);
                     }
+                    else
+                    {
+                        addchar(c & 0x7F);
+                        addchar(b & 0x7F);
+                        addchar(d & 0x7F);
+                        addchar(e & 0x7F);
+                    }
                 }
+                else
+                {
+                    addchar(c & 0x7F);
+                    addchar(b & 0x7F);
+                    addchar(d & 0x7F);
+                }
+            }
+            else
+            {
+                addchar(c & 0x7F);
+                addchar(b & 0x7F);
             }
         }
         else
@@ -133,6 +159,7 @@ void poll()
             addchar(c & 0x7F);
     }
 
+    // Write
     if ((TPS & 0x80) == 0)
     {
         if (++count > 32)

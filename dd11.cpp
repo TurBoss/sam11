@@ -73,7 +73,7 @@ uint16_t read8(const uint32_t a)
 #endif
     if (a % 2 != 0)
     {
-        return read16(a & ~1) >> 8;
+        return (read16(a & ~1) >> 8) & 0xFF;
     }
     return read16(a & ~1) & 0xFF;
 }
@@ -90,7 +90,7 @@ void write8(const uint32_t a, const uint16_t v)
 #endif
     if (a % 2 != 0)
     {
-        write16(a & ~1, (read16(a) & 0xFF) | (v & 0xFF) << 8);
+        write16(a & ~1, (read16(a) & 0xFF) | ((v & 0xFF) << 8));
     }
     else
     {
@@ -178,7 +178,7 @@ void write16(uint32_t a, uint16_t v)
         procNS::curPC;
         return;
 
-#if !STRICT_11_40
+#if !STRICT_11_40 && USE_11_45
     case DEV_CPU_SUP_SP:
         {
             if (procNS::curuser == 1)
@@ -329,7 +329,7 @@ uint16_t read16(uint32_t a)
         readReturn procNS::curPC;
         break;
 
-#if !STRICT_11_40
+#if USE_11_45
     case DEV_CPU_SUP_SP:
         {
             if (procNS::curuser == 1)

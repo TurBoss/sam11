@@ -113,7 +113,7 @@ uint32_t decode_instr(const uint16_t a, const bool w, const uint8_t user)
         {
             Serial.print(F("%% kt11::decode write to read-only page 0"));
             Serial.println(a, OCT);
-            _printf("%%%% page %i, user %i, instr area\r\n", i, user);
+            _printf("%%%% page %i, user %c, instr area\r\n", i, users_char[user]);
         }
         longjmp(trapbuf, INTMMUERR);
     }
@@ -125,7 +125,7 @@ uint32_t decode_instr(const uint16_t a, const bool w, const uint8_t user)
         {
             Serial.print(F("%% kt11::decode read from no-access page 0"));
             Serial.println(a, OCT);
-            _printf("%%%% page %i, user %i, instr area\r\n", i, user);
+            _printf("%%%% page %i, user %c, instr area\r\n", i, users_char[user]);
         }
         longjmp(trapbuf, INTMMUERR);
     }
@@ -137,7 +137,7 @@ uint32_t decode_instr(const uint16_t a, const bool w, const uint8_t user)
         {
             _printf("%%%% page %i length exceeded (down).\r\n", i);
             _printf("%%%% address 0%06o; block 0%03o is below length 0%03o\r\n", a, block, (instr_pages[user][i].len()));
-            _printf("%%%% user %i, instr area\r\n", i, user);
+            _printf("%%%% user %c, instr area\r\n", users_char[user]);
         }
         longjmp(trapbuf, INTMMUERR);
     }
@@ -149,7 +149,7 @@ uint32_t decode_instr(const uint16_t a, const bool w, const uint8_t user)
         {
             _printf("%%%% page %i length exceeded (up).\r\n", i);
             _printf("%%%% address 0%06o; block 0%03o is above length 0%03o\r\n", a, block, (instr_pages[user][i].len()));
-            _printf("%%%% user %i, instr area\r\n", i, user);
+            _printf("%%%% user %c, instr area\r\n", users_char[user]);
         }
         longjmp(trapbuf, INTMMUERR);
     }
@@ -162,7 +162,7 @@ uint32_t decode_instr(const uint16_t a, const bool w, const uint8_t user)
 #if DEBUG_MMU
     if (PRINTSIMLINES && DEBUG_MMU)
     {
-        _printf("%%%% kt11: page %i, user %i, instr area\r\n", i, user);
+        _printf("%%%% kt11: page %i, user %c, instr area\r\n", i, users_char[user]);
         Serial.print("%% decode: slow ");
         Serial.print(a, OCT);
         Serial.print(" -> ");
@@ -213,7 +213,7 @@ uint32_t decode_data(const uint16_t a, const bool w, const uint8_t user)
         {
             Serial.print(F("%% kt11::decode write to read-only page 0"));
             Serial.println(a, OCT);
-            _printf("%%%% page %i, user %i, data area\r\n", i, user);
+            _printf("%%%% page %i, user %c, data area\r\n", i, users_char[user]);
         }
         longjmp(trapbuf, INTMMUERR);
     }
@@ -225,7 +225,7 @@ uint32_t decode_data(const uint16_t a, const bool w, const uint8_t user)
         {
             Serial.print(F("%% kt11::decode read from no-access page 0"));
             Serial.println(a, OCT);
-            _printf("%%%% page %i, user %i, data area\r\n", i, user);
+            _printf("%%%% page %i, user %c, data area\r\n", i, users_char[user]);
         }
         longjmp(trapbuf, INTMMUERR);
     }
@@ -237,7 +237,7 @@ uint32_t decode_data(const uint16_t a, const bool w, const uint8_t user)
         {
             _printf("%%%% page %i length exceeded (down).\r\n", i);
             _printf("%%%% address 0%06o; block 0%03o is below length 0%03o\r\n", a, block, (instr_pages[user][i].len()));
-            _printf("%%%% user %i, data area\r\n", i, user);
+            _printf("%%%% user %c, data area\r\n", users_char[user]);
         }
         longjmp(trapbuf, INTMMUERR);
     }
@@ -249,7 +249,7 @@ uint32_t decode_data(const uint16_t a, const bool w, const uint8_t user)
         {
             _printf("%%%% page %i length exceeded (up).\r\n", i);
             _printf("%%%% address 0%06o; block 0%03o is above length 0%03o\r\n", a, block, (instr_pages[user][i].len()));
-            _printf("%%%% user %i, data area\r\n", i, user);
+            _printf("%%%% user %c, data area\r\n", users_char[user]);
         }
         longjmp(trapbuf, INTMMUERR);
     }
@@ -262,7 +262,7 @@ uint32_t decode_data(const uint16_t a, const bool w, const uint8_t user)
 #if DEBUG_MMU
     if (PRINTSIMLINES && DEBUG_MMU)
     {
-        _printf("%%%% kt11: page %i, user %i, data area\r\n", i, user);
+        _printf("%%%% kt11: page %i, user %c, data area\r\n", i, users_char[user]);
         Serial.print("%% decode: slow ");
         Serial.print(a, OCT);
         Serial.print(" -> ");
@@ -285,13 +285,13 @@ uint16_t read16(const uint32_t a)
     if ((a >= DEV_KER_INS_PDR_R0) && (a <= DEV_KER_INS_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: pdr read: page %i, user %i, instr area\r\n", i, 0);
+            _printf("%%%% kt11: pdr read: page %i, user %c, instr area\r\n", i, users_char[0]);
         return instr_pages[0][i].pdr;
     }
     if ((a >= DEV_KER_INS_PAR_R0) && (a <= DEV_KER_INS_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par read: page %i, user %i, instr area\r\n", i, 0);
+            _printf("%%%% kt11: par read: page %i, user %c, instr area\r\n", i, users_char[0]);
         return instr_pages[0][i].par;
     }
 
@@ -299,13 +299,13 @@ uint16_t read16(const uint32_t a)
     if ((a >= DEV_SUP_INS_PDR_R0) && (a <= DEV_SUP_INS_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: pdr read: page %i, user %i, instr area\r\n", i, 1);
+            _printf("%%%% kt11: pdr read: page %i, user %c, instr area\r\n", i, users_char[1]);
         return instr_pages[1][i].pdr;
     }
     if ((a >= DEV_SUP_INS_PAR_R0) && (a <= DEV_SUP_INS_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par read: page %i, user %i, instr area\r\n", i, 1);
+            _printf("%%%% kt11: par read: page %i, user %c, instr area\r\n", i, users_char[1]);
         return instr_pages[1][i].par;
     }
 #endif
@@ -313,13 +313,13 @@ uint16_t read16(const uint32_t a)
     if ((a >= DEV_USR_INS_PDR_R0) && (a <= DEV_USR_INS_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: pdr read: page %i, user %i, instr area\r\n", i, 3);
+            _printf("%%%% kt11: pdr read: page %i, user %c, instr area\r\n", i, users_char[3]);
         return instr_pages[3][i].pdr;
     }
     if ((a >= DEV_USR_INS_PAR_R0) && (a <= DEV_USR_INS_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par read: page %i, user %i, instr area\r\n", i, 3);
+            _printf("%%%% kt11: par read: page %i, user %c, instr area\r\n", i, users_char[3]);
         return instr_pages[3][i].par;
     }
 
@@ -328,13 +328,13 @@ uint16_t read16(const uint32_t a)
     if ((a >= DEV_KER_DAT_PDR_R0) && (a <= DEV_KER_DAT_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: pdr read: page %i, user %i, data area\r\n", i, 0);
+            _printf("%%%% kt11: pdr read: page %i, user %c, data area\r\n", i, users_char[0]);
         return data_pages[0][i].pdr;
     }
     if ((a >= DEV_KER_DAT_PAR_R0) && (a <= DEV_KER_DAT_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par read: page %i, user %i, data area\r\n", i, 0);
+            _printf("%%%% kt11: par read: page %i, user %c, data area\r\n", i, users_char[0]);
         return data_pages[0][i].par;
     }
 
@@ -342,13 +342,13 @@ uint16_t read16(const uint32_t a)
     if ((a >= DEV_SUP_DAT_PDR_R0) && (a <= DEV_SUP_DAT_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: pdr read: page %i, user %i, data area\r\n", i, 1);
+            _printf("%%%% kt11: pdr read: page %i, user %c, data area\r\n", i, users_char[1]);
         return data_pages[1][i].pdr;
     }
     if ((a >= DEV_SUP_DAT_PAR_R0) && (a <= DEV_SUP_DAT_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par read: page %i, user %i, data area\r\n", i, 1);
+            _printf("%%%% kt11: par read: page %i, user %c, data area\r\n", i, users_char[1]);
         return data_pages[1][i].par;
     }
 #endif
@@ -356,13 +356,13 @@ uint16_t read16(const uint32_t a)
     if ((a >= DEV_USR_DAT_PDR_R0) && (a <= DEV_USR_DAT_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: pdr read: page %i, user %i, data area\r\n", i, 3);
+            _printf("%%%% kt11: pdr read: page %i, user %c, data area\r\n", i, users_char[3]);
         return data_pages[3][i].pdr;
     }
     if ((a >= DEV_USR_DAT_PAR_R0) && (a <= DEV_USR_DAT_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par read: page %i, user %i, data area\r\n", i, 3);
+            _printf("%%%% kt11: par read: page %i, user %c, data area\r\n", i, users_char[3]);
         return data_pages[3][i].par;
     }
 
@@ -383,7 +383,7 @@ void write16(const uint32_t a, const uint16_t v)
     if ((a >= DEV_KER_INS_PDR_R0) && (a <= DEV_KER_INS_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: pdr write: page %i, user %i, instr area\r\n", i, 0);
+            _printf("%%%% kt11: pdr write: page %i, user %c, instr area\r\n", i, users_char[0]);
         instr_pages[0][i].pdr = v;
         instr_pages[0][i].pdr &= ~(1 << 6);
         return;
@@ -391,7 +391,7 @@ void write16(const uint32_t a, const uint16_t v)
     if ((a >= DEV_KER_INS_PAR_R0) && (a <= DEV_KER_INS_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par write: page %i, user %i, instr area\r\n", i, 0);
+            _printf("%%%% kt11: par write: page %i, user %c, instr area\r\n", i, users_char[0]);
         instr_pages[0][i].par = v;
         instr_pages[0][i].pdr &= ~(1 << 6);
         return;
@@ -401,7 +401,7 @@ void write16(const uint32_t a, const uint16_t v)
     if ((a >= DEV_SUP_INS_PDR_R0) && (a <= DEV_SUP_INS_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: pdr write: page %i, user %i, instr area\r\n", i, 1);
+            _printf("%%%% kt11: pdr write: page %i, user %c, instr area\r\n", i, users_char[1]);
         instr_pages[1][i].pdr = v;
         instr_pages[1][i].pdr &= ~(1 << 6);
         return;
@@ -409,7 +409,7 @@ void write16(const uint32_t a, const uint16_t v)
     if ((a >= DEV_SUP_INS_PAR_R0) && (a <= DEV_SUP_INS_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par write: page %i, user %i, instr area\r\n", i, 1);
+            _printf("%%%% kt11: par write: page %i, user %c, instr area\r\n", i, users_char[1]);
         instr_pages[1][i].par = v;
         instr_pages[1][i].pdr &= ~(1 << 6);
         return;
@@ -419,7 +419,7 @@ void write16(const uint32_t a, const uint16_t v)
     if ((a >= DEV_USR_INS_PDR_R0) && (a <= DEV_USR_INS_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: pdr write: page %i, user %i, instr area\r\n", i, 3);
+            _printf("%%%% kt11: pdr write: page %i, user %c, instr area\r\n", i, users_char[3]);
         instr_pages[3][i].pdr = v;
         instr_pages[3][i].pdr &= ~(1 << 6);
         return;
@@ -427,7 +427,7 @@ void write16(const uint32_t a, const uint16_t v)
     if ((a >= DEV_USR_INS_PAR_R0) && (a <= DEV_USR_INS_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par write: page %i, user %i, instr area\r\n", i, 3);
+            _printf("%%%% kt11: par write: page %i, user %c, instr area\r\n", i, users_char[3]);
         instr_pages[3][i].par = v;
         instr_pages[3][i].pdr &= ~(1 << 6);
         return;
@@ -438,7 +438,7 @@ void write16(const uint32_t a, const uint16_t v)
     if ((a >= DEV_KER_DAT_PDR_R0) && (a <= DEV_KER_DAT_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: pdr write: page %i, user %i, data area\r\n", i, 0);
+            _printf("%%%% kt11: pdr write: page %i, user %c, data area\r\n", i, users_char[0]);
         data_pages[0][i].pdr = v;
         data_pages[0][i].pdr &= ~(1 << 6);
         return;
@@ -446,7 +446,7 @@ void write16(const uint32_t a, const uint16_t v)
     if ((a >= DEV_KER_DAT_PAR_R0) && (a <= DEV_KER_DAT_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par write: page %i, user %i, data area\r\n", i, 0);
+            _printf("%%%% kt11: par write: page %i, user %c, data area\r\n", i, users_char[0]);
         data_pages[0][i].par = v;
         data_pages[0][i].pdr &= ~(1 << 6);
         return;
@@ -456,7 +456,7 @@ void write16(const uint32_t a, const uint16_t v)
     if ((a >= DEV_SUP_DAT_PDR_R0) && (a <= DEV_SUP_DAT_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: pdr write: page %i, user %i, data area\r\n", i, 1);
+            _printf("%%%% kt11: pdr write: page %i, user %c, data area\r\n", i, users_char[1]);
         data_pages[1][i].pdr = v;
         data_pages[1][i].pdr &= ~(1 << 6);
         return;
@@ -464,7 +464,7 @@ void write16(const uint32_t a, const uint16_t v)
     if ((a >= DEV_SUP_DAT_PAR_R0) && (a <= DEV_SUP_DAT_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par write: page %i, user %i, data area\r\n", i, 1);
+            _printf("%%%% kt11: par write: page %i, user %c, data area\r\n", i, users_char[1]);
         data_pages[1][i].par = v;
         data_pages[1][i].pdr &= ~(1 << 6);
         return;
@@ -474,7 +474,7 @@ void write16(const uint32_t a, const uint16_t v)
     if ((a >= DEV_USR_DAT_PDR_R0) && (a <= DEV_USR_DAT_PDR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: pdr write: page %i, user %i, data area\r\n", i, 3);
+            _printf("%%%% kt11: pdr write: page %i, user %c, data area\r\n", i, users_char[3]);
         data_pages[3][i].pdr = v;
         data_pages[3][i].pdr &= ~(1 << 6);
         return;
@@ -482,7 +482,7 @@ void write16(const uint32_t a, const uint16_t v)
     if ((a >= DEV_USR_DAT_PAR_R0) && (a <= DEV_USR_DAT_PAR_R7))
     {
         if (PRINTSIMLINES && DEBUG_MMU)
-            _printf("%%%% kt11: par write: page %i, user %i, data area\r\n", i, 3);
+            _printf("%%%% kt11: par write: page %i, user %c, data area\r\n", i, users_char[3]);
         data_pages[3][i].par = v;
         data_pages[3][i].pdr &= ~(1 << 6);
         return;
