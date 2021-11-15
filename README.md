@@ -23,7 +23,9 @@ The initial code "skeleton", processor instruction functions, RK11, and mmu is b
 
 The altered structure for hardware modules should allow implementing the missing hardware modules easier to allow use of operating systems and configurations that rely on currently unimplemented hardware features or devices. See pdp1140.h for more information about file names/splits and pdp-11/40 device structure.
 
-The original avr11 software supported UNIXv6, and this does as well. UNIX V6 (of Lion's fame) runs, but some programs fail to run correctly due to emulator bugs (e.g. BC; chess works correctly). Most things appear good. You can even compile c programs! As of 2021-09-17 some other OSes boot, but crash out for various reasons. The 2.9 BSD image accidentally ID's the processor as an 11/45 and crashes because of that... so either the strict 11/40 mode needs making stricter or we need to finish making it a full 11/45.
+The original avr11 software supported UNIXv6, and this does as well. UNIX V6 (of Lion's fame) runs, but some programs fail to run correctly due to emulator bugs (e.g. BC; chess actually works correctly). Most things appear good. You can even compile c programs! As of 2021-09-17 some other OSes boot, but crash out for various reasons. The 2.9 BSD image accidentally ID's the processor as an 11/45 and crashes because of that... so either the strict 11/40 mode needs making stricter or we need to finish making it a full 11/45.
+
+I'm not entirely sure that mkfs works, so I suggest using a pre-made disk image and then clearing it from inside UNIX instead of creating a blank file and then formatting it.
 
 ## Modifications
 
@@ -107,28 +109,32 @@ Because different boards all have different options for where the PDP ram lives,
 
 The RAM type is defined in platform.h, and depending the options different cpp files are inserted into ms11.cpp from the ram_opt folder cpp.h files.
 
-If you wish to use this as tested without defining a new board, you will need an Adafruit Grand Central M4, microSD card, and USB cable; alternativley a Teensy 4.1 board will work.
+If you wish to use this as tested without defining a new board, you will need an Adafruit Grand Central M4, microSD card, and USB cable; alternatively a Teensy 4.1 board will work.
 
-Put the .dsk images from the OS Images folder onto the root of your SD card, without renaming.
+Put the .dsk images from the ~~OS Images folder~~ V6 Mods folder onto the root of your SD card, without renaming.
 Plug the board into your computer, and using the arduino IDE (or compatible, e.g. vscode) compile and upload the sam11.ino file. This should automatically include all the cpp files and headers necessary.
 
-Then simply open up the terminal/serial, type "0." to select the UnixV6 image, type "unix" at the '@' to boot.
+~~Then simply open up the terminal/serial, type "0." to select the UnixV6 image~~ 2021-11-15: The disks are actually hard coded at the moment... I am in the process of adding boot.ini support and a simple command prompt/shell.
 
-Expect a trap at 0760000 as this is by design and is Unix discovering the maximum RAM available (248KB).
+Type "unix" at the '@' to boot.
 
-On an Adafruit Grand Central (SAMD51P20A), I suggest compile options: with Cache Enabled, 200MHz CPU Clock, "Fastest" or "Dragon" optimisation.
+Expect a trap at 0760000 as this is by design and is Unix discovering the maximum RAM available (248KB). This will be silent unless you have some of the debug flags in sam.h set.
+
+On an Adafruit Grand Central (SAMD51P20A), I suggest compile options: with Cache Enabled, 200MHz CPU Clock, "Fastest" or "Dragon" optimisation to get 0.5MIPS.
+
+On a Teensy 4.1, I suggest compile options: 450MHz, "Fastest" to get 2.1MIPS.
 
 ## Performance
 
-On a real PDP-11/40 or 11-45, the fastest complete operation is a CLR on Reg 0, with a cycle time of 0.99us (from the DEC handbooks). This translates to a instructions speed of approx. 1 MIPS. The PDP-11/70 has a recorded speed of 2-2.5 MIPS (Microsoft's Miss Piggy), and the VAX 11/780 has a recorded speed of 1 MIPS when running PDP-11 code (Wikipedia).
+On a real PDP-11/40 or 11-45, the fastest complete operation is a CLR on Reg 0, with a cycle time of 0.99us (from the DEC handbooks). This translates to a instructions speed of approx. 1 MIPS. The PDP-11/70 has a recorded max speed of 2-2.5 MIPS (Microsoft's Miss Piggy), and the VAX 11/780 has a recorded speed of 1 MIPS when running PDP-11 code (Wikipedia). Any instruction which accesses IO, Memory, Etc. will be slower.
 
-On a SAMD51P20A (PDP using Internal RAM, 200MHz Clock, Cache enabled) the emulated processor operates with a MIPS of 0.5->0.75 when measuring from inside UNIX V6 in multiuser. I you boot up my modified V6 you will find a note in the root directory along those lines, along with a command 'mips' to test it yourself (usage: "time mips"). This makes the simulator a bit slower than a real PDP-11/40, but it's close enough that it feels like you get to experience the processor at it's real speed, in fact, performance seems better than other emulators locked to a real 1MIPS (proof that MIPS isn't everything?). On that note, it is actually pretty amazingly fast, UNIX V6 boots faster than many modern CLI systems!
+On a SAMD51P20A (PDP using Internal RAM, 200MHz Clock, Cache enabled) the emulated processor operates with a MIPS of ~0.5 when measuring from inside UNIX V6 in multiuser. I you boot up my modified V6 you will find a note in the /usr/csd directory along those lines, along with a command 'mips' to test it yourself (usage: "time mips"). This makes the simulator a bit slower than a real PDP-11/40, but it's close enough that it feels like you get to experience the processor at it's real speed, in fact, performance seems better than other emulators locked to a real 1MIPS (proof that MIPS isn't everything?). On that note, it is actually pretty amazingly fast, UNIX V6 boots faster than many modern CLI systems!
 
 On a SAMD21G18A, using the swapfile as RAM, the emulated processor.... is too slow to be worth using, 5 seconds per character print slow... Still, I tried it, and the SAMD21G18A did successfully boot UNIX V6 and compile a program, it's just agonising to use.
 
 The AVR (ATmega2560) has NOT been tried, but the software should compile back to something close-to avr11 with similar performance; Dave Cheney reported a MIPS of ~0.1 on his AVR 2560 (or "10 times slower").
 
-A Teensy 4.1, on the stock 600MHz and regular optimisation, clocks in at a whopping 3.33 MIPS! But to be honest, doesn't feel that much faster. The more impressive thing is that disk access is so much faster due to the buffered SDIO mechanism. The biggest trade off is that the Teensy gets REAALLY hot. For curiousity I changed it to be fastest optimisation and the full 1GHz, and it only went up to 3.7 MIPS, so you could probably use the underclocks and get it to somewhere a bit more balanced. At 150MHz and fastest optimisation you get 0.66 MIPS like the samd51 and it stays cooler; warm but not excessive.
+A Teensy 4.1, on the stock 600MHz and regular optimisation, clocks in at a whopping 3.33 MIPS! But to be honest, doesn't feel that much faster for non-disk activity. The more impressive thing is that disk access is so much faster due to the buffered SDIO mechanism. The biggest trade off is that the Teensy gets REAALLY hot. For curiosity I changed it to be fastest optimisation and the full 1GHz, and it only went up to 3.7 MIPS, so you could probably use the underclocks and get it to somewhere a bit more balanced. At 150MHz and fastest optimisation you get 0.66 MIPS closer to the samd51 and it stays cooler; warm but not excessive. At 450MHz you get 2.1MIPS.
 
 For comparison, simh running my modified unix on an RPi 3B+ clocks in at 2 MIPS with the timing throttle turned off.
 
