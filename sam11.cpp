@@ -70,18 +70,6 @@ SdFatSdio sd;
 SdFat sd;
 #endif
 
-const char* disks[] =
-  {
-    "unixv6.dsk",
-    "unixv5.dsk",
-    "rsts.dsk",
-    "xxdp.dsk",
-    "rt11v3.dsk",
-    "rt11v4.dsk",
-    "rt11v5.dsk",
-    "dos-11.dsk",
-};
-
 #if USE_11_45 && !STRICT_11_40
 const char* users_str[4] = {
   "kernel",
@@ -112,7 +100,7 @@ void setup(void)
     platform::begin();
 
     // Start the UART
-    Serial.begin(kl11::BAUD_DEFAULT);  // may open bootloader on some boards...
+    Serial.begin(kl11::BAUD_DEFAULT);  // may open bootloader on some boards if the baud is 1200...
 
 #if defined(__AVR_ATmega2560__)
     fdevopen(serialWrite, NULL);
@@ -121,59 +109,7 @@ void setup(void)
     while (!Serial)
         ;
 
-    // Serial.println("%% RK05 Boot List:");
-    // Serial.println("%% ===================================================");
-    // Serial.println("%%  0: UnixV6    - UnixV6 (default)");
-    // Serial.println("%%  1: UnixV5    - UnixV5 (needs serial tty)");
-    // Serial.println("%%  2: RSTS      - RSTS DEC OS (no boot)");
-    // Serial.println("%%  3: XXDP      - XXDP DEC OS (no boot)");
-    // Serial.println("%%  4: RT11 v3   - RT11 v3 DOS (no boot)");
-    // Serial.println("%%  5: RT11 v4   - RT11 v4 DOS (no boot)");
-    // Serial.println("%%  6: RT11 v5   - RT11 v5 DOS (no boot)");
-    // Serial.println("%%  7: DOS-11v9  - DOS-11 v9 (irq fault)");
-
-    // Serial.println("\r\n%% Type disk number followed by '.' to select image.");
-
-    char disk;
-    //     char c;
-    //     char cnt;
-    // reprompt:
-    disk = 0;
-    // cnt = 0;
-
-    // Serial.print("%% disk=");
-    // while (!Serial.available())
-    //     delay(1);
-    // c = 0;
-    // while (1)
-    // {
-    //     c = Serial.read();
-    //     if (isprint((c)))
-    //     {
-    //         if (c >= '0' && c <= '9')
-    //         {
-    //             Serial.print(c);
-    //             disk += (c - '0') + (disk * 10 * cnt);
-    //             cnt++;
-    //         }
-    //     }
-    //     if (c == '.')
-    //         break;
-    //     c = 0;
-    // }
-    // Serial.println();
-
-    // if (disk > 7)
-    //     goto reprompt;
-    if (PRINTSIMLINES)
-    {
-        Serial.print(F("%% Init disk "));
-        Serial.print(disk, DEC);
-        Serial.print(", ");
-        Serial.println(disks[disk]);
-    }
-
-    // init the sd card
+        // init the sd card
 #if !USE_SDIO && !defined(__IMXRT1062__)  // SPI
     if (!sd.begin(PIN_OUT_SD_CS, SD_SCK_MHZ(SD_SPEED_MHZ)))
         sd.initErrorHalt();
@@ -193,24 +129,6 @@ void setup(void)
     File boot_script;
     if (boot_script.open("boot.ini", O_READ))
     {
-        //char line[50];  // max 50 chars per line
-        //int ln = 1;
-        //int n = 0;
-        // while ((n = boot_script.fgets(line, 50)) > 0)
-        // {
-        //     // Echo the setup script line
-        //     Serial.print("%% ");
-        //     Serial.print(line);
-        //     // if there isn't the newline, print it.
-        //     if (line[n - 1] != '\n')
-        //     {
-        //         Serial.println();
-        //     }
-        //     if (line[n - 2] != '\r')
-        //     {
-        //         Serial.print('\r');
-        //
-        //}
         String line;
         int l = 0;
         while (boot_script.available())
@@ -223,12 +141,11 @@ void setup(void)
         }
         boot_script.close();
     }
-
 #else
 
 #if NUM_RK_DRIVES >= 1
     // Load RK05 Disk 0 as Read/Write
-    if (!rk11::rkdata[0].open(disks[disk], O_RDWR))
+    if (!rk11::rkdata[0].open("unixv6.dsk", O_RDWR))
     {
         sd.errorHalt("%% opening RK disk 0 for write failed");
         rk11::attached_drives[0] = false;
@@ -266,7 +183,7 @@ void setup(void)
     if (!rk11::rkdata[3].open("csd.dsk", O_RDWR))
     {
         if (PRINTSIMLINES)
-            Serial.println("%% opening RK disk 3 (csd) for write failed");
+            Serial.println("%% opening RK disk 3 for write failed");
         rk11::attached_drives[3] = false;
     }
     else

@@ -134,7 +134,7 @@ void pack(uint32_t* number, uint32_t exponent, uint8_t sign)
     {
         if (exponent >= 0400)
         {
-            exponent &= 0377;  //0200;
+            exponent &= 0377;  // 0200;
             if (FPS & 01000)
             {                   // FIV - Floating interrupt on overflow
                 trap(ERROVER);  // 8 Floating overflow
@@ -215,9 +215,9 @@ void CMPF(uint32_t src1, uint32_t src2)
     }
 }
 
-void CMP()
+void CMP() { }
 
-  int step(uint32_t instr)
+int step(uint32_t instr)
 {
     uint32_t tAC, res, v;
     PC = procNS::curPC;
@@ -349,7 +349,7 @@ void CMP()
             }
             break;
         }
-        //Double Operands
+        // Double Operands
     case 0001000:  // MULF - Multiply Fl/Db
     case 0001400:  // MODF - Multiply and case to int
     case 0002000:  // ADDF - Add fl/db

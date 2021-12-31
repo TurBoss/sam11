@@ -1,7 +1,7 @@
 {
     "board": "adafruit:samd:adafruit_grandcentral_m4",
+    "configuration": "cache=on,speed=200,opt=dragons,maxqspi=50,usbstack=arduino,debug=off",
+    "programmer": "AVRISP mkII",
     "sketch": "sam11.ino",
-    "programmer": "AVR ISP",
-    "port": "/dev/cu.usbmodem101",
-    "configuration": "cache=on,speed=200,opt=dragons,maxqspi=50,usbstack=arduino,debug=off"
+    "port": "/dev/cu.usbmodem1101"
 }

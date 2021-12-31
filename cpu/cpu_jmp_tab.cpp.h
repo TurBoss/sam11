@@ -132,7 +132,7 @@ case 0160000:  // SUB 16SSDD
     return;
 case 0170000:  // FP11 Instructions
     {
-#if USE_FIS  // this is actually FPP/FP11... but hey...
+#if SUPRESS_UNIX_FP_NOP  // this is actually FPP/FP11... but hey...
         switch (instr)
         {
         case 0170001:  // SETF; Set floating mode

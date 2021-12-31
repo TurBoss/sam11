@@ -35,36 +35,36 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
  * The PDP-11 series of processors use hardware and software drivers with part
  * numbers with the pattern Letter.Letter.11 E.g. DD11 or RX11
- * 
+ *
  * This code follows the original numbering scheme, with the different files
  * running the emulators for different parts of the emulated hardware.
- * 
+ *
  * "sam11.*" is the exception to this as it's the main glue of the emulator and
  * its code doesn't directly emulate a part of the hardware.
- * 
+ *
  * The structure of the data flow, is more-or-less identical to the real PDP-11
- * 
+ *
  * CPU -> Backplane -> Device -> Backplane -> CPU
- *  
+ *
  * The real PDP-11 had no clock speed as it was all async, the main limit
  * For processor speed is memory and bus speed. That is also true here.
- * 
+ *
  * Table of devices/controllers:
  * =============================
- * 
+ *
  * Items marked 'Y' are for most purposes fully implemented
  * Items marked 'P' are partially implemented
  * Items marked '*' are implemented as part of another module
  * Items marked '+' are work in progress
- * 
+ *
  * This list is not exhaustive, and there will be controllers not listed.
- * 
+ *
  * Num:     I:  Description:
- * ---------------------------------------------------------------------------- 
- * 
+ * ----------------------------------------------------------------------------
+ *
  * Processor and Extensions:
- * 
- * KB11-A   P+  Main CPU 11/45 \_ Main processor is mostly 11/40 
+ *
+ * KB11-A   P+  Main CPU 11/45 \_ Main processor is mostly 11/40
  * KD11-A   Y   Main CPU 11/40 /  but has a few 11/45 things
  * KE11-E   *   Extended instructions (EIS)
  * KG11     *   XOR/CRC "cagey" calculations controller
@@ -74,60 +74,60 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * KT11     Y+  Memory Management Unit (11/40 compliant ONLY)
  * KW11     *   Line Time Clock (P revision is also RTC - not implemented)
  * KY11-D   +   Developer/Diagnostics Console (front panel)
- * 
+ *
  * KE11-F   P*+ Floating Point Instructions Extension
  * FP11     P*+ Floating Point Coprocessor
- *  
+ *
  * Coms/Bus:
  *
  * AA11         (alias for DL11 type AA?)
  * BB11         (alias for DL11 type BB?)
  * DC11         Serial (async) Line Controller
  * DD11     Y   UNIBUS Backplane
- * DH11         Serial (async) Line Controller 
+ * DH11         Serial (async) Line Controller
  * DJ11         Serial (async) Line Controller
  * DL11     +   Serial (async) Line Controller <- this is the one you add to expand the no. TTYs
  * DM11         Serial (async) Line Controller
- * DQ11         Serial (NPR sync) Line Controller  
+ * DQ11         Serial (NPR sync) Line Controller
  * DR11         Parallel Controller
- * DS11         Serial (sync) Line Controller 
+ * DS11         Serial (sync) Line Controller
  * DT11         Bus Switch
- * DU11         Serial (sync) Line Controller 
- * DZ11         Serial (async) Line Controller 
- *  
+ * DU11         Serial (sync) Line Controller
+ * DZ11         Serial (async) Line Controller
+ *
  * Memory (18-bit address = 248KiB Max):
- * 
+ *
  * KF11-A       Processor Core Memory (ignored if external memory exists)
  * MM11         Ferrite Core Memory
  * MS11     Y   Silicon Memory
- * 
+ *
  * Storage:
  *                                                     UNIX:
  * RK11     Y   RK Hard Disk Controller (RK05)          RK
  * RK611        RK Hard Disk Controller (RK06, RK07)    HK
- * RF11         RS Disk Controller (RS11)                    
+ * RF11         RS Disk Controller (RS11)
  * RL11     +   RL Disk Controller (RL02)               RL
  * RP11     *+  RP Disk Pack Controller (RP03, RP02)    RP
  * RH11     +   RS,RP,RM Disk Pack Controller (RP06)    HP
  * RC11         RS Disk Controller  (RS64)
  * PC11     +   PC Punch Tape Controller (PC05)         PC
- * TC11         TU DECtape Controller (TU56)            
+ * TC11         TU DECtape Controller (TU56)
  * TM11     +   TU/TE Magnetic Tape Controller (TU10)   MT
  * CR11         CR/CM Card Controller (aka CM11)
  * RX11         RX Floppy Disk Controller (RX01)
  * RX211        RX Floppy Disk Controller (RX01, RX02)  RX
  * TA11         TA Cassette Tape Controller (TU60)
- * 
+ *
  * Printers:
- * 
+ *
  * LP11     Y   Line Printer                            LP
- * 
+ *
  * Networking/Ethernet:
- * 
+ *
  * DEUNA        DEC's Ethernet Interface
  * DELUA        DEC's Second Ethernet Interface
- * NI1010A      Ethernet Interface by Interlan 
-*/
+ * NI1010A      Ethernet Interface by Interlan
+ */
 
 #ifndef _H_PDP1140_
 #define _H_PDP1140_
@@ -151,8 +151,9 @@ namespace pdp11 {
 #define KY_PANEL false  // The ky11 front panel will still kinda work without this, but with it changes it to run all bus functions into it, which slows down bus r/w access
 #define DL_TTYS  false  // DL11 TTY Console connectors
 
-#define USE_FP  false  // WIP - enable the FP11 Floating point  }_ These are different ways of adding floating point, they have different formats and instructions
-#define USE_FIS true   // WIP - enable the FIS Floating point   }  FIS is not actually implemented, it just disables NOP traps
+#define USE_FP              false  // WIP - enable the FP11 Floating point  }_ These are different ways of adding floating point, they have different formats and instructions
+#define USE_FIS             false  // WIP - enable the FIS Floating point   }  FIS is not actually implemented, it just disables NOP traps
+#define SUPRESS_UNIX_FP_NOP true   // disable NOPs on fpp calls used by unix v6
 
 #define USE_LP true   // enable the line printer
 #define USE_PC false  // WIP - enable the punch card/tape read/write
