@@ -7,7 +7,7 @@
                             // Note that this completely disables ESC, and does not passthrough ANY unhandled ANSI escapes.
 
 // Only really works if just one of these is enabled at a time
-#define BS_TO_DEL true   // convert any CTRL+H, ASCII BS characters into ASCII DEL 0x7F characters
+#define BS_TO_DEL false  // convert any CTRL+H, ASCII BS characters into ASCII DEL 0x7F characters
 #define DEL_TO_BS false  // convert any 0x7F, ASCII DEL characters into ASCII BS 0x08 characters
 #define CR_TO_LF  false  // convert any CR from the keyboard into an LF
 #define LF_TO_CR  false  // convert any LF from the keyboard into an CR
