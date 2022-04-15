@@ -3,7 +3,7 @@
 
 #define FLUSH_SERIAL_AT_READY true  // clear the serial in and out buffers once the processor is ready
 
-#define ANSI_TO_ASCII true  // convert ansi codes for things like delete ("\e[3~") into their ascii equivalent (0x7F) when passing messages from Serial to PDP \
+#define ANSI_TO_ASCII false  // convert ansi codes for things like delete ("\e[3~") into their ascii equivalent (0x7F) when passing messages from Serial to PDP \
                             // Note that this completely disables ESC, and does not passthrough ANY unhandled ANSI escapes.
 
 // Only really works if just one of these is enabled at a time

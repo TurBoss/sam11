@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "kb11.h"  // 11/45
 #include "kd11.h"  // 11/40
 #include "sam11.h"
+#include "termopts.h"
 
 #include <Arduino.h>
 
@@ -64,7 +65,7 @@ void begin(void)
     serial[0] = &Serial1;
     serial[1] = &Serial2;
     serial[2] = &Serial3;
-    serial[3] = &Serial4;
+    serial[3] = &Serial;
 
     for (int i = 0; i < 4; i++)
         serial[i]->begin(BAUD_DEFAULT);
@@ -149,7 +150,7 @@ uint16_t read16(uint32_t a)
                 if (PRINTSIMLINES)
                 {
                     Serial.println(F("%% dl11: read16 from invalid address"));  // " + ostr(a, 6))
-                    //panic();
+                    // panic();
                 }
                 return 0;
             }
@@ -160,7 +161,7 @@ uint16_t read16(uint32_t a)
         if (PRINTSIMLINES)
         {
             Serial.println(F("%% dl11: read16 from invalid address"));  // " + ostr(a, 6))
-            //panic();
+            // panic();
         }
     }
 }
@@ -206,7 +207,7 @@ void write16(uint32_t a, uint16_t v)
                 if (PRINTSIMLINES)
                 {
                     Serial.println(F("%% dl11: write16 to invalid address"));  // " + ostr(a, 6))
-                    //panic();
+                    // panic();
                 }
             }
         }
@@ -216,7 +217,7 @@ void write16(uint32_t a, uint16_t v)
         if (PRINTSIMLINES)
         {
             Serial.println(F("%% dl11: write16 to invalid address"));  // " + ostr(a, 6))
-            //panic();
+            // panic();
         }
     }
 }

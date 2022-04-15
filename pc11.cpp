@@ -33,6 +33,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // sam11 software emulation of DEC PDP-11/40 PC11 Punch card/tape Controller
 #include "pc11.h"
 
+#include "kb11.h"  // 11/45
+#include "kd11.h"  // 11/40
+#include "platform.h"
+#include "sam11.h"
+
+#include <Arduino.h>
+
 #if USE_PC
 
 namespace pc11 {

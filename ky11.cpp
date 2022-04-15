@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ky11.h"
 
+#include "dd11.h"
 #include "kb11.h"  // 11/45
 #include "kd11.h"  // 11/40
 #include "platform.h"
@@ -103,10 +104,10 @@ void reset()
 uint16_t read16(uint32_t addr)
 {
     // read front panel switches here
-    //SR = platform::readSwitches();
+    // SR = platform::readSwitches();
 
     if (addr == DEV_CONSOLE_SR)
-        return SR;  //SR;
+        return SR;  // SR;
     return 0;
 }
 void write16(uint32_t a, uint16_t v)

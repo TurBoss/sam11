@@ -19,16 +19,16 @@
             ],
             "intelliSenseMode": "gcc-x64",
             "includePath": [
-                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.3/libraries/Adafruit_TinyUSB_Arduino/src/arduino",
-                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.3/libraries/Adafruit_TinyUSB_Arduino/src/arduino",
+                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.5/libraries/Adafruit_TinyUSB_Arduino/src/arduino",
+                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.5/libraries/Adafruit_TinyUSB_Arduino/src/arduino",
                 "/Users/chloe/Library/Arduino15/packages/adafruit/tools/CMSIS/5.4.0/CMSIS/Core/Include/",
                 "/Users/chloe/Library/Arduino15/packages/adafruit/tools/CMSIS/5.4.0/CMSIS/DSP/Include/",
                 "/Users/chloe/Library/Arduino15/packages/adafruit/tools/CMSIS-Atmel/1.2.2/CMSIS/Device/ATMEL/",
-                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.3/cores/arduino",
-                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.3/variants/grand_central_m4",
+                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.5/cores/arduino",
+                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.5/variants/grand_central_m4",
                 "/Users/chloe/Documents/Arduino/libraries/SdFat/src",
-                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.3/libraries/SPI",
-                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.3/libraries/Adafruit_ZeroDMA",
+                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.5/libraries/SPI",
+                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.5/libraries/Adafruit_ZeroDMA",
                 "/Users/chloe/Documents/Arduino/libraries/elapsedMillis",
                 "/Users/chloe/Library/Arduino15/packages/adafruit/tools/arm-none-eabi-gcc/9-2019q4/arm-none-eabi/include/c++/9.2.1",
                 "/Users/chloe/Library/Arduino15/packages/adafruit/tools/arm-none-eabi-gcc/9-2019q4/arm-none-eabi/include/c++/9.2.1/arm-none-eabi",
@@ -38,7 +38,7 @@
                 "/Users/chloe/Library/Arduino15/packages/adafruit/tools/arm-none-eabi-gcc/9-2019q4/arm-none-eabi/include"
             ],
             "forcedInclude": [
-                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.3/cores/arduino/Arduino.h"
+                "/Users/chloe/Library/Arduino15/packages/adafruit/hardware/samd/1.7.5/cores/arduino/Arduino.h"
             ],
             "cStandard": "c11",
             "cppStandard": "c++11",
@@ -48,6 +48,7 @@
                 "ARDUINO=10815",
                 "ARDUINO_GRAND_CENTRAL_M4",
                 "ARDUINO_ARCH_SAMD",
+                "ARDUINO_SAMD_ADAFRUIT",
                 "__SAMD51P20A__",
                 "ADAFRUIT_GRAND_CENTRAL_M4",
                 "__SAMD51__",
