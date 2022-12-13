@@ -287,7 +287,7 @@ static void ADD(uint16_t instr)
 {
     uint8_t d = instr & 077;
     uint8_t s = (instr & 07700) >> 6;
-    //uint8_t l = 2 - (instr >> 15);
+    // uint8_t l = 2 - (instr >> 15);
     uint16_t sa = aget(s, 2);
     uint16_t val1 = memread16(sa);
     uint16_t da = aget(d, 2);
@@ -315,7 +315,7 @@ static void SUB(uint16_t instr)
 {
     uint8_t d = instr & 077;
     uint8_t s = (instr & 07700) >> 6;
-    //uint8_t l = 2 - (instr >> 15);
+    // uint8_t l = 2 - (instr >> 15);
     uint16_t sa = aget(s, 2);
     uint16_t val1 = memread16(sa);
     uint16_t da = aget(d, 2);
@@ -347,11 +347,12 @@ static void JSR(uint16_t instr)
     uint16_t uval = aget(d, l);
     if (isReg(uval))
     {
-        if (PRINTSIMLINES)
-        {
-            Serial.println(F("%% JSR called on register"));
-        }
-        panic();
+        // if (PRINTSIMLINES)
+        // {
+        //     Serial.println(F("%% JSR called on register"));
+        // }
+        // panic();
+        longjmp(trapbuf, INTINVAL);
     }
     push(R[s & 7]);
     R[s & 7] = R[7];
@@ -541,14 +542,14 @@ static void SOB(uint16_t instr)
 {
     // 0077Roo
 
-    uint8_t s = (instr & 0000700) >> 6;
-    uint8_t o = instr & 0000077;  //0xFF;
-    R[s]--;                       // & 07]--;
-    if (R[s])                     // & 07])  //71
+    uint8_t s = (instr & 0007700) >> 6;
+    uint8_t o = instr & 0000077;  // 0xFF;
+    R[s & 07]--;                  // & 07]--;
+    if (R[s & 07])                // & 07])  //71
     {
-        //o &= 077;
-        //o <<= 1;
-        o *= 2;
+        o &= 077;
+        o <<= 1;
+        // o *= 2;
         R[7] -= o;
     }
 }
@@ -560,10 +561,10 @@ static void CLR(uint16_t instr)
 
     const uint8_t d = instr & 077;
     const uint8_t l = 2 - (instr >> 15);
-    //PS &= 0xFFF0;
-    PS &= ~FLAGN;
-    PS &= ~FLAGV;
-    PS &= ~FLAGC;
+    PS &= 0xFFF0;
+    // PS &= ~FLAGN;
+    // PS &= ~FLAGV;
+    // PS &= ~FLAGC;
     PS |= FLAGZ;
 
     uint16_t da = aget(d, l);
@@ -897,11 +898,12 @@ static void JMP(uint16_t instr)
     uint16_t uval = aget(d, 2);
     if (isReg(uval))
     {
-        if (PRINTSIMLINES)
-        {
-            Serial.println(F("%% JMP called with register dest"));
-        }
-        panic();
+        // if (PRINTSIMLINES)
+        // {
+        //     Serial.println(F("%% JMP called with register dest"));
+        // }
+        // panic();
+        longjmp(trapbuf, INTINVAL);
     }
     R[7] = uval;
 }
@@ -1037,7 +1039,7 @@ static void _HALT(uint16_t instr)
     //     }
     //     longjmp(trapbuf, INTINVAL);
     // }
-    //Serial.println(F("%% HALT"));
+    // Serial.println(F("%% HALT"));
     panic();
 }
 

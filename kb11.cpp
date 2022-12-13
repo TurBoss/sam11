@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 // sam11 software emulation of DEC kb11-A processor
-// Mostly 11/40 kb11-A with KE11/KG11 extensions from 11/45 KB11-B
+// Mostly 11/45 kb11-A with KE11/KG11 extensions
 
 #include "kb11.h"
 
@@ -205,11 +205,12 @@ static void MFPI(uint16_t instr)
     }
     else if (isReg(da))
     {
-        if (PRINTSIMLINES)
-        {
-            Serial.println(F("%% invalid MFPI instruction"));
-        }
-        panic();
+        // if (PRINTSIMLINES)
+        // {
+        //     Serial.println(F("%% invalid MFPI instruction"));
+        // }
+        // panic();
+        longjmp(trapbuf, INTINVAL);
     }
     else
     {
@@ -253,11 +254,13 @@ static void MTPI(uint16_t instr)
     }
     else if (isReg(da))
     {
-        if (PRINTSIMLINES)
-        {
-            Serial.println(F("%% invalid MTPI instruction"));
-        }
-        panic();
+        // if (PRINTSIMLINES)
+        // {
+        //     Serial.println(F("%% invalid MTPI instruction"));
+        // }
+        // panic();
+        // longjmp(trapbuf, INTINVAL);
+        R[da & 7] = uval;
     }
     else
     {
@@ -265,7 +268,7 @@ static void MTPI(uint16_t instr)
         dd11::write16(sa, uval);
     }
     PS &= 0xFFF0;
-    PS |= FLAGC;
+    // PS |= FLAGC;
     setZ(uval == 0);
     if (uval & 0x8000)
     {

@@ -124,12 +124,12 @@ static uint16_t aget(uint8_t v, uint8_t l)
         addr += R[v & 07];
         break;
     }
-    addr &= 0xFFFF;
+    // addr &= 0xFFFF;
 
     if (v & 010)
     {
         addr = read16(addr);
-        return addr;
+        //        return addr;
     }
 
     return addr;

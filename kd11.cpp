@@ -186,11 +186,12 @@ static void MFPI(uint16_t instr)
     }
     else if (isReg(da))
     {
-        if (PRINTSIMLINES)
-        {
-            Serial.println(F("%% invalid MFPI instruction"));
-        }
-        panic();
+        // if (PRINTSIMLINES)
+        // {
+        //     Serial.println(F("%% invalid MFPI instruction"));
+        // }
+        // panic();
+        longjmp(trapbuf, INTINVAL);
     }
     else
     {
@@ -230,11 +231,13 @@ static void MTPI(uint16_t instr)
     }
     else if (isReg(da))
     {
-        if (PRINTSIMLINES)
-        {
-            Serial.println(F("%% invalid MTPI instruction"));
-        }
-        panic();
+        // if (PRINTSIMLINES)
+        // {
+        //     Serial.println(F("%% invalid MTPI instruction"));
+        // }
+        // panic();
+        // longjmp(trapbuf, INTINVAL);
+        R[da & 7] = uval;
     }
     else
     {
@@ -242,7 +245,7 @@ static void MTPI(uint16_t instr)
         dd11::write16(sa, uval);
     }
     PS &= 0xFFF0;
-    PS |= FLAGC;
+    // PS |= FLAGC;
     setZ(uval == 0);
     if (uval & 0x8000)
     {
