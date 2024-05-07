@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+environment/project/0.910961921/PATH/delimiter=\:
+environment/project/0.910961921/PATH/operation=replace
+environment/project/0.910961921/PATH/value=/home/turboss/.platformio/penv/bin\:/opt/pkg/llvm-mos/bin\:/home/turboss/.local/bin\:/usr/local/bin\:/usr/bin\:/usr/local/sbin\:/opt/cuda/bin\:/opt/cuda/nsight_compute\:/opt/cuda/nsight_systems/bin\:/var/lib/flatpak/exports/bin\:/usr/lib/jvm/default/bin\:/usr/bin/site_perl\:/usr/bin/vendor_perl\:/usr/bin/core_perl\:/usr/lib/rustup/bin\:/home/turboss/Android/Sdk/platform-tools${PathDelimiter}${PATH}
+environment/project/0.910961921/append=true
+environment/project/0.910961921/appendContributed=true
+environment/project/0.910961921.1363900502/PATH/delimiter=\:
+environment/project/0.910961921.1363900502/PATH/operation=replace
+environment/project/0.910961921.1363900502/PATH/value=/home/turboss/.platformio/penv/bin\:/opt/pkg/llvm-mos/bin\:/home/turboss/.local/bin\:/usr/local/bin\:/usr/bin\:/usr/local/sbin\:/opt/cuda/bin\:/opt/cuda/nsight_compute\:/opt/cuda/nsight_systems/bin\:/var/lib/flatpak/exports/bin\:/usr/lib/jvm/default/bin\:/usr/bin/site_perl\:/usr/bin/vendor_perl\:/usr/bin/core_perl\:/usr/lib/rustup/bin\:/home/turboss/Android/Sdk/platform-tools${PathDelimiter}${PATH}
+environment/project/0.910961921.1363900502/append=true
+environment/project/0.910961921.1363900502/appendContributed=true
