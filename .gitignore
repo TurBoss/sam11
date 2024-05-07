@@ -3,3 +3,7 @@
 .DS_Store
 .clang-format
 .vscode
+firmware/.settings
+firmware/.pio
+firmware/.project
+firmware/.cproject
