@@ -1,0 +1,5 @@
+.venv/
+.project
+.DS_Store
+.clang-format
+.vscode
